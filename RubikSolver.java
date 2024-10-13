@@ -3,6 +3,8 @@ Joshua Liu
 Rubik's Solver
 */
 
+import java.util.HashMap;
+
 public class RubikSolver {
     static final byte WHITE = 1;
     static final byte YELLOW = 2;
@@ -27,17 +29,35 @@ public class RubikSolver {
     static final byte[] UP_MAIN = { 9, 10, 11, 18, 19, 20, 27, 28, 29, 36, 37, 38 };
     static final byte[] UP_SUB = { 0, 3, 6, 7, 8, 5, 2, 1 };
 
+    static final byte[] DOWN_MAIN = { 44, 43, 42, 35, 34, 33, 26, 25, 24, 17, 16, 15 };
+    static final byte[] DOWN_SUB = { 47, 46, 45, 48, 51, 52, 53, 50 };
+
+    static final byte[] FRONT_MAIN = { 8, 7, 6, 11, 14, 17, 45, 46, 47, 33, 30, 27 };
+    static final byte[] FRONT_SUB = { 18, 21, 24, 25, 26, 23, 20, 19 };
+
+    static final byte[] BACK_MAIN = { 0, 1, 2, 29, 32, 35, 53, 52, 51, 15, 12, 9 };
+    static final byte[] BACK_SUB = { 38, 37, 36, 39, 42, 43, 44, 41 };
+
     static byte[] cube = new byte[54];
+
+    static HashMap<Integer, String> colourMap = new HashMap<Integer, String>();
 
     public static void main(String[] args) {
         // System.out.print("\033[H\033[2J");
         // System.out.flush();
-        initCube(cube);
-        makeMove(cube, "U", (byte) 1);
-        displayCube(cube);
+        initCube();
+        makeMove("R", 1);
+        makeMove("U", 1);
+        displayCube();
     }
 
-    public static void initCube(byte[] cube) {
+    public static void initCube() {
+        colourMap.put(1, "W");
+        colourMap.put(2, "Y");
+        colourMap.put(3, "R");
+        colourMap.put(4, "O");
+        colourMap.put(5, "B");
+        colourMap.put(6, "G");
         for (byte i = 0; i < 9; i++) {
             cube[i] = YELLOW;
         }
@@ -58,58 +78,58 @@ public class RubikSolver {
         }
     }
 
-    public static byte[] getFace(byte[] cube, byte[] faceI) {
+    public static byte[] getFace(byte[] faceI) {
         byte[] face = new byte[9];
         byte sI = 0;
-        for (byte i = faceI[0]; i <= faceI[1]; i++, sI++) {
+        for (int i = faceI[0]; i <= faceI[1]; i++, sI++) {
             face[sI] = cube[i];
         }
         return face;
     }
 
-    public static void printMapToColour(byte[] array, byte start, byte end) {
-        for (byte i = start; i < end; i++) {
-            System.out.print(array[i]);
+    public static void printMapToColour(byte[] array, int start, int end) {
+        for (int i = start; i < end; i++) {
+            System.out.print(colourMap.get((int) array[i]));
         }
     }
 
-    public static void displayCube(byte[] cube) {
-        byte[] yellow = getFace(cube, YELLOW_FACE);
-        byte[] blue = getFace(cube, BLUE_FACE);
-        byte[] red = getFace(cube, RED_FACE);
-        byte[] green = getFace(cube, GREEN_FACE);
-        byte[] orange = getFace(cube, ORANGE_FACE);
-        byte[] white = getFace(cube, WHITE_FACE);
+    public static void displayCube() {
+        byte[] yellow = getFace(YELLOW_FACE);
+        byte[] blue = getFace(BLUE_FACE);
+        byte[] red = getFace(RED_FACE);
+        byte[] green = getFace(GREEN_FACE);
+        byte[] orange = getFace(ORANGE_FACE);
+        byte[] white = getFace(WHITE_FACE);
         System.out.printf("%3s", " ");
-        printMapToColour(yellow, (byte) 0, (byte) 3);
+        printMapToColour(yellow, 0, 3);
         System.out.printf("\n%3s", " ");
-        printMapToColour(yellow, (byte) 3, (byte) 6);
+        printMapToColour(yellow, 3, 6);
         System.out.printf("\n%3s", " ");
-        printMapToColour(yellow, (byte) 6, (byte) 9);
+        printMapToColour(yellow, 6, 9);
         System.out.println();
-        printMapToColour(blue, (byte) 0, (byte) 3);
-        printMapToColour(red, (byte) 0, (byte) 3);
-        printMapToColour(green, (byte) 0, (byte) 3);
-        printMapToColour(orange, (byte) 0, (byte) 3);
+        printMapToColour(blue, 0, 3);
+        printMapToColour(red, 0, 3);
+        printMapToColour(green, 0, 3);
+        printMapToColour(orange, 0, 3);
         System.out.println();
-        printMapToColour(blue, (byte) 3, (byte) 6);
-        printMapToColour(red, (byte) 3, (byte) 6);
-        printMapToColour(green, (byte) 3, (byte) 6);
-        printMapToColour(orange, (byte) 3, (byte) 6);
+        printMapToColour(blue, 3, 6);
+        printMapToColour(red, 3, 6);
+        printMapToColour(green, 3, 6);
+        printMapToColour(orange, 3, 6);
         System.out.println();
-        printMapToColour(blue, (byte) 6, (byte) 9);
-        printMapToColour(red, (byte) 6, (byte) 9);
-        printMapToColour(green, (byte) 6, (byte) 9);
-        printMapToColour(orange, (byte) 6, (byte) 9);
+        printMapToColour(blue, 6, 9);
+        printMapToColour(red, 6, 9);
+        printMapToColour(green, 6, 9);
+        printMapToColour(orange, 6, 9);
         System.out.printf("\n%3s", " ");
-        printMapToColour(white, (byte) 0, (byte) 3);
+        printMapToColour(white, 0, 3);
         System.out.printf("\n%3s", " ");
-        printMapToColour(white, (byte) 3, (byte) 6);
+        printMapToColour(white, 3, 6);
         System.out.printf("\n%3s", " ");
-        printMapToColour(white, (byte) 6, (byte) 9);
+        printMapToColour(white, 6, 9);
     }
 
-    public static void moveHelper(byte[] cube, byte[] SIDE, byte end) {
+    public static void moveHelper(byte[] SIDE, int start, int end) {
         byte[] tempSide = new byte[end];
         byte tempSideI = 0;
         for (byte i : SIDE) {
@@ -117,47 +137,50 @@ public class RubikSolver {
             tempSideI++;
         }
         tempSideI = 0;
-        for (byte i = 3; i < end; i++, tempSideI++) {
+        for (int i = start; i < end; i++, tempSideI++) {
             cube[SIDE[tempSideI]] = tempSide[i];
         }
-        for (byte i = 0; i < 3; i++, tempSideI++) {
+        for (int i = 0; i < start; i++, tempSideI++) {
             cube[SIDE[tempSideI]] = tempSide[i];
         }
     }
-
-    public static void makeMove(byte[] cube, String move, byte amt) {
+    
+    public static void makeMove(String move, int amt) {
         switch (move) {
             case "R":
-                for (byte i = 0; i < amt; i++) {
-                    moveHelper(cube, RIGHT_MAIN, (byte) 12);
-                    moveHelper(cube, RIGHT_SUB, (byte) 8);
+                for (int i = 0; i < amt; i++) {
+                    moveHelper(RIGHT_MAIN, 3, 12);
+                    moveHelper(RIGHT_SUB, 2, 8);
                 }
                 break;
             case "L":
-                for (byte i = 0; i < amt; i++) {
-                    moveHelper(cube, LEFT_MAIN, (byte) 12);
-                    moveHelper(cube, LEFT_SUB, (byte) 8);
+                for (int i = 0; i < amt; i++) {
+                    moveHelper(LEFT_MAIN, 3, 12);
+                    moveHelper(LEFT_SUB, 2, 8);
                 }
                 break;
             case "U":
-                for (byte i = 0; i < amt; i++) {
-                    moveHelper(cube, UP_MAIN, (byte) 12);
-                    moveHelper(cube, UP_SUB, (byte) 8);
+                for (int i = 0; i < amt; i++) {
+                    moveHelper(UP_MAIN, 3, 12);
+                    moveHelper(UP_SUB, 2, 8);
                 }
                 break;
             case "D":
-                for (byte i = 0; i < amt; i++) {
-
+                for (int i = 0; i < amt; i++) {
+                    moveHelper(DOWN_MAIN, 3, 12);
+                    moveHelper(DOWN_SUB, 2, 8);
                 }
                 break;
             case "F":
-                for (byte i = 0; i < amt; i++) {
-
+                for (int i = 0; i < amt; i++) {
+                    moveHelper(FRONT_MAIN, 3, 12);
+                    moveHelper(FRONT_SUB, 2, 8);
                 }
                 break;
             case "B":
-                for (byte i = 0; i < amt; i++) {
-
+                for (int i = 0; i < amt; i++) {
+                    moveHelper(BACK_MAIN, 3, 12);
+                    moveHelper(BACK_SUB, 2, 8);
                 }
                 break;
         }
