@@ -39,8 +39,12 @@ public class RubikSolver {
     static final byte[] BACK_MAIN = { 0, 1, 2, 29, 32, 35, 53, 52, 51, 15, 12, 9 };
     static final byte[] BACK_SUB = { 38, 37, 36, 39, 42, 43, 44, 41 };
 
+    static final byte[] M_MAIN = { 52, 49, 46, 25, 22, 19, 7, 4, 1, 37, 40, 43 };
+    static final byte[] E_MAIN = { 41, 40, 39, 32, 31, 30, 23, 22, 21, 14, 13, 12 };
+    static final byte[] S_MAIN = { 5, 4, 3, 10, 13, 16, 48, 49, 50, 34, 31, 28 };
+
     static final String[] ALL_MOVES = { "R1", "R2", "R3", "L1", "L2", "L3", "U1", "U2", "U3", "D1", "D2", "D3",
-            "F1", "F2", "F3", "B1", "B2", "B3" };
+            "F1", "F2", "F3", "B1", "B2", "B3", "E1", "E2", "E3", "M1", "M2", "M3" };
 
     static HashMap<Integer, String> colourMap = new HashMap<Integer, String>();
     static HashMap<String, String> moveMap = new HashMap<String, String>();
@@ -54,6 +58,10 @@ public class RubikSolver {
         // System.out.flush();
         initCube(cube);
         cube = scrambleCube(deepCopyCube(cube), 5);
+        displayCube(cube);
+        System.out.println(movesMade);
+        movesMade = "";
+        cube = solveCube(deepCopyCube(cube));
         displayCube(cube);
         System.out.println(movesMade);
     }
@@ -83,6 +91,15 @@ public class RubikSolver {
         moveMap.put("B1", "B");
         moveMap.put("B2", "B2");
         moveMap.put("B3", "B'");
+        moveMap.put("E1", "E");
+        moveMap.put("E2", "E2");
+        moveMap.put("E3", "E'");
+        moveMap.put("M1", "M");
+        moveMap.put("M2", "M2");
+        moveMap.put("M3", "M'");
+        moveMap.put("S1", "S");
+        moveMap.put("S2", "S2");
+        moveMap.put("S3", "S'");
         for (byte i = 0; i < 9; i++) {
             cube[i] = YELLOW;
         }
@@ -221,7 +238,28 @@ public class RubikSolver {
                     cube = moveHelper(cube, BACK_SUB, 2, 8);
                 }
                 break;
+            case "E":
+                for (int i = 0; i < amt; i++) {
+                    cube = moveHelper(cube, E_MAIN, 3, 12);
+                }
+                break;
+            case "M":
+                for (int i = 0; i < amt; i++) {
+                    cube = moveHelper(cube, M_MAIN, 3, 12);
+                }
+                break;
+            case "S":
+                for (int i = 0; i < amt; i++) {
+                    cube = moveHelper(cube, S_MAIN, 3, 12);
+                }
+                break;
         }
+        return cube;
+    }
+
+    public static byte[] makeMoves(byte[] cube, String moves) {
+        for (String move : moves.split(" "))
+            cube = makeMove(cube, move);
         return cube;
     }
 
@@ -229,6 +267,42 @@ public class RubikSolver {
         for (int i = 0; i < amt; i++) {
             cube = makeMove(cube, ALL_MOVES[new Random().nextInt(ALL_MOVES.length)]);
         }
+        return cube;
+    }
+
+    public static byte[] solveCube(byte[] cube) {
+        cube = solveBlueCenter(cube);
+        cube = solveBlueWhiteEdge(cube);
+        return cube;
+    }
+
+    public static byte[] solveBlueCenter(byte[] cube) {
+        if (cube[13] == BLUE)
+            return cube;
+        else if (cube[22] == BLUE)
+            return makeMove(cube, "E3");
+        else if (cube[4] == BLUE)
+            return makeMove(cube, "S3");
+        else if (cube[31] == BLUE)
+            return makeMove(cube, "E2");
+        else if (cube[40] == BLUE)
+            return makeMove(cube, "E1");
+        else // (cube[49] == BLUE)
+            return makeMove(cube, "S1");
+    }
+
+    public static byte[] solveBlueWhiteEdge(byte[] cube) {
+        if (cube[16] == BLUE && cube[48] == WHITE)
+            return cube;
+        else if (cube[14] == BLUE && cube[21] == WHITE)
+            return makeMove(cube, "L1");
+        else if (cube[14] == WHITE && cube[21] == BLUE)
+            return makeMoves(cube, "F3 D3");
+            
+        else if (cube[14] == BLUE && cube[21] == WHITE)
+            return makeMove(cube, "L1");
+        else if (cube[14] == WHITE && cube[21] == BLUE)
+            return makeMoves(cube, "F3 D3");
         return cube;
     }
 }
