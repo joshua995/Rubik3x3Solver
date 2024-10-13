@@ -19,18 +19,23 @@ public class RubikSolver {
     static final int[] WHITE_FACE = { 45, 53 };
 
     static final int[] RIGHT_MAIN = { 2, 5, 8, 20, 23, 26, 47, 50, 53, 42, 39, 36 };
+    static final int[] RIGHT_SUB = { 27, 30, 33, 34, 35, 32, 29, 28 };
+
+    static final int[] LEFT_MAIN = { 6, 3, 0, 38, 41, 44, 51, 48, 45, 24, 21, 18 };
+    static final int[] LEFT_SUB = { 17, 14, 11, 10, 9, 12, 15, 16 };
 
     static byte[] cube = new byte[54];
 
     public static void main(String[] args) {
         // System.out.print("\033[H\033[2J");
         // System.out.flush();
-        initCube();
-        R();
-        displayCube();
+        initCube(cube);
+        L(cube);
+        R(cube);
+        displayCube(cube);
     }
 
-    public static void initCube() {
+    public static void initCube(byte[] cube) {
         for (int i = 0; i < 9; i++) {
             cube[i] = YELLOW;
         }
@@ -66,7 +71,7 @@ public class RubikSolver {
         }
     }
 
-    public static void displayCube() {
+    public static void displayCube(byte[] cube) {
         byte[] yellow = getFace(cube, YELLOW_FACE);
         byte[] blue = getFace(cube, BLUE_FACE);
         byte[] red = getFace(cube, RED_FACE);
@@ -102,8 +107,39 @@ public class RubikSolver {
         printMapToColour(white, 6, 9);
     }
 
-    public static void R() {
-        byte[] tempSide = new byte[12];
+    public static void moveHelper(byte[] cube, int[] SIDE, int end) {
+        byte[] tempSide = new byte[end];
         int tempSideI = 0;
+        for (int i : SIDE) {
+            tempSide[tempSideI] = cube[i];
+            tempSideI++;
+        }
+        tempSideI = 0;
+        for (int i = 3; i < end; i++, tempSideI++) {
+            cube[SIDE[tempSideI]] = tempSide[i];
+        }
+        for (int i = 0; i < 3; i++, tempSideI++) {
+            cube[SIDE[tempSideI]] = tempSide[i];
+        }
+    }
+
+    public static void R(byte[] cube) {
+        moveHelper(cube, RIGHT_MAIN, 12);
+        moveHelper(cube, RIGHT_SUB, 8);
+    }
+
+    public static void R2(byte[] cube) {
+        R(cube);
+        R(cube);
+    }
+
+    public static void Ri(byte[] cube) {
+        R2(cube);
+        R(cube);
+    }
+
+    public static void L(byte[] cube) {
+        moveHelper(cube, LEFT_MAIN, 12);
+        moveHelper(cube, LEFT_SUB, 8);
     }
 }
