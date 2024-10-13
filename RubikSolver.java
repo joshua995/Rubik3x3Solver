@@ -11,12 +11,14 @@ public class RubikSolver {
     static final byte BLUE = 5;
     static final byte GREEN = 6;
 
-    static final int[] YELLOW_SIDE = { 0, 8 };
-    static final int[] BLUE_SIDE = { 9, 17 };
-    static final int[] RED_SIDE = { 18, 26 };
-    static final int[] GREEN_SIDE = { 27, 35 };
-    static final int[] ORANGE_SIDE = { 36, 44 };
-    static final int[] WHITE_SIDE = { 45, 53 };
+    static final int[] YELLOW_FACE = { 0, 8 };
+    static final int[] BLUE_FACE = { 9, 17 };
+    static final int[] RED_FACE = { 18, 26 };
+    static final int[] GREEN_FACE = { 27, 35 };
+    static final int[] ORANGE_FACE = { 36, 44 };
+    static final int[] WHITE_FACE = { 45, 53 };
+
+    static final int[] RIGHT_MAIN = { 2, 5, 8, 20, 23, 26, 47, 50, 53, 42, 39, 36 };
 
     static byte[] cube = new byte[54];
 
@@ -49,13 +51,13 @@ public class RubikSolver {
         }
     }
 
-    public static byte[] getSide(byte[] cube, int[] sideI) {
-        byte[] side = new byte[9];
+    public static byte[] getFace(byte[] cube, int[] faceI) {
+        byte[] face = new byte[9];
         int sI = 0;
-        for (int i = sideI[0]; i <= sideI[1]; i++, sI++) {
-            side[sI] = cube[i];
+        for (int i = faceI[0]; i <= faceI[1]; i++, sI++) {
+            face[sI] = cube[i];
         }
-        return side;
+        return face;
     }
 
     public static void printMapToColour(byte[] array, int start, int end) {
@@ -65,12 +67,12 @@ public class RubikSolver {
     }
 
     public static void displayCube() {
-        byte[] yellow = getSide(cube, YELLOW_SIDE);
-        byte[] blue = getSide(cube, BLUE_SIDE);
-        byte[] red = getSide(cube, RED_SIDE);
-        byte[] green = getSide(cube, GREEN_SIDE);
-        byte[] orange = getSide(cube, ORANGE_SIDE);
-        byte[] white = getSide(cube, WHITE_SIDE);
+        byte[] yellow = getFace(cube, YELLOW_FACE);
+        byte[] blue = getFace(cube, BLUE_FACE);
+        byte[] red = getFace(cube, RED_FACE);
+        byte[] green = getFace(cube, GREEN_FACE);
+        byte[] orange = getFace(cube, ORANGE_FACE);
+        byte[] white = getFace(cube, WHITE_FACE);
         System.out.printf("%3s", " ");
         printMapToColour(yellow, 0, 3);
         System.out.printf("\n%3s", " ");
@@ -101,6 +103,7 @@ public class RubikSolver {
     }
 
     public static void R() {
-
+        byte[] tempSide = new byte[12];
+        int tempSideI = 0;
     }
 }
