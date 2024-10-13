@@ -1,9 +1,10 @@
 /*
 Joshua Liu
-Rubik's Solver
+Rubik"s Solver
 */
 
 import java.util.HashMap;
+import java.util.Random;
 
 public class RubikSolver {
     static final byte WHITE = 1;
@@ -38,20 +39,35 @@ public class RubikSolver {
     static final byte[] BACK_MAIN = { 0, 1, 2, 29, 32, 35, 53, 52, 51, 15, 12, 9 };
     static final byte[] BACK_SUB = { 38, 37, 36, 39, 42, 43, 44, 41 };
 
-    static byte[] cube = new byte[54];
+    static final String[] ALL_MOVES = { "R1", "R2", "R3", "L1", "L2", "L3", "U1", "U2", "U3", "D1", "D2", "D3",
+            "F1", "F2", "F3", "B1", "B2", "B3" };
 
     static HashMap<Integer, String> colourMap = new HashMap<Integer, String>();
 
-    public static void main(String[] args) {
+    static byte[] cube = new byte[54];
+
+    static String movesMade = "";
+
+
+    public static void main(String[] args) throws Exception {
         // System.out.print("\033[H\033[2J");
         // System.out.flush();
-        initCube();
-        makeMove("R", 1);
-        makeMove("U", 1);
-        displayCube();
+        initCube(cube);
+        // System.out.println(movesMade);
     }
 
-    public static void initCube() {
+    public static void displayCubeRec(TreeNode parentNode) throws Exception {
+        for (int i = 0; i < parentNode.getChildNodes().size(); i++) {
+            TreeNode node = parentNode.getChildNodes().itemAt(i);
+            displayCube(node.getValue());
+            System.out.println(node.getMoves());
+            if (node.getChildNodes().size() > 0) {
+                displayCubeRec(node);
+            }
+        }
+    }
+
+    public static void initCube(byte[] cube) {
         colourMap.put(1, "W");
         colourMap.put(2, "Y");
         colourMap.put(3, "R");
@@ -78,7 +94,15 @@ public class RubikSolver {
         }
     }
 
-    public static byte[] getFace(byte[] faceI) {
+    public static byte[] deepCopyCube(byte[] cube) {
+        byte[] deepCopyCube = new byte[54];
+        for (int i = 0; i < cube.length; i++) {
+            deepCopyCube[i] = cube[i];
+        }
+        return deepCopyCube;
+    }
+
+    public static byte[] getFace(byte[] cube, byte[] faceI) {
         byte[] face = new byte[9];
         byte sI = 0;
         for (int i = faceI[0]; i <= faceI[1]; i++, sI++) {
@@ -93,13 +117,13 @@ public class RubikSolver {
         }
     }
 
-    public static void displayCube() {
-        byte[] yellow = getFace(YELLOW_FACE);
-        byte[] blue = getFace(BLUE_FACE);
-        byte[] red = getFace(RED_FACE);
-        byte[] green = getFace(GREEN_FACE);
-        byte[] orange = getFace(ORANGE_FACE);
-        byte[] white = getFace(WHITE_FACE);
+    public static void displayCube(byte[] cube) {
+        byte[] yellow = getFace(cube, YELLOW_FACE);
+        byte[] blue = getFace(cube, BLUE_FACE);
+        byte[] red = getFace(cube, RED_FACE);
+        byte[] green = getFace(cube, GREEN_FACE);
+        byte[] orange = getFace(cube, ORANGE_FACE);
+        byte[] white = getFace(cube, WHITE_FACE);
         System.out.printf("%3s", " ");
         printMapToColour(yellow, 0, 3);
         System.out.printf("\n%3s", " ");
@@ -127,9 +151,10 @@ public class RubikSolver {
         printMapToColour(white, 3, 6);
         System.out.printf("\n%3s", " ");
         printMapToColour(white, 6, 9);
+        System.out.println();
     }
 
-    public static void moveHelper(byte[] SIDE, int start, int end) {
+    public static byte[] moveHelper(byte[] cube, byte[] SIDE, int start, int end) {
         byte[] tempSide = new byte[end];
         byte tempSideI = 0;
         for (byte i : SIDE) {
@@ -143,46 +168,58 @@ public class RubikSolver {
         for (int i = 0; i < start; i++, tempSideI++) {
             cube[SIDE[tempSideI]] = tempSide[i];
         }
+        return cube;
     }
-    
-    public static void makeMove(String move, int amt) {
-        switch (move) {
+
+    public static byte[] makeMove(byte[] cube, String move) {
+        String[] splitMove = { Character.toString(move.charAt(0)), Character.toString(move.charAt(1)) };
+        int amt = Integer.parseInt(splitMove[1]);
+        movesMade += move + " ";
+        switch (splitMove[0]) {
             case "R":
                 for (int i = 0; i < amt; i++) {
-                    moveHelper(RIGHT_MAIN, 3, 12);
-                    moveHelper(RIGHT_SUB, 2, 8);
+                    cube = moveHelper(cube, RIGHT_MAIN, 3, 12);
+                    cube = moveHelper(cube, RIGHT_SUB, 2, 8);
                 }
                 break;
             case "L":
                 for (int i = 0; i < amt; i++) {
-                    moveHelper(LEFT_MAIN, 3, 12);
-                    moveHelper(LEFT_SUB, 2, 8);
+                    cube = moveHelper(cube, LEFT_MAIN, 3, 12);
+                    cube = moveHelper(cube, LEFT_SUB, 2, 8);
                 }
                 break;
             case "U":
                 for (int i = 0; i < amt; i++) {
-                    moveHelper(UP_MAIN, 3, 12);
-                    moveHelper(UP_SUB, 2, 8);
+                    cube = moveHelper(cube, UP_MAIN, 3, 12);
+                    cube = moveHelper(cube, UP_SUB, 2, 8);
                 }
                 break;
             case "D":
                 for (int i = 0; i < amt; i++) {
-                    moveHelper(DOWN_MAIN, 3, 12);
-                    moveHelper(DOWN_SUB, 2, 8);
+                    cube = moveHelper(cube, DOWN_MAIN, 3, 12);
+                    cube = moveHelper(cube, DOWN_SUB, 2, 8);
                 }
                 break;
             case "F":
                 for (int i = 0; i < amt; i++) {
-                    moveHelper(FRONT_MAIN, 3, 12);
-                    moveHelper(FRONT_SUB, 2, 8);
+                    cube = moveHelper(cube, FRONT_MAIN, 3, 12);
+                    cube = moveHelper(cube, FRONT_SUB, 2, 8);
                 }
                 break;
             case "B":
                 for (int i = 0; i < amt; i++) {
-                    moveHelper(BACK_MAIN, 3, 12);
-                    moveHelper(BACK_SUB, 2, 8);
+                    cube = moveHelper(cube, BACK_MAIN, 3, 12);
+                    cube = moveHelper(cube, BACK_SUB, 2, 8);
                 }
                 break;
         }
+        return cube;
+    }
+
+    public static byte[] scrambleCube(byte[] cube, int amt) {
+        for (int i = 0; i < amt; i++) {
+            cube = makeMove(cube, ALL_MOVES[new Random().nextInt(ALL_MOVES.length)]);
+        }
+        return cube;
     }
 }

@@ -1,0 +1,30 @@
+
+    public static void generateStates() throws Exception {
+        TreeNode currentParent = setOfCubes;
+        currentParent.getValue();
+        for (String move : ALL_MOVES) {
+            TreeNode tempNode = new TreeNode(makeMove(
+                    currentParent.getValue(), move), currentParent.getMoves() + move + " ",
+                    currentParent);
+            if (!setOfCubes.contains(tempNode))
+                currentParent.add(tempNode);
+        }
+        generateStatesRec(setOfCubes, 4);
+    }
+
+    public static void generateStatesRec(TreeNode parentNode, int i) throws Exception {
+        if (i == 0) {
+            return;
+        }
+        for (int j = 0; j < parentNode.getChildNodes().size(); j++) {
+            TreeNode tempParent = parentNode.getChildNodes().itemAt(j);
+            for (String move : ALL_MOVES) {
+                TreeNode tempNode = new TreeNode(makeMove(
+                        tempParent.getValue(), move), tempParent.getMoves() + move + " ",
+                        tempParent);
+                if (!setOfCubes.contains(tempNode))
+                    tempParent.add(tempNode);
+            }
+            generateStatesRec(tempParent, i - 1);
+        }
+    }
