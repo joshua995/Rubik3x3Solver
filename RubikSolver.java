@@ -43,28 +43,19 @@ public class RubikSolver {
             "F1", "F2", "F3", "B1", "B2", "B3" };
 
     static HashMap<Integer, String> colourMap = new HashMap<Integer, String>();
+    static HashMap<String, String> moveMap = new HashMap<String, String>();
 
     static byte[] cube = new byte[54];
 
     static String movesMade = "";
 
-
     public static void main(String[] args) throws Exception {
         // System.out.print("\033[H\033[2J");
         // System.out.flush();
         initCube(cube);
-        // System.out.println(movesMade);
-    }
-
-    public static void displayCubeRec(TreeNode parentNode) throws Exception {
-        for (int i = 0; i < parentNode.getChildNodes().size(); i++) {
-            TreeNode node = parentNode.getChildNodes().itemAt(i);
-            displayCube(node.getValue());
-            System.out.println(node.getMoves());
-            if (node.getChildNodes().size() > 0) {
-                displayCubeRec(node);
-            }
-        }
+        cube = scrambleCube(deepCopyCube(cube), 5);
+        displayCube(cube);
+        System.out.println(movesMade);
     }
 
     public static void initCube(byte[] cube) {
@@ -74,6 +65,24 @@ public class RubikSolver {
         colourMap.put(4, "O");
         colourMap.put(5, "B");
         colourMap.put(6, "G");
+        moveMap.put("R1", "R");
+        moveMap.put("R2", "R2");
+        moveMap.put("R3", "R'");
+        moveMap.put("L1", "L");
+        moveMap.put("L2", "L2");
+        moveMap.put("L3", "L'");
+        moveMap.put("U1", "U");
+        moveMap.put("U2", "U2");
+        moveMap.put("U3", "U'");
+        moveMap.put("D1", "D");
+        moveMap.put("D2", "D2");
+        moveMap.put("D3", "D'");
+        moveMap.put("F1", "F");
+        moveMap.put("F2", "F2");
+        moveMap.put("F3", "F'");
+        moveMap.put("B1", "B");
+        moveMap.put("B2", "B2");
+        moveMap.put("B3", "B'");
         for (byte i = 0; i < 9; i++) {
             cube[i] = YELLOW;
         }
@@ -174,7 +183,7 @@ public class RubikSolver {
     public static byte[] makeMove(byte[] cube, String move) {
         String[] splitMove = { Character.toString(move.charAt(0)), Character.toString(move.charAt(1)) };
         int amt = Integer.parseInt(splitMove[1]);
-        movesMade += move + " ";
+        movesMade += moveMap.get(move) + " ";
         switch (splitMove[0]) {
             case "R":
                 for (int i = 0; i < amt; i++) {

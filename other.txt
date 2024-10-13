@@ -28,3 +28,16 @@
             generateStatesRec(tempParent, i - 1);
         }
     }
+
+    
+
+    public static void displayCubeRec(TreeNode parentNode) throws Exception {
+        for (int i = 0; i < parentNode.getChildNodes().size(); i++) {
+            TreeNode node = parentNode.getChildNodes().itemAt(i);
+            displayCube(node.getValue());
+            System.out.println(node.getMoves());
+            if (node.getChildNodes().size() > 0) {
+                displayCubeRec(node);
+            }
+        }
+    }
