@@ -1,3 +1,4 @@
+package rubik;
 /*
 Joshua Liu
 Rubik"s Solver (ROUX)
@@ -275,7 +276,7 @@ public class RubikSolver implements EdgePairings, CornerTrios {
 
     public static int[] makeMoves(int[] cube, String moves) {
         for (String move : moves.split(" "))
-            cube = makeMove(cube, moveMap.get(move));
+            cube = makeMove(cube, move);
         return cube;
     }
 
@@ -389,6 +390,10 @@ public class RubikSolver implements EdgePairings, CornerTrios {
             return cube;
         else if (cube[rw25x46[0]] == br14x21[0] && cube[ybo0x9x38[0]] == cube[brw17x24x45[0]])
             return makeMoves(cube, "U' M' F'");
+        else if (cube[rw25x46[0]] == br14x21[0] && cube[ybo0x9x38[1]] == cube[brw17x24x45[0]])
+            return makeMoves(cube, "U R' U M' F'");
+        else if (cube[rw25x46[0]] == br14x21[0] && cube[ybo0x9x38[2]] == cube[brw17x24x45[0]])
+            return makeMoves(cube, "M2 U2 R' M F");
         return cube;
     }
 }
