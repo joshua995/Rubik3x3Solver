@@ -1,47 +1,48 @@
 /*
 Joshua Liu
-Rubik"s Solver
+Rubik"s Solver (ROUX)
 */
 
 import java.util.HashMap;
 import java.util.Random;
 
-public class RubikSolver {
-    static final byte WHITE = 1;
-    static final byte YELLOW = 2;
-    static final byte RED = 3;
-    static final byte ORANGE = 4;
-    static final byte BLUE = 5;
-    static final byte GREEN = 6;
+interface EdgePairings {// First letter of the colour followed by indices from map
+    public int[] yo1x37 = { 1, 37 }, yg5x28 = { 5, 28 }, yr7x19 = { 7, 19 }, yb3x10 = { 3, 10 };
+    public int[] bo12x41 = { 12, 41 }, br14x21 = { 14, 21 }, bw16x48 = { 16, 48 }, rg23x30 = { 23, 30 };
+    public int[] rw25x46 = { 25, 46 }, go32x39 = { 32, 39 }, gw34x50 = { 34, 50 }, ow43x52 = { 43, 52 };
+}
 
-    static final byte[] YELLOW_FACE = { 0, 8 };
-    static final byte[] BLUE_FACE = { 9, 17 };
-    static final byte[] RED_FACE = { 18, 26 };
-    static final byte[] GREEN_FACE = { 27, 35 };
-    static final byte[] ORANGE_FACE = { 36, 44 };
-    static final byte[] WHITE_FACE = { 45, 53 };
+interface CornerTrios {// First letter of the colour followed by indices from map
+    public int[] ybo0x9x38 = { 0, 9, 38 }, ygo2x29x36 = { 2, 29, 36 }, ybr6x11x18 = { 6, 11, 18 };
+    public int[] yrg8x20x27 = { 8, 20, 27 }, bow15x44x51 = { 15, 44, 51 }, brw17x24x45 = { 17, 24, 45 };
+    public int[] rgw26x33x47 = { 26, 33, 47 }, gow35x42x53 = { 35, 42, 53 };
+}
 
-    static final byte[] RIGHT_MAIN = { 2, 5, 8, 20, 23, 26, 47, 50, 53, 42, 39, 36 };
-    static final byte[] RIGHT_SUB = { 27, 30, 33, 34, 35, 32, 29, 28 };
+public class RubikSolver implements EdgePairings, CornerTrios {
+    static final int[] YELLOW = { 0, 8 }, BLUE = { 9, 17 }, RED = { 18, 26 };
+    static final int[] GREEN = { 27, 35 }, ORANGE = { 36, 44 }, WHITE = { 45, 53 };
 
-    static final byte[] LEFT_MAIN = { 6, 3, 0, 38, 41, 44, 51, 48, 45, 24, 21, 18 };
-    static final byte[] LEFT_SUB = { 17, 14, 11, 10, 9, 12, 15, 16 };
+    static final int[] RIGHT_MAIN = { 2, 5, 8, 20, 23, 26, 47, 50, 53, 42, 39, 36 };
+    static final int[] RIGHT_SUB = { 27, 30, 33, 34, 35, 32, 29, 28 };
 
-    static final byte[] UP_MAIN = { 9, 10, 11, 18, 19, 20, 27, 28, 29, 36, 37, 38 };
-    static final byte[] UP_SUB = { 0, 3, 6, 7, 8, 5, 2, 1 };
+    static final int[] LEFT_MAIN = { 6, 3, 0, 38, 41, 44, 51, 48, 45, 24, 21, 18 };
+    static final int[] LEFT_SUB = { 17, 14, 11, 10, 9, 12, 15, 16 };
 
-    static final byte[] DOWN_MAIN = { 44, 43, 42, 35, 34, 33, 26, 25, 24, 17, 16, 15 };
-    static final byte[] DOWN_SUB = { 47, 46, 45, 48, 51, 52, 53, 50 };
+    static final int[] UP_MAIN = { 9, 10, 11, 18, 19, 20, 27, 28, 29, 36, 37, 38 };
+    static final int[] UP_SUB = { 0, 3, 6, 7, 8, 5, 2, 1 };
 
-    static final byte[] FRONT_MAIN = { 8, 7, 6, 11, 14, 17, 45, 46, 47, 33, 30, 27 };
-    static final byte[] FRONT_SUB = { 18, 21, 24, 25, 26, 23, 20, 19 };
+    static final int[] DOWN_MAIN = { 44, 43, 42, 35, 34, 33, 26, 25, 24, 17, 16, 15 };
+    static final int[] DOWN_SUB = { 47, 46, 45, 48, 51, 52, 53, 50 };
 
-    static final byte[] BACK_MAIN = { 0, 1, 2, 29, 32, 35, 53, 52, 51, 15, 12, 9 };
-    static final byte[] BACK_SUB = { 38, 37, 36, 39, 42, 43, 44, 41 };
+    static final int[] FRONT_MAIN = { 8, 7, 6, 11, 14, 17, 45, 46, 47, 33, 30, 27 };
+    static final int[] FRONT_SUB = { 18, 21, 24, 25, 26, 23, 20, 19 };
 
-    static final byte[] M_MAIN = { 52, 49, 46, 25, 22, 19, 7, 4, 1, 37, 40, 43 };
-    static final byte[] E_MAIN = { 41, 40, 39, 32, 31, 30, 23, 22, 21, 14, 13, 12 };
-    static final byte[] S_MAIN = { 5, 4, 3, 10, 13, 16, 48, 49, 50, 34, 31, 28 };
+    static final int[] BACK_MAIN = { 0, 1, 2, 29, 32, 35, 53, 52, 51, 15, 12, 9 };
+    static final int[] BACK_SUB = { 38, 37, 36, 39, 42, 43, 44, 41 };
+
+    static final int[] M_MAIN = { 52, 49, 46, 25, 22, 19, 7, 4, 1, 37, 40, 43 };
+    static final int[] E_MAIN = { 41, 40, 39, 32, 31, 30, 23, 22, 21, 14, 13, 12 };
+    static final int[] S_MAIN = { 5, 4, 3, 10, 13, 16, 48, 49, 50, 34, 31, 28 };
 
     static final String[] ALL_MOVES = { "R1", "R2", "R3", "L1", "L2", "L3", "U1", "U2", "U3", "D1", "D2", "D3",
             "F1", "F2", "F3", "B1", "B2", "B3", "E1", "E2", "E3", "M1", "M2", "M3" };
@@ -49,30 +50,49 @@ public class RubikSolver {
     static HashMap<Integer, String> colourMap = new HashMap<Integer, String>();
     static HashMap<String, String> moveMap = new HashMap<String, String>();
 
-    static byte[] cube = new byte[54];
+    static int[] cube = new int[54];
 
     static String movesMade = "";
 
     public static void main(String[] args) throws Exception {
         // System.out.print("\033[H\033[2J");
         // System.out.flush();
-        initCube(cube);
-        cube = scrambleCube(deepCopyCube(cube), 5);
+        cube = initCube(deepCopy(cube));
+        cube = scrambleCube(deepCopy(cube), 5);
         displayCube(cube);
         System.out.println(movesMade);
         movesMade = "";
-        cube = solveCube(deepCopyCube(cube));
+        cube = solveCube(deepCopy(cube));
         displayCube(cube);
         System.out.println(movesMade);
     }
 
-    public static void initCube(byte[] cube) {
-        colourMap.put(1, "W");
-        colourMap.put(2, "Y");
-        colourMap.put(3, "R");
-        colourMap.put(4, "O");
-        colourMap.put(5, "B");
-        colourMap.put(6, "G");
+    public static int[] initCubeHelper(int[] cube, int COLOUR, int start, int end) {
+        for (int i = start; i < end; i++) {
+            cube[i] = COLOUR;
+        }
+        return cube;
+    }
+
+    public static int[] initCube(int[] cube) {
+        for (int i = WHITE[0]; i <= WHITE[1]; i++) {
+            colourMap.put(i, "W");
+        }
+        for (int i = YELLOW[0]; i <= YELLOW[1]; i++) {
+            colourMap.put(i, "Y");
+        }
+        for (int i = RED[0]; i <= RED[1]; i++) {
+            colourMap.put(i, "R");
+        }
+        for (int i = ORANGE[0]; i <= ORANGE[1]; i++) {
+            colourMap.put(i, "O");
+        }
+        for (int i = BLUE[0]; i <= BLUE[1]; i++) {
+            colourMap.put(i, "B");
+        }
+        for (int i = GREEN[0]; i <= GREEN[1]; i++) {
+            colourMap.put(i, "G");
+        }
         moveMap.put("R1", "R");
         moveMap.put("R2", "R2");
         moveMap.put("R3", "R'");
@@ -100,56 +120,42 @@ public class RubikSolver {
         moveMap.put("S1", "S");
         moveMap.put("S2", "S2");
         moveMap.put("S3", "S'");
-        for (byte i = 0; i < 9; i++) {
-            cube[i] = YELLOW;
+        for (int i = 0; i < 54; i++) {
+            cube[i] = i;
         }
-        for (byte i = 9; i < 18; i++) {
-            cube[i] = BLUE;
-        }
-        for (byte i = 18; i < 27; i++) {
-            cube[i] = RED;
-        }
-        for (byte i = 27; i < 36; i++) {
-            cube[i] = GREEN;
-        }
-        for (byte i = 36; i < 45; i++) {
-            cube[i] = ORANGE;
-        }
-        for (byte i = 45; i < 54; i++) {
-            cube[i] = WHITE;
-        }
+        return cube;
     }
 
-    public static byte[] deepCopyCube(byte[] cube) {
-        byte[] deepCopyCube = new byte[54];
+    public static int[] deepCopy(int[] cube) {
+        int[] deepCopy = new int[54];
         for (int i = 0; i < cube.length; i++) {
-            deepCopyCube[i] = cube[i];
+            deepCopy[i] = cube[i];
         }
-        return deepCopyCube;
+        return deepCopy;
     }
 
-    public static byte[] getFace(byte[] cube, byte[] faceI) {
-        byte[] face = new byte[9];
-        byte sI = 0;
+    public static int[] getFace(int[] cube, int[] faceI) {
+        int[] face = new int[9];
+        int sI = 0;
         for (int i = faceI[0]; i <= faceI[1]; i++, sI++) {
             face[sI] = cube[i];
         }
         return face;
     }
 
-    public static void printMapToColour(byte[] array, int start, int end) {
+    public static void printMapToColour(int[] array, int start, int end) {
         for (int i = start; i < end; i++) {
             System.out.print(colourMap.get((int) array[i]));
         }
     }
 
-    public static void displayCube(byte[] cube) {
-        byte[] yellow = getFace(cube, YELLOW_FACE);
-        byte[] blue = getFace(cube, BLUE_FACE);
-        byte[] red = getFace(cube, RED_FACE);
-        byte[] green = getFace(cube, GREEN_FACE);
-        byte[] orange = getFace(cube, ORANGE_FACE);
-        byte[] white = getFace(cube, WHITE_FACE);
+    public static void displayCube(int[] cube) {
+        int[] yellow = getFace(cube, YELLOW);
+        int[] blue = getFace(cube, BLUE);
+        int[] red = getFace(cube, RED);
+        int[] green = getFace(cube, GREEN);
+        int[] orange = getFace(cube, ORANGE);
+        int[] white = getFace(cube, WHITE);
         System.out.printf("%3s", " ");
         printMapToColour(yellow, 0, 3);
         System.out.printf("\n%3s", " ");
@@ -180,10 +186,10 @@ public class RubikSolver {
         System.out.println();
     }
 
-    public static byte[] moveHelper(byte[] cube, byte[] SIDE, int start, int end) {
-        byte[] tempSide = new byte[end];
-        byte tempSideI = 0;
-        for (byte i : SIDE) {
+    public static int[] moveHelper(int[] cube, int[] SIDE, int start, int end) {
+        int[] tempSide = new int[end];
+        int tempSideI = 0;
+        for (int i : SIDE) {
             tempSide[tempSideI] = cube[i];
             tempSideI++;
         }
@@ -197,7 +203,7 @@ public class RubikSolver {
         return cube;
     }
 
-    public static byte[] makeMove(byte[] cube, String move) {
+    public static int[] makeMove(int[] cube, String move) {
         String[] splitMove = { Character.toString(move.charAt(0)), Character.toString(move.charAt(1)) };
         int amt = Integer.parseInt(splitMove[1]);
         movesMade += moveMap.get(move) + " ";
@@ -257,52 +263,120 @@ public class RubikSolver {
         return cube;
     }
 
-    public static byte[] makeMoves(byte[] cube, String moves) {
+    public static int[] makeMoves(int[] cube, String moves) {
         for (String move : moves.split(" "))
             cube = makeMove(cube, move);
         return cube;
     }
 
-    public static byte[] scrambleCube(byte[] cube, int amt) {
+    public static int[] scrambleCube(int[] cube, int amt) {
         for (int i = 0; i < amt; i++) {
             cube = makeMove(cube, ALL_MOVES[new Random().nextInt(ALL_MOVES.length)]);
         }
         return cube;
     }
 
-    public static byte[] solveCube(byte[] cube) {
+    public static int[] solveCube(int[] cube) {
         cube = solveBlueCenter(cube);
         cube = solveBlueWhiteEdge(cube);
+        cube = loadBlueRedEdge(cube);
+        cube = solveBlueRedEdge(cube);
         return cube;
     }
 
-    public static byte[] solveBlueCenter(byte[] cube) {
-        if (cube[13] == BLUE)
+    public static int[] solveBlueCenter(int[] cube) {
+        if (cube[13] == 13)
             return cube;
-        else if (cube[22] == BLUE)
+        else if (cube[22] == 13)
             return makeMove(cube, "E3");
-        else if (cube[4] == BLUE)
+        else if (cube[4] == 13)
             return makeMove(cube, "S3");
-        else if (cube[31] == BLUE)
+        else if (cube[31] == 13)
             return makeMove(cube, "E2");
-        else if (cube[40] == BLUE)
+        else if (cube[40] == 13)
             return makeMove(cube, "E1");
         else // (cube[49] == BLUE)
             return makeMove(cube, "S1");
     }
 
-    public static byte[] solveBlueWhiteEdge(byte[] cube) {
-        if (cube[16] == BLUE && cube[48] == WHITE)
+    public static int[] solveBlueWhiteEdge(int[] cube) {
+        if (cube[bw16x48[0]] == bw16x48[0])
             return cube;
-        else if (cube[14] == BLUE && cube[21] == WHITE)
+        else if (cube[br14x21[0]] == bw16x48[0])
             return makeMove(cube, "L1");
-        else if (cube[14] == WHITE && cube[21] == BLUE)
+        else if (cube[br14x21[0]] == bw16x48[1])
             return makeMoves(cube, "F3 D3");
-            
-        else if (cube[14] == BLUE && cube[21] == WHITE)
-            return makeMove(cube, "L1");
-        else if (cube[14] == WHITE && cube[21] == BLUE)
-            return makeMoves(cube, "F3 D3");
+        else if (cube[bo12x41[0]] == bw16x48[0])
+            return makeMove(cube, "L3");
+        else if (cube[bo12x41[0]] == bw16x48[1])
+            return makeMoves(cube, "B1 D1");
+        else if (cube[yb3x10[0]] == bw16x48[0])
+            return makeMoves(cube, "L1 F3 D3");
+        else if (cube[yb3x10[0]] == bw16x48[1])
+            return makeMove(cube, "L2");
+        else if (cube[yo1x37[0]] == bw16x48[0])
+            return makeMoves(cube, "B1 L3");
+        else if (cube[yo1x37[0]] == bw16x48[1])
+            return makeMoves(cube, "U3 L2");
+        else if (cube[yg5x28[0]] == bw16x48[0])
+            return makeMoves(cube, "U1 F3 L1");
+        else if (cube[yg5x28[0]] == bw16x48[1])
+            return makeMoves(cube, "U2 L2");
+        else if (cube[yr7x19[0]] == bw16x48[0])
+            return makeMoves(cube, "F3 L1");
+        else if (cube[yr7x19[0]] == bw16x48[1])
+            return makeMoves(cube, "U1 L2");
+        else if (cube[rg23x30[0]] == bw16x48[0])
+            return makeMoves(cube, "F1 D3");
+        else if (cube[rg23x30[0]] == bw16x48[1])
+            return makeMoves(cube, "F2 L1");
+        else if (cube[rw25x46[0]] == bw16x48[0])
+            return makeMove(cube, "D3");
+        else if (cube[rw25x46[0]] == bw16x48[1])
+            return makeMoves(cube, "F1 L1");
+        else if (cube[go32x39[0]] == bw16x48[0])
+            return makeMoves(cube, "B2 L3");
+        else if (cube[go32x39[0]] == bw16x48[1])
+            return makeMoves(cube, "B3 D1");
+        else if (cube[gw34x50[0]] == bw16x48[0])
+            return makeMove(cube, "D2");
+        else if (cube[gw34x50[0]] == bw16x48[1])
+            return makeMoves(cube, "R1 F1 D3");
+        else if (cube[ow43x52[0]] == bw16x48[0])
+            return makeMove(cube, "D1");
+        else // (cube[ow43x52[0]] == WHITE && cube[ow43x52[1]] == BLUE)
+            return makeMoves(cube, "B3 L3");
+    }
+
+    public static int[] loadBlueRedEdge(int[] cube) {
+        if ((cube[br14x21[0]] == br14x21[0] && cube[brw17x24x45[0]] == brw17x24x45[0])
+                || (cube[rw25x46[0]] == br14x21[0]) || (cube[rw25x46[0]] == br14x21[1]))
+            return cube;
+        else if (cube[yo1x37[0]] == br14x21[0] || cube[yo1x37[0]] == br14x21[1])
+            return makeMove(cube, "M2");
+        else if (cube[yg5x28[0]] == br14x21[0] || cube[yg5x28[0]] == br14x21[1])
+            return makeMoves(cube, "U1 M1");
+        else if (cube[yr7x19[0]] == br14x21[0] || cube[yr7x19[0]] == br14x21[1])
+            return makeMove(cube, "M1");
+        else if (cube[yb3x10[0]] == br14x21[0] || cube[yb3x10[0]] == br14x21[1])
+            return makeMoves(cube, "U3 M1");
+        else if (cube[bo12x41[0]] == br14x21[0] || cube[bo12x41[0]] == br14x21[1])
+            return makeMoves(cube, "B1 M3");
+        else if (cube[br14x21[0]] == br14x21[0] || cube[br14x21[0]] == br14x21[1])
+            return makeMove(cube, "F3");
+        else if (cube[rg23x30[0]] == br14x21[0] || cube[rg23x30[0]] == br14x21[1])
+            return makeMove(cube, "F1");
+        else if (cube[go32x39[0]] == br14x21[0] || cube[go32x39[0]] == br14x21[1])
+            return makeMoves(cube, "R2 F1");
+        else if (cube[gw34x50[0]] == br14x21[0] || cube[gw34x50[0]] == br14x21[1])
+            return makeMoves(cube, "R1 F1");
+        else // (cube[ow43x52[0]] == br14x21[0] || cube[ow43x52[0]] == br14x21[1])
+            return makeMoves(cube, "M3");
+    }
+
+    public static int[] solveBlueRedEdge(int[] cube) {
+        if (cube[br14x21[0]] == br14x21[0] && cube[brw17x24x45[0]] == brw17x24x45[0])
+            return cube;
         return cube;
     }
 }
