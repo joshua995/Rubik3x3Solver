@@ -44,8 +44,8 @@ public class RubikSolver implements EdgePairings, CornerTrios {
     static final int[] E_MAIN = { 41, 40, 39, 32, 31, 30, 23, 22, 21, 14, 13, 12 };
     static final int[] S_MAIN = { 5, 4, 3, 10, 13, 16, 48, 49, 50, 34, 31, 28 };
 
-    static final String[] ALL_MOVES = { "R1", "R2", "R3", "L1", "L2", "L3", "U1", "U2", "U3", "D1", "D2", "D3",
-            "F1", "F2", "F3", "B1", "B2", "B3", "E1", "E2", "E3", "M1", "M2", "M3" };
+    static final String[] ALL_MOVES = { "R", "R2", "R'", "L", "L2", "L'", "U", "U2", "U'", "D", "D2", "D'", "F", "F2",
+            "F'", "B", "B2", "B'", "E", "E2", "E'", "M", "M2", "M'" };
 
     static HashMap<Integer, String> colourMap = new HashMap<Integer, String>();
     static HashMap<String, String> moveMap = new HashMap<String, String>();
@@ -120,6 +120,15 @@ public class RubikSolver implements EdgePairings, CornerTrios {
         moveMap.put("S1", "S");
         moveMap.put("S2", "S2");
         moveMap.put("S3", "S'");
+        String[] keys = new String[moveMap.size()];
+        int sI = 0;
+        for (String s : moveMap.keySet()) {
+            keys[sI] = s;
+            sI++;
+        }
+        for (String s : keys) {
+            moveMap.put(moveMap.get(s), s);
+        }
         for (int i = 0; i < 54; i++) {
             cube[i] = i;
         }
@@ -204,6 +213,7 @@ public class RubikSolver implements EdgePairings, CornerTrios {
     }
 
     public static int[] makeMove(int[] cube, String move) {
+        move = moveMap.get(move);
         String[] splitMove = { Character.toString(move.charAt(0)), Character.toString(move.charAt(1)) };
         int amt = Integer.parseInt(splitMove[1]);
         movesMade += moveMap.get(move) + " ";
@@ -265,7 +275,7 @@ public class RubikSolver implements EdgePairings, CornerTrios {
 
     public static int[] makeMoves(int[] cube, String moves) {
         for (String move : moves.split(" "))
-            cube = makeMove(cube, move);
+            cube = makeMove(cube, moveMap.get(move));
         return cube;
     }
 
@@ -288,64 +298,64 @@ public class RubikSolver implements EdgePairings, CornerTrios {
         if (cube[13] == 13)
             return cube;
         else if (cube[22] == 13)
-            return makeMove(cube, "E3");
+            return makeMove(cube, "E'");
         else if (cube[4] == 13)
-            return makeMove(cube, "S3");
+            return makeMove(cube, "S'");
         else if (cube[31] == 13)
             return makeMove(cube, "E2");
         else if (cube[40] == 13)
-            return makeMove(cube, "E1");
+            return makeMove(cube, "E");
         else // (cube[49] == BLUE)
-            return makeMove(cube, "S1");
+            return makeMove(cube, "S");
     }
 
     public static int[] solveBlueWhiteEdge(int[] cube) {
         if (cube[bw16x48[0]] == bw16x48[0])
             return cube;
         else if (cube[br14x21[0]] == bw16x48[0])
-            return makeMove(cube, "L1");
+            return makeMove(cube, "L");
         else if (cube[br14x21[0]] == bw16x48[1])
-            return makeMoves(cube, "F3 D3");
+            return makeMoves(cube, "F' D'");
         else if (cube[bo12x41[0]] == bw16x48[0])
-            return makeMove(cube, "L3");
+            return makeMove(cube, "L'");
         else if (cube[bo12x41[0]] == bw16x48[1])
-            return makeMoves(cube, "B1 D1");
+            return makeMoves(cube, "B D");
         else if (cube[yb3x10[0]] == bw16x48[0])
-            return makeMoves(cube, "L1 F3 D3");
+            return makeMoves(cube, "L F' D'");
         else if (cube[yb3x10[0]] == bw16x48[1])
             return makeMove(cube, "L2");
         else if (cube[yo1x37[0]] == bw16x48[0])
-            return makeMoves(cube, "B1 L3");
+            return makeMoves(cube, "B L'");
         else if (cube[yo1x37[0]] == bw16x48[1])
-            return makeMoves(cube, "U3 L2");
+            return makeMoves(cube, "U' L2");
         else if (cube[yg5x28[0]] == bw16x48[0])
-            return makeMoves(cube, "U1 F3 L1");
+            return makeMoves(cube, "U F' L");
         else if (cube[yg5x28[0]] == bw16x48[1])
             return makeMoves(cube, "U2 L2");
         else if (cube[yr7x19[0]] == bw16x48[0])
-            return makeMoves(cube, "F3 L1");
+            return makeMoves(cube, "F' L");
         else if (cube[yr7x19[0]] == bw16x48[1])
-            return makeMoves(cube, "U1 L2");
+            return makeMoves(cube, "U L2");
         else if (cube[rg23x30[0]] == bw16x48[0])
-            return makeMoves(cube, "F1 D3");
+            return makeMoves(cube, "F D'");
         else if (cube[rg23x30[0]] == bw16x48[1])
-            return makeMoves(cube, "F2 L1");
+            return makeMoves(cube, "F2 L");
         else if (cube[rw25x46[0]] == bw16x48[0])
-            return makeMove(cube, "D3");
+            return makeMove(cube, "D'");
         else if (cube[rw25x46[0]] == bw16x48[1])
-            return makeMoves(cube, "F1 L1");
+            return makeMoves(cube, "F L");
         else if (cube[go32x39[0]] == bw16x48[0])
-            return makeMoves(cube, "B2 L3");
+            return makeMoves(cube, "B2 L'");
         else if (cube[go32x39[0]] == bw16x48[1])
-            return makeMoves(cube, "B3 D1");
+            return makeMoves(cube, "B' D");
         else if (cube[gw34x50[0]] == bw16x48[0])
             return makeMove(cube, "D2");
         else if (cube[gw34x50[0]] == bw16x48[1])
-            return makeMoves(cube, "R1 F1 D3");
+            return makeMoves(cube, "R F D'");
         else if (cube[ow43x52[0]] == bw16x48[0])
-            return makeMove(cube, "D1");
+            return makeMove(cube, "D");
         else // (cube[ow43x52[0]] == WHITE && cube[ow43x52[1]] == BLUE)
-            return makeMoves(cube, "B3 L3");
+            return makeMoves(cube, "B' L'");
     }
 
     public static int[] loadBlueRedEdge(int[] cube) {
@@ -355,28 +365,30 @@ public class RubikSolver implements EdgePairings, CornerTrios {
         else if (cube[yo1x37[0]] == br14x21[0] || cube[yo1x37[0]] == br14x21[1])
             return makeMove(cube, "M2");
         else if (cube[yg5x28[0]] == br14x21[0] || cube[yg5x28[0]] == br14x21[1])
-            return makeMoves(cube, "U1 M1");
+            return makeMoves(cube, "U M");
         else if (cube[yr7x19[0]] == br14x21[0] || cube[yr7x19[0]] == br14x21[1])
-            return makeMove(cube, "M1");
+            return makeMove(cube, "M");
         else if (cube[yb3x10[0]] == br14x21[0] || cube[yb3x10[0]] == br14x21[1])
-            return makeMoves(cube, "U3 M1");
+            return makeMoves(cube, "U' M");
         else if (cube[bo12x41[0]] == br14x21[0] || cube[bo12x41[0]] == br14x21[1])
-            return makeMoves(cube, "B1 M3");
+            return makeMoves(cube, "B M'");
         else if (cube[br14x21[0]] == br14x21[0] || cube[br14x21[0]] == br14x21[1])
-            return makeMove(cube, "F3");
+            return makeMove(cube, "F'");
         else if (cube[rg23x30[0]] == br14x21[0] || cube[rg23x30[0]] == br14x21[1])
-            return makeMove(cube, "F1");
+            return makeMove(cube, "F");
         else if (cube[go32x39[0]] == br14x21[0] || cube[go32x39[0]] == br14x21[1])
-            return makeMoves(cube, "R2 F1");
+            return makeMoves(cube, "R2 F");
         else if (cube[gw34x50[0]] == br14x21[0] || cube[gw34x50[0]] == br14x21[1])
-            return makeMoves(cube, "R1 F1");
+            return makeMoves(cube, "R F");
         else // (cube[ow43x52[0]] == br14x21[0] || cube[ow43x52[0]] == br14x21[1])
-            return makeMoves(cube, "M3");
+            return makeMoves(cube, "M'");
     }
 
     public static int[] solveBlueRedEdge(int[] cube) {
         if (cube[br14x21[0]] == br14x21[0] && cube[brw17x24x45[0]] == brw17x24x45[0])
             return cube;
+        else if (cube[rw25x46[0]] == br14x21[0] && cube[ybo0x9x38[0]] == cube[brw17x24x45[0]])
+            return makeMoves(cube, "U' M' F'");
         return cube;
     }
 }
