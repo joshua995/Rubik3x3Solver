@@ -302,6 +302,11 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         cube = solveGreenRedEdge(cube);
         cube = loadGreenOrangeEdge(cube);
         cube = solveGreenOrangeEdge(cube);
+        // cube = solveYellowCorners(cube);
+        // cube = orientColouredCorners(cube);
+        // cube = solveBadEdges(cube);
+        // cube = solveBlueGreenSide(cube);
+        // cube = solveRestOfCube(cube);
         return cube;
     }
 
