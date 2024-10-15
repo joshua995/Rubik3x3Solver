@@ -62,7 +62,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         // System.out.flush();
         cube = initCube(deepCopy(cube));
         cube = scrambleCube(deepCopy(cube), 5);
-        // cube = makeMoves(cube, "M D' U' B D");
+        // cube = makeMoves(cube, "R' R2 F E' U2 ");
         displayCube(cube);
         System.out.println(movesMade);
         movesMade = "";
@@ -676,7 +676,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         else if (cube[rw25x46[0]] == rg23x30[0] && cube[ybo0x9x38[0]] == rgw26x33x47[0])
             return makeMoves(cube, "U' R M' U' R'");
         else if (cube[rw25x46[0]] == rg23x30[0] && cube[ybo0x9x38[0]] == rgw26x33x47[1])
-            return makeMoves(cube, "M2 U2 R M' U' R'");
+            return makeMoves(cube, "M2 U2 R M' U R'");
         else if (cube[rw25x46[0]] == rg23x30[0] && cube[ybo0x9x38[0]] == rgw26x33x47[2])
             return makeMoves(cube, "U R' U R2 M' U' R'");
         else if (cube[rw25x46[0]] == rg23x30[0] && cube[ygo2x29x36[0]] == rgw26x33x47[0])
