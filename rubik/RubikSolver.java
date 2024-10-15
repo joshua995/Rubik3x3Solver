@@ -769,64 +769,64 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         if (cube[go32x39[0]] == go32x39[0] && cube[gow35x42x53[0]] == gow35x42x53[0])
             return cube;
         else if (cube[rw25x46[0]] == go32x39[0] && cube[ybo0x9x38[0]] == gow35x42x53[0])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "U' M' U2 R' M U' R");
         else if (cube[rw25x46[0]] == go32x39[0] && cube[ybo0x9x38[0]] == gow35x42x53[1])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "M2 R' U R");
         else if (cube[rw25x46[0]] == go32x39[0] && cube[ybo0x9x38[0]] == gow35x42x53[2])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "R' U2 R U' M2 R' U R");
         else if (cube[rw25x46[0]] == go32x39[0] && cube[ygo2x29x36[0]] == gow35x42x53[0])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "U2 M' U2 R' M U' R");
         else if (cube[rw25x46[0]] == go32x39[0] && cube[ygo2x29x36[0]] == gow35x42x53[1])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "U' M2 R' U R");
         else if (cube[rw25x46[0]] == go32x39[0] && cube[ygo2x29x36[0]] == gow35x42x53[2])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "R' U R M' U2 R' M U' R");
         else if (cube[rw25x46[0]] == go32x39[0] && cube[yrg8x20x27[0]] == gow35x42x53[0])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "U M' U2 R' M U' R");
         else if (cube[rw25x46[0]] == go32x39[0] && cube[yrg8x20x27[0]] == gow35x42x53[1])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "U2 M2 R' U R");
         else if (cube[rw25x46[0]] == go32x39[0] && cube[yrg8x20x27[0]] == gow35x42x53[2])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "U' R' U R M' U2 R' M U' R");
         else if (cube[rw25x46[0]] == go32x39[0] && cube[ybr6x11x18[0]] == gow35x42x53[0])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "M' U2 R' M U' R");
         else if (cube[rw25x46[0]] == go32x39[0] && cube[ybr6x11x18[0]] == gow35x42x53[1])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "U M2 R' U R");
         else if (cube[rw25x46[0]] == go32x39[0] && cube[ybr6x11x18[0]] == gow35x42x53[2])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "R' U' R U M2 R' U R");
         else if (cube[rw25x46[0]] == go32x39[0] && cube[gow35x42x53[0]] == gow35x42x53[0])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "R' U' M2 U R");
         else if (cube[rw25x46[0]] == go32x39[0] && cube[gow35x42x53[0]] == gow35x42x53[1])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "R' U R U' M2 R' U R");
         else if (cube[rw25x46[0]] == go32x39[0] && cube[gow35x42x53[0]] == gow35x42x53[2])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "R' U2 R M' U2 R' M U' R");
         else if (cube[rw25x46[0]] == go32x39[1] && cube[ybo0x9x38[0]] == gow35x42x53[0])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "U R' M' U' R");
         else if (cube[rw25x46[0]] == go32x39[1] && cube[ybo0x9x38[0]] == gow35x42x53[1])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "R' U2 M' U' R");
         else if (cube[rw25x46[0]] == go32x39[1] && cube[ybo0x9x38[0]] == gow35x42x53[2])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "U R' U R U2 R' M' U' R");
         else if (cube[rw25x46[0]] == go32x39[1] && cube[ygo2x29x36[0]] == gow35x42x53[0])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "R' M' U' R");
         else if (cube[rw25x46[0]] == go32x39[1] && cube[ygo2x29x36[0]] == gow35x42x53[1])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "U M' U R' U2 R");
         else if (cube[rw25x46[0]] == go32x39[1] && cube[ygo2x29x36[0]] == gow35x42x53[2])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "R' U' M2 U' R U R' M U' R");
         else if (cube[rw25x46[0]] == go32x39[1] && cube[yrg8x20x27[0]] == gow35x42x53[0])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "U' R' M' U' R");
         else if (cube[rw25x46[0]] == go32x39[1] && cube[yrg8x20x27[0]] == gow35x42x53[1])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "U R' U' M' U' R");
         else if (cube[rw25x46[0]] == go32x39[1] && cube[yrg8x20x27[0]] == gow35x42x53[2])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "U' R' U R U2 R' M' U' R");
         else if (cube[rw25x46[0]] == go32x39[1] && cube[ybr6x11x18[0]] == gow35x42x53[0])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "U2 R' M' U' R");
         else if (cube[rw25x46[0]] == go32x39[1] && cube[ybr6x11x18[0]] == gow35x42x53[1])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "R' U' M' U' R");
         else if (cube[rw25x46[0]] == go32x39[1] && cube[ybr6x11x18[0]] == gow35x42x53[2])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "R' U' R U M' U R' U2 R");
         else if (cube[rw25x46[0]] == go32x39[1] && cube[gow35x42x53[0]] == gow35x42x53[0])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "R' U M' U' R");
         else if (cube[rw25x46[0]] == go32x39[1] && cube[gow35x42x53[0]] == gow35x42x53[1])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "R' U R U M' U R' U2 R");
         else // (cube[rw25x46[0]] == go32x39[1] && cube[gow35x42x53[0]] == gow35x42x53[2])
-            return makeMoves(cube, "");
+            return makeMoves(cube, "R' M2 U2 R U2 R' M U' R");
     }
 }
