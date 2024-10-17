@@ -4,8 +4,7 @@ Joshua Liu
 Rubik"s Solver (ROUX)
 */
 
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 interface EdgePairings {// First letter of the colour followed by indices from map
     public int[] yo1x37 = { 1, 37 }, yg5x28 = { 5, 28 }, yr7x19 = { 7, 19 }, yb3x10 = { 3, 10 };
@@ -19,7 +18,7 @@ interface CornerTrios {// First letter of the colour followed by indices from ma
     public int[] rgw26x33x47 = { 26, 33, 47 }, gow35x42x53 = { 35, 42, 53 };
 }
 
-interface MoveHelpers {
+interface MoveHelpers {// Indices of for making moves
     static final int[] RIGHT_MAIN = { 2, 5, 8, 20, 23, 26, 47, 50, 53, 42, 39, 36 };
     static final int[] RIGHT_SUB = { 27, 30, 33, 34, 35, 32, 29, 28 };
 
@@ -62,12 +61,12 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         // System.out.flush();
         cube = initCube(deepCopy(cube));
         cube = scrambleCube(deepCopy(cube), 5);
-        // cube = makeMoves(cube, "R' R2 F E' U2 ");
-        displayCube(cube);
+        // cube = makeMoves(cube, "F L' F2 D' R2");
+        displayCube(deepCopy(cube));
         System.out.println(movesMade);
         movesMade = "";
         cube = solveCube(deepCopy(cube));
-        displayCube(cube);
+        displayCube(deepCopy(cube));
         System.out.println(movesMade);
     }
 
@@ -291,22 +290,22 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
     }
 
     public static int[] solveCube(int[] cube) {
-        cube = solveBlueCenter(cube);
-        cube = solveBlueWhiteEdge(cube);
-        cube = loadBlueRedEdge(cube);
-        cube = solveBlueRedEdge(cube);
-        cube = loadBlueOrangeEdge(cube);
-        cube = solveBlueOrangeEdge(cube);
-        cube = solveGreenWhiteEdge(cube);
-        cube = loadGreenRedEdge(cube);
-        cube = solveGreenRedEdge(cube);
-        cube = loadGreenOrangeEdge(cube);
-        cube = solveGreenOrangeEdge(cube);
-        // cube = solveYellowCorners(cube);
-        // cube = orientColouredCorners(cube);
-        // cube = solveBadEdges(cube);
-        // cube = solveBlueGreenSide(cube);
-        // cube = solveRestOfCube(cube);
+        cube = solveBlueCenter(deepCopy(cube));
+        cube = solveBlueWhiteEdge(deepCopy(cube));
+        cube = loadBlueRedEdge(deepCopy(cube));
+        cube = solveBlueRedEdge(deepCopy(cube));
+        cube = loadBlueOrangeEdge(deepCopy(cube));
+        cube = solveBlueOrangeEdge(deepCopy(cube));
+        cube = solveGreenWhiteEdge(deepCopy(cube));
+        cube = loadGreenRedEdge(deepCopy(cube));
+        cube = solveGreenRedEdge(deepCopy(cube));
+        cube = loadGreenOrangeEdge(deepCopy(cube));
+        cube = solveGreenOrangeEdge(deepCopy(cube));
+        cube = orientYellowCorners(deepCopy(cube));
+        cube = orientColouredCorners(deepCopy(cube));
+        cube = solveBadEdges(deepCopy(cube));
+        // cube = solveBlueGreenSide(deepCopy(cube));
+        // cube = solveRestOfCube(deepCopy(cube));
         return cube;
     }
 
@@ -719,7 +718,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         else if (cube[rw25x46[0]] == rg23x30[1] && cube[ybo0x9x38[0]] == rgw26x33x47[1])
             return makeMoves(cube, "U2 R M2 U R'");
         else if (cube[rw25x46[0]] == rg23x30[1] && cube[ybo0x9x38[0]] == rgw26x33x47[2])
-            return makeMoves(cube, "U R' U M2 U2 R2 U' R'");
+            return makeMoves(cube, "U R' U' M2 U2 R2 U' R'");
         else if (cube[rw25x46[0]] == rg23x30[1] && cube[ygo2x29x36[0]] == rgw26x33x47[0])
             return makeMoves(cube, "M2 U2 R U' R'");
         else if (cube[rw25x46[0]] == rg23x30[1] && cube[ygo2x29x36[0]] == rgw26x33x47[1])
@@ -796,7 +795,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         else if (cube[rw25x46[0]] == go32x39[0] && cube[ybr6x11x18[0]] == gow35x42x53[1])
             return makeMoves(cube, "U M2 R' U R");
         else if (cube[rw25x46[0]] == go32x39[0] && cube[ybr6x11x18[0]] == gow35x42x53[2])
-            return makeMoves(cube, "R' U' R U M2 R' U R");
+            return makeMoves(cube, "R' U' R U' M2 R' U R");
         else if (cube[rw25x46[0]] == go32x39[0] && cube[gow35x42x53[0]] == gow35x42x53[0])
             return makeMoves(cube, "R' U' M2 U R");
         else if (cube[rw25x46[0]] == go32x39[0] && cube[gow35x42x53[0]] == gow35x42x53[1])
@@ -833,5 +832,122 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
             return makeMoves(cube, "R' U R U M' U R' U2 R");
         else // (cube[rw25x46[0]] == go32x39[1] && cube[gow35x42x53[0]] == gow35x42x53[2])
             return makeMoves(cube, "R' M2 U2 R U2 R' M U' R");
+    }
+
+    public static boolean orientYellowCornersHelper(int[] cube, int i, int i1, int i2, int i3) {
+        return colourMap.get(cube[i]) == colourMap.get(cube[i1]) && colourMap.get(cube[i1]) == colourMap.get(cube[i2])
+                && colourMap.get(cube[i2]) == colourMap.get(cube[i3]) && colourMap.get(cube[i]) == "Y";
+    }
+
+    public static int[] orientYellowCorners(int[] cube) {
+        if (orientYellowCornersHelper(cube, ybo0x9x38[0], ygo2x29x36[0], yrg8x20x27[0], ybr6x11x18[0]))
+            return cube;
+        else if (orientYellowCornersHelper(cube, ybr6x11x18[2], yrg8x20x27[1], ygo2x29x36[2], ybo0x9x38[2]))
+            return makeMoves(cube, "R U2 R' U' R U R' U' R U' R'");
+        else if (orientYellowCornersHelper(cube, ybr6x11x18[1], yrg8x20x27[2], ygo2x29x36[1], ybo0x9x38[1]))
+            return makeMoves(cube, "U R U2 R' U' R U R' U' R U' R'");
+        else if (orientYellowCornersHelper(cube, ybo0x9x38[1], ybr6x11x18[1], ygo2x29x36[2], ygo2x29x36[2]))
+            return makeMoves(cube, "F R U R' U' R U R' U' F'");
+        else if (orientYellowCornersHelper(cube, ybo0x9x38[2], ygo2x29x36[2], ybr6x11x18[1], ybr6x11x18[2]))
+            return makeMoves(cube, "U' F R U R' U' R U R' U' F'");
+        else if (orientYellowCornersHelper(cube, ybr6x11x18[2], ybo0x9x38[2], ygo2x29x36[1], yrg8x20x27[2]))
+            return makeMoves(cube, "U2 F R U R' U' R U R' U' F'");
+        else if (orientYellowCornersHelper(cube, ybo0x9x38[1], ybr6x11x18[2], yrg8x20x27[1], ygo2x29x36[1]))
+            return makeMoves(cube, "U F R U R' U' R U R' U' F'");
+        else if (orientYellowCornersHelper(cube, ybo0x9x38[0], ybr6x11x18[0], yrg8x20x27[2], ygo2x29x36[1]))
+            return makeMoves(cube, "U2 F R U R' U' F'");
+        else if (orientYellowCornersHelper(cube, ybr6x11x18[0], yrg8x20x27[0], ybo0x9x38[2], ygo2x29x36[2]))
+            return makeMoves(cube, "U' F R U R' U' F'");
+        else if (orientYellowCornersHelper(cube, ygo2x29x36[0], yrg8x20x27[0], ybo0x9x38[1], ybr6x11x18[1]))
+            return makeMoves(cube, "U F R U R' U' F'");
+        else if (orientYellowCornersHelper(cube, ybo0x9x38[0], ygo2x29x36[0], ybr6x11x18[2], yrg8x20x27[1]))
+            return makeMoves(cube, "U F R U R' U' F'");
+        else if (orientYellowCornersHelper(cube, ygo2x29x36[0], yrg8x20x27[0], ybo0x9x38[2], ybr6x11x18[2]))
+            return makeMoves(cube, "R U R' U' R' F R F'");
+        else if (orientYellowCornersHelper(cube, ybo0x9x38[0], ygo2x29x36[0], ybr6x11x18[1], yrg8x20x27[2]))
+            return makeMoves(cube, "U R U R' U' R' F R F'");
+        else if (orientYellowCornersHelper(cube, ybo0x9x38[0], ybr6x11x18[0], ygo2x29x36[2], yrg8x20x27[1]))
+            return makeMoves(cube, "U2 R U R' U' R' F R F'");
+        else if (orientYellowCornersHelper(cube, ybr6x11x18[0], yrg8x20x27[0], ybo0x9x38[1], ygo2x29x36[1]))
+            return makeMoves(cube, "U' R U R' U' R' F R F'");
+        else if (orientYellowCornersHelper(cube, ybr6x11x18[0], yrg8x20x27[1], ygo2x29x36[1], ybo0x9x38[2]))
+            return makeMoves(cube, "R U R' U R U2 R'");
+        else if (orientYellowCornersHelper(cube, yrg8x20x27[0], ygo2x29x36[1], ybo0x9x38[2], ybr6x11x18[1]))
+            return makeMoves(cube, "U R U R' U R U2 R'");
+        else if (orientYellowCornersHelper(cube, ygo2x29x36[0], ybo0x9x38[2], ybr6x11x18[1], yrg8x20x27[1]))
+            return makeMoves(cube, "U2 R U R' U R U2 R'");
+        else if (orientYellowCornersHelper(cube, ybo0x9x38[0], ybr6x11x18[1], yrg8x20x27[1], ygo2x29x36[1]))
+            return makeMoves(cube, "U' R U R' U R U2 R'");
+        else if (orientYellowCornersHelper(cube, ybo0x9x38[0], ybr6x11x18[2], yrg8x20x27[2], ygo2x29x36[2]))
+            return makeMoves(cube, "R' U' R U' R' U2 R");
+        else if (orientYellowCornersHelper(cube, ybr6x11x18[0], ybo0x9x38[1], yrg8x20x27[2], ygo2x29x36[2]))
+            return makeMoves(cube, "U R' U' R U' R' U2 R");
+        else if (orientYellowCornersHelper(cube, yrg8x20x27[0], ybr6x11x18[2], ybo0x9x38[1], ygo2x29x36[2]))
+            return makeMoves(cube, "U2 R' U' R U' R' U2 R");
+        else if (orientYellowCornersHelper(cube, ygo2x29x36[0], ybo0x9x38[1], ybr6x11x18[2], yrg8x20x27[2]))
+            return makeMoves(cube, "U' R' U' R U' R' U2 R");
+        else if (orientYellowCornersHelper(cube, ybo0x9x38[0], yrg8x20x27[0], ybr6x11x18[2], ygo2x29x36[1]))
+            return makeMoves(cube, "F R' F' R U R U' R'");
+        else if (orientYellowCornersHelper(cube, ygo2x29x36[0], ybr6x11x18[0], yrg8x20x27[2], ybo0x9x38[2]))
+            return makeMoves(cube, "U F R' F' R U R U' R'");
+        else if (orientYellowCornersHelper(cube, ybo0x9x38[0], yrg8x20x27[0], ybr6x11x18[1], ygo2x29x36[2]))
+            return makeMoves(cube, "U2 F R' F' R U R U' R'");
+        else // (orientYellowCornersHelper(cube,ygo2x29x36[0],ybr6x11x18[0],yrg8x20x27[1],ybo0x9x38[1]))
+            return makeMoves(cube, "U' F R' F' R U R U' R'");
+    }
+
+    public static int[] orientColouredCorners(int[] cube) {
+        if (colourMap.get(cube[ybo0x9x38[1]]) == colourMap.get(cube[ybo0x9x38[1]])
+                && colourMap.get(cube[ygo2x29x36[1]]) == colourMap.get(cube[yrg8x20x27[1]]))
+            return cube;
+        else if (colourMap.get(cube[ybo0x9x38[1]]) == colourMap.get(cube[ybr6x11x18[1]]))
+            return makeMoves(cube, "R U R' U' R' F R2 U' R' U' R U R' F'");
+        else if (colourMap.get(cube[ybr6x11x18[2]]) == colourMap.get(cube[yrg8x20x27[1]]))
+            return makeMoves(cube, "U R U R' U' R' F R2 U' R' U' R U R' F'");
+        else if (colourMap.get(cube[yrg8x20x27[2]]) == colourMap.get(cube[ygo2x29x36[1]]))
+            return makeMoves(cube, "U2 R U R' U' R' F R2 U' R' U' R U R' F'");
+        else if (colourMap.get(cube[ybo0x9x38[2]]) == colourMap.get(cube[ygo2x29x36[2]]))
+            return makeMoves(cube, "U' R U R' U' R' F R2 U' R' U' R U R' F'");
+        else
+            return makeMoves(cube, "R U R' U' R' F R2 U' R' U' R U R' F' U2 R U R' U' R' F R2 U' R' U' R U R' F'");
+    }
+
+    public static boolean solveBadEdgesHelper(int[] cube, int i, int i1, int i2, int i3, int i4, int i5) {
+        return (colourMap.get(cube[i]) == "Y" || colourMap.get(cube[i]) == "W")
+                && (colourMap.get(cube[i1]) == "Y" || colourMap.get(cube[i1]) == "W")
+                && (colourMap.get(cube[i2]) == "Y" || colourMap.get(cube[i2]) == "W")
+                && (colourMap.get(cube[i3]) == "Y" || colourMap.get(cube[i3]) == "W")
+                && (colourMap.get(cube[i4]) == "Y" || colourMap.get(cube[i4]) == "W")
+                && (colourMap.get(cube[i5]) == "Y" || colourMap.get(cube[i5]) == "W");
+    }
+
+    public static int[] solveBadEdges(int[] cube) {
+        if (colourMap.get(cube[4]) != "Y" && colourMap.get(cube[4]) != "W")
+            cube = makeMoves(cube, "M");
+        if (solveBadEdgesHelper(cube, yo1x37[0], yb3x10[0], yr7x19[0], yg5x28[0], rw25x46[1], ow43x52[1]))
+            return cube;
+        else if (solveBadEdgesHelper(cube, yo1x37[0], yb3x10[1], yr7x19[1], yg5x28[1], rw25x46[0], ow43x52[1]))
+            return makeMoves(cube, "M' U M");
+        else if (solveBadEdgesHelper(cube, yo1x37[1], yb3x10[1], yr7x19[1], yg5x28[0], rw25x46[0], ow43x52[1]))
+            return makeMoves(cube, "U' M' U M");
+        else if (solveBadEdgesHelper(cube, yo1x37[1], yb3x10[1], yr7x19[0], yg5x28[1], rw25x46[0], ow43x52[1]))
+            return makeMoves(cube, "U2 M' U M");
+        else if (solveBadEdgesHelper(cube, yo1x37[1], yb3x10[0], yr7x19[1], yg5x28[1], rw25x46[0], ow43x52[1]))
+            return makeMoves(cube, "U M' U M");
+        else if (solveBadEdgesHelper(cube, yo1x37[1], yb3x10[1], yr7x19[0], yg5x28[1], rw25x46[1], ow43x52[0]))
+            return makeMoves(cube, "M U M");
+        else if (solveBadEdgesHelper(cube, yo1x37[1], yb3x10[1], yr7x19[1], yg5x28[0], rw25x46[1], ow43x52[0]))
+            return makeMoves(cube, "U M U M");
+        else if (solveBadEdgesHelper(cube, yo1x37[0], yb3x10[1], yr7x19[1], yg5x28[1], rw25x46[1], ow43x52[0]))
+            return makeMoves(cube, "U2 M U M");
+        else if (solveBadEdgesHelper(cube, yo1x37[1], yb3x10[0], yr7x19[1], yg5x28[1], rw25x46[1], ow43x52[0]))
+            return makeMoves(cube, "U' M U M");
+        else if (solveBadEdgesHelper(cube, yo1x37[1], yb3x10[0], yr7x19[1], yg5x28[0], rw25x46[0], ow43x52[0]))
+            return makeMoves(cube, "U M' U2 M U2 M U M");
+        else if (solveBadEdgesHelper(cube, yo1x37[0], yb3x10[1], yr7x19[0], yg5x28[1], rw25x46[0], ow43x52[0]))
+            return makeMoves(cube, "M' U2 M U2 M U M");
+        else if (solveBadEdgesHelper(cube, yo1x37[0], yb3x10[0], yr7x19[1], yg5x28[1], rw25x46[0], ow43x52[0]))
+            return makeMoves(cube, "M U2 M' U' M' U M");
+        return cube;
     }
 }
