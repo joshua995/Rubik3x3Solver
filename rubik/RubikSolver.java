@@ -1033,11 +1033,12 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
             cube = makeMoves(cube, "U2");
         else if (cube[ybo0x9x38[2]] == ybr6x11x18[1])
             cube = makeMoves(cube, "U'");
-        if (cube[yb3x10[1]] == yb3x10[1])
+        if (cube[yb3x10[1]] == yb3x10[1] && cube[yg5x28[1]] == yg5x28[1])
             return cube;
-        else if (1 == 1) {
-
-        }
+        else if (cube[yb3x10[1]] == yg5x28[1] && cube[yg5x28[1]] == yb3x10[1])
+            return makeMoves(cube, "U M2 U2 M2 U");
+        else if (cube[yb3x10[1]] == yb3x10[1] && cube[rw25x46[0]] == yg5x28[1])
+            return makeMoves(cube, "U M' U2 M' U2 M2 U'");
         return cube;
     }
 }
