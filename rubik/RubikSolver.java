@@ -61,7 +61,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         // System.out.flush();
         cube = initCube(deepCopy(cube));
         cube = scrambleCube(deepCopy(cube), 5);
-        //cube = makeMoves(cube, "E L' F L' M");
+        // cube = makeMoves(cube, "E L' F L' M");
         displayCube(deepCopy(cube));
         System.out.println(movesMade);
         movesMade = "";
@@ -344,7 +344,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         displayCube(deepCopy(cube));
         System.out.println(movesMade);
 
-        // cube = solveBlueGreenSide(deepCopy(cube));
+        cube = solveBlueGreenSide(deepCopy(cube));
         // cube = solveRestOfCube(deepCopy(cube));
         return cube;
     }
@@ -1022,8 +1022,22 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
             return makeMoves(cube, "U M U M U2 M' U M");
         else if (solveBadEdgesHelper(cube, yo1x37[0], yb3x10[0], yr7x19[0], yg5x28[1], rw25x46[0], ow43x52[1]))
             return makeMoves(cube, "M U' M U2 M' U M");
-        else if (solveBadEdgesHelper(cube, yo1x37[1], yb3x10[1], yr7x19[1], yg5x28[1], rw25x46[0], ow43x52[0]))
+        else // (solveBadEdgesHelper(cube,yo1x37[1],yb3x10[1],yr7x19[1],yg5x28[1],rw25x46[0],ow43x52[0]))
             return makeMoves(cube, "M' U M' U2 M U M U M' U M'");
+    }
+
+    public static int[] solveBlueGreenSide(int[] cube) {
+        if (cube[yrg8x20x27[1]] == ybr6x11x18[1])
+            cube = makeMoves(cube, "U");
+        else if (cube[ygo2x29x36[1]] == ybr6x11x18[1])
+            cube = makeMoves(cube, "U2");
+        else if (cube[ybo0x9x38[2]] == ybr6x11x18[1])
+            cube = makeMoves(cube, "U'");
+        if (cube[yb3x10[1]] == yb3x10[1])
+            return cube;
+        else if (1 == 1) {
+
+        }
         return cube;
     }
 }
