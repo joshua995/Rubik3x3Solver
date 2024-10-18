@@ -345,7 +345,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         System.out.println(movesMade);
 
         cube = solveBlueGreenSide(deepCopy(cube));
-        // cube = solveRestOfCube(deepCopy(cube));
+        cube = solveRestOfCube(deepCopy(cube));
         return cube;
     }
 
@@ -1039,6 +1039,70 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
             return makeMoves(cube, "U M2 U2 M2 U");
         else if (cube[yb3x10[1]] == yb3x10[1] && cube[rw25x46[0]] == yg5x28[1])
             return makeMoves(cube, "U M' U2 M' U2 M2 U'");
+        else if (cube[yb3x10[1]] == yb3x10[1] && cube[yo1x37[1]] == yg5x28[1])
+            return makeMoves(cube, "M2 U M' U2 M' U2 M2 U'");
+        else if (cube[yb3x10[1]] == yb3x10[1] && cube[ow43x52[0]] == yg5x28[1])
+            return makeMoves(cube, "U' M U2 M U2 M2 U");
+        else if (cube[yb3x10[1]] == yb3x10[1] && cube[yr7x19[1]] == yg5x28[1])
+            return makeMoves(cube, "M2 U' M U2 M U2 M2 U");
+        else if (cube[rw25x46[0]] == yb3x10[1] && cube[yg5x28[1]] == yg5x28[1])
+            return makeMoves(cube, "U' M' U2 M' U2 M2 U");
+        else if (cube[ow43x52[0]] == yb3x10[1] && cube[yg5x28[1]] == yg5x28[1])
+            return makeMoves(cube, "U M U2 M U2 M2 U'");
+        else if (cube[yr7x19[1]] == yb3x10[1] && cube[yg5x28[1]] == yg5x28[1])
+            return makeMoves(cube, "M2 U M U2 M U2 M2 U'");
+        else if (cube[yr7x19[1]] == yb3x10[1] && cube[yb3x10[1]] == yg5x28[1])
+            return makeMoves(cube, "M2 U' M U2 M' U'");
+        else if (cube[yr7x19[1]] == yb3x10[1] && cube[yo1x37[1]] == yg5x28[1])
+            return makeMoves(cube, "M2 U' M2 U");
+        else if (cube[yr7x19[1]] == yb3x10[1] && cube[rw25x46[0]] == yg5x28[1])
+            return makeMoves(cube, "U2 M' U2 M' U M2 U'");
+        else if (cube[yr7x19[1]] == yb3x10[1] && cube[ow43x52[0]] == yg5x28[1])
+            return makeMoves(cube, "M U2 M U M2 U");
+        else if (cube[yo1x37[1]] == yb3x10[1] && cube[yb3x10[1]] == yg5x28[1])
+            return makeMoves(cube, "M2 U M' U2 M U");
+        else if (cube[yo1x37[1]] == yb3x10[1] && cube[ow43x52[0]] == yg5x28[1])
+            return makeMoves(cube, "U2 M U2 M U' M2 U");
+        else if (cube[yo1x37[1]] == yb3x10[1] && cube[yr7x19[1]] == yg5x28[1])
+            return makeMoves(cube, "M2 U M2 U'");
+        else if (cube[yo1x37[1]] == yb3x10[1] && cube[rw25x46[0]] == yg5x28[1])
+            return makeMoves(cube, "M' U2 M' U' M2 U'");
+        else if (cube[yg5x28[1]] == yb3x10[1] && cube[rw25x46[0]] == yg5x28[1])
+            return makeMoves(cube, "U' M' U2 M U'");
+        else if (cube[yg5x28[1]] == yb3x10[1] && cube[ow43x52[0]] == yg5x28[1])
+            return makeMoves(cube, "U M U2 M' U");
+        else if (cube[yg5x28[1]] == yb3x10[1] && cube[yr7x19[1]] == yg5x28[1])
+            return makeMoves(cube, "M2 U M U2 M' U");
+        else if (cube[yg5x28[1]] == yb3x10[1] && cube[yo1x37[1]] == yg5x28[1])
+            return makeMoves(cube, "M2 U' M' U2 M U'");
+        else if (cube[rw25x46[0]] == yb3x10[1] && cube[yb3x10[1]] == yg5x28[1])
+            return makeMoves(cube, "U M' U2 M U");
+        else if (cube[rw25x46[0]] == yb3x10[1] && cube[yo1x37[1]] == yg5x28[1])
+            return makeMoves(cube, "M' U2 M' U M2 U");
+        else if (cube[rw25x46[0]] == yb3x10[1] && cube[ow43x52[0]] == yg5x28[1])
+            return makeMoves(cube, "U M2 U'");
+        else if (cube[ow43x52[0]] == yb3x10[1] && cube[rw25x46[0]] == yg5x28[1])
+            return makeMoves(cube, "U' M2 U");
+        else if (cube[ow43x52[0]] == yb3x10[1] && cube[yo1x37[1]] == yg5x28[1])
+            return makeMoves(cube, "U2 M U2 M U M2 U'");
+        else if (cube[ow43x52[0]] == yb3x10[1] && cube[yr7x19[1]] == yg5x28[1])
+            return makeMoves(cube, "M U2 M U' M2 U'");
         return cube;
+    }
+
+    public static int[] solveRestOfCube(int[] cube) {
+        if (isSolved(cube))
+            return cube;
+        else if()
+            return makeMoves(cube, "");
+        return cube;
+    }
+
+    public static boolean isSolved(int[] cube) {
+        for (int i = 0; i < cube.length; i++) {
+            if (cube[i] != i)
+                return false;
+        }
+        return true;
     }
 }
