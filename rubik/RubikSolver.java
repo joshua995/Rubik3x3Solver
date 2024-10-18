@@ -61,7 +61,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         // System.out.flush();
         cube = initCube(deepCopy(cube));
         cube = scrambleCube(deepCopy(cube), 5);
-        // cube = makeMoves(cube, "E L' F L' M");
+        //cube = makeMoves(cube, "E F2 D2 D U'");
         displayCube(deepCopy(cube));
         System.out.println(movesMade);
         movesMade = "";
@@ -345,7 +345,12 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         System.out.println(movesMade);
 
         cube = solveBlueGreenSide(deepCopy(cube));
+        displayCube(deepCopy(cube));
+        System.out.println(movesMade);
+
         cube = solveRestOfCube(deepCopy(cube));
+        displayCube(deepCopy(cube));
+        System.out.println(movesMade);
         return cube;
     }
 
@@ -1022,6 +1027,8 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
             return makeMoves(cube, "U M U M U2 M' U M");
         else if (solveBadEdgesHelper(cube, yo1x37[0], yb3x10[0], yr7x19[0], yg5x28[1], rw25x46[0], ow43x52[1]))
             return makeMoves(cube, "M U' M U2 M' U M");
+        else if (solveBadEdgesHelper(cube, yo1x37[1], yb3x10[1], yr7x19[1], yg5x28[1], rw25x46[1], ow43x52[1]))
+            return makeMoves(cube, "M' U2 M U2 M' U M");
         else // (solveBadEdgesHelper(cube,yo1x37[1],yb3x10[1],yr7x19[1],yg5x28[1],rw25x46[0],ow43x52[0]))
             return makeMoves(cube, "M' U M' U2 M U M U M' U M'");
     }
@@ -1087,14 +1094,23 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
             return makeMoves(cube, "U2 M U2 M U M2 U'");
         else if (cube[ow43x52[0]] == yb3x10[1] && cube[yr7x19[1]] == yg5x28[1])
             return makeMoves(cube, "M U2 M U' M2 U'");
+        else if (cube[ow43x52[0]] == yb3x10[1] && cube[yb3x10[1]] == yg5x28[1])
+            return makeMoves(cube, "U' M U2 M' U'");
         return cube;
     }
 
     public static int[] solveRestOfCube(int[] cube) {
         if (isSolved(cube))
             return cube;
-        else if()
-            return makeMoves(cube, "");
+        else if (cube[yr7x19[1]] == yo1x37[0] && cube[22] == 4 && cube[rw25x46[0]] == yr7x19[0]
+                && cube[yr7x19[0]] == yo1x37[1] && cube[4] == 40)
+            return makeMoves(cube, "M'");
+        else if (cube[rw25x46[0]] == yo1x37[0] && cube[49] == 4 && cube[ow43x52[1]] == yr7x19[0]
+                && cube[rw25x46[0]] == yo1x37[1] && cube[22] == 40)
+            return makeMoves(cube, "M2");
+        else if (cube[ow43x52[0]] == yo1x37[0] && cube[40] == 4 && cube[yo1x37[1]] == yr7x19[0]
+                && cube[ow43x52[1]] == yo1x37[1] && cube[49] == 40)
+            return makeMoves(cube, "M");
         return cube;
     }
 
