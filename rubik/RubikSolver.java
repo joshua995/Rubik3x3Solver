@@ -1312,6 +1312,62 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         movesMade = movesMade.replace("S S'", "");
         movesMade = movesMade.replace("S' S", "");
         //Merges
+        movesMade = movesMade.replace("R R", "R2");
+        movesMade = movesMade.replace("R' R'", "R2");
+        movesMade = movesMade.replace("L L", "L2");
+        movesMade = movesMade.replace("L' L'", "L2");
+        movesMade = movesMade.replace("U U", "U2");
+        movesMade = movesMade.replace("U' U'", "U2");
+        movesMade = movesMade.replace("D D", "D2");
+        movesMade = movesMade.replace("D' D'", "D2");
+        movesMade = movesMade.replace("F F", "F2");
+        movesMade = movesMade.replace("F' F'", "F2");
+        movesMade = movesMade.replace("B B", "B2");
+        movesMade = movesMade.replace("B' B'", "B2");
+        movesMade = movesMade.replace("E E", "E2");
+        movesMade = movesMade.replace("E' E'", "E2");
+        movesMade = movesMade.replace("M M", "M2");
+        movesMade = movesMade.replace("M' M'", "M2");
+        movesMade = movesMade.replace("S S", "S2");
+        movesMade = movesMade.replace("S' S'", "S2");
+        movesMade = movesMade.replace("R R", "R2");
         
+        movesMade = movesMade.replace("R R2", "R'");
+        movesMade = movesMade.replace("R2 R", "R'");
+        movesMade = movesMade.replace("L L2", "L'");
+        movesMade = movesMade.replace("L2 L", "L'");
+        movesMade = movesMade.replace("U U2", "U'");
+        movesMade = movesMade.replace("U2 U", "U'");
+        movesMade = movesMade.replace("D D2", "D'");
+        movesMade = movesMade.replace("D2 D", "D'");
+        movesMade = movesMade.replace("F F2", "F'");
+        movesMade = movesMade.replace("F2 F", "F'");
+        movesMade = movesMade.replace("B B2", "B'");
+        movesMade = movesMade.replace("B2 B", "B'");
+        movesMade = movesMade.replace("E E2", "E'");
+        movesMade = movesMade.replace("E2 E", "E'");
+        movesMade = movesMade.replace("M M2", "M'");
+        movesMade = movesMade.replace("M2 M", "M'");
+        movesMade = movesMade.replace("S S2", "S'");
+        movesMade = movesMade.replace("S2 S", "S'");
+
+        movesMade = movesMade.replace("R' R2", "R");
+        movesMade = movesMade.replace("R2 R'", "R");
+        movesMade = movesMade.replace("L' L2", "L");
+        movesMade = movesMade.replace("L2 L'", "L");
+        movesMade = movesMade.replace("U' U2", "U");
+        movesMade = movesMade.replace("U2 U'", "U");
+        movesMade = movesMade.replace("D' D2", "D");
+        movesMade = movesMade.replace("D2 D'", "D");
+        movesMade = movesMade.replace("F' F2", "F");
+        movesMade = movesMade.replace("F2 F'", "F");
+        movesMade = movesMade.replace("B' B2", "B");
+        movesMade = movesMade.replace("B2 B'", "B");
+        movesMade = movesMade.replace("E' E2", "E");
+        movesMade = movesMade.replace("E2 E'", "E");
+        movesMade = movesMade.replace("M' M2", "M");
+        movesMade = movesMade.replace("M2 M'", "M");
+        movesMade = movesMade.replace("S' S2", "S");
+        movesMade = movesMade.replace("S2 S'", "S");
     }
 }
