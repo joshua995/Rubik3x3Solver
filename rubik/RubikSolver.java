@@ -58,12 +58,14 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
     static String movesMade = "";
 
     public static void main(String[] args) throws Exception {
-        getUserInput();
+        cube = deepCopy(getUserInput());
         movesMade = "";
-        cube = initCube(deepCopy(cube));
-        cube = scrambleCube(deepCopy(cube), 5);
-        // cube = makeMoves(deepCopy(cube), "F E B2 L2 L'");
+        initMoveMap();
+        initColourMap(deepCopy(cube));
         displayCube(deepCopy(cube));
+        // initCube(deepCopy(cube));
+        // cube = scrambleCube(deepCopy(cube), 5);
+        // cube = makeMoves(deepCopy(cube), "F E B2 L2 L'");
         System.out.println(movesMade);
         movesMade = "";
         cube = solveCube(deepCopy(cube));
@@ -71,20 +73,23 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         System.out.println(movesMade);
     }
 
-    public static int[] initCubeHelper(int[] cube, int[] COLOURI, String colour) {
+    public static int[] initColourMapHelper(int[] cube, int[] COLOURI, String colour) {
         for (int i = COLOURI[0]; i <= COLOURI[1]; i++) {
             colourMap.put(i, colour);
         }
         return cube;
     }
 
-    public static int[] initCube(int[] cube) {
-        initCubeHelper(cube, WHITE, "W");
-        initCubeHelper(cube, YELLOW, "Y");
-        initCubeHelper(cube, BLUE, "B");
-        initCubeHelper(cube, RED, "R");
-        initCubeHelper(cube, ORANGE, "O");
-        initCubeHelper(cube, GREEN, "G");
+    public static void initColourMap(int[] cube) {
+        initColourMapHelper(cube, WHITE, "W");
+        initColourMapHelper(cube, YELLOW, "Y");
+        initColourMapHelper(cube, BLUE, "B");
+        initColourMapHelper(cube, RED, "R");
+        initColourMapHelper(cube, ORANGE, "O");
+        initColourMapHelper(cube, GREEN, "G");
+    }
+
+    public static void initMoveMap() {
         moveMap.put("R1", "R");
         moveMap.put("R2", "R2");
         moveMap.put("R3", "R'");
@@ -121,6 +126,9 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         for (String s : keys) {
             moveMap.put(moveMap.get(s), s);
         }
+    }
+
+    public static int[] initCube(int[] cube) {
         for (int i = 0; i < 54; i++) {
             cube[i] = i;
         }
@@ -1086,7 +1094,6 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
     }
 
     public static int[] getUserInput() {
-        int[] inputCube = new int[54];
         char[] inputArray = new char[54];
         for (int i = 0; i < inputArray.length; i++) {
             inputArray[i] = ' ';
@@ -1112,8 +1119,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
             displayInputCube(inputArray);
         }
         scan.close();
-        parseUserInput(inputArray);
-        return inputCube;
+        return parseUserInput(inputArray);
     }
 
     public static boolean parseUserInputHelper(char[] inputC, int[] searchI, String colours) {
@@ -1126,7 +1132,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
                     && colours.contains(Character.toString(inputC[searchI[1]]));
     }
 
-    public static void parseUserInput(char[] inputCube) {
+    public static int[] parseUserInput(char[] inputCube) {
         parseMap.put("YBO", deepCopy(ybo0x9x38));
         parseMap.put("YGO", deepCopy(ygo2x29x36));
         parseMap.put("YBR", deepCopy(ybr6x11x18));
@@ -1147,6 +1153,12 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         parseMap.put("GW", deepCopy(gw34x50));
         parseMap.put("OW", deepCopy(ow43x52));
         parseMap.put("BW", deepCopy(bw16x48));
+        parseMap.put("Y", YELLOW);
+        parseMap.put("B", BLUE);
+        parseMap.put("R", RED);
+        parseMap.put("G", GREEN);
+        parseMap.put("O", ORANGE);
+        parseMap.put("W", WHITE);
         int[] cube = new int[54];
         int[][] allCornerI = { deepCopy(ybo0x9x38), deepCopy(ybr6x11x18), deepCopy(ygo2x29x36), deepCopy(yrg8x20x27),
                 deepCopy(brw17x24x45), deepCopy(bow15x44x51), deepCopy(rgw26x33x47), deepCopy(gow35x42x53) };
@@ -1206,9 +1218,19 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
             cube[i[0]] = valsToUse[key.indexOf(inputCube[i[0]])];
             cube[i[1]] = valsToUse[key.indexOf(inputCube[i[1]])];
         }
-        for (int i = 0; i < cube.length; i++) {
-            System.out.println(cube[i]);
-        }
+        int[] temp = parseMap.get(Character.toString(inputCube[4]));
+        cube[4] = (temp[0] + temp[1]) / 2;
+        temp = parseMap.get(Character.toString(inputCube[13]));
+        cube[13] = (temp[0] + temp[1]) / 2;
+        temp = parseMap.get(Character.toString(inputCube[22]));
+        cube[22] = (temp[0] + temp[1]) / 2;
+        temp = parseMap.get(Character.toString(inputCube[31]));
+        cube[31] = (temp[0] + temp[1]) / 2;
+        temp = parseMap.get(Character.toString(inputCube[40]));
+        cube[40] = (temp[0] + temp[1]) / 2;
+        temp = parseMap.get(Character.toString(inputCube[49]));
+        cube[49] = (temp[0] + temp[1]) / 2;
+        return cube;
     }
 
     public static int[] getFaceC(char[] cube, int[] faceI) {
