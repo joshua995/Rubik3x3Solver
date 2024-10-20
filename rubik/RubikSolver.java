@@ -58,19 +58,208 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
     static String movesMade = "";
 
     public static void main(String[] args) throws Exception {
-        cube = deepCopy(getUserInput());
         movesMade = "";
+        // cube = deepCopy(getUserInput());
+        cube = initCube(deepCopy(cube));
         initMoveMap();
         initColourMap(deepCopy(cube));
-        displayCube(deepCopy(cube));
-        // initCube(deepCopy(cube));
-        // cube = scrambleCube(deepCopy(cube), 5);
+        cube = scrambleCube(deepCopy(cube), 5);
         // cube = makeMoves(deepCopy(cube), "F E B2 L2 L'");
+        displayCube(deepCopy(cube));
         System.out.println(movesMade);
         movesMade = "";
         cube = solveCube(deepCopy(cube));
         displayCube(deepCopy(cube));
+        reduceMovesUsed();
         System.out.println(movesMade);
+    }
+
+    public static int[] getUserInput() {
+        char[] inputArray = new char[54];
+        for (int i = 0; i < inputArray.length; i++) {
+            inputArray[i] = ' ';
+        }
+        Scanner scan = new Scanner(System.in);
+        inputArray[0] = '*';
+        displayInputCube(inputArray);
+        for (int i = 0; i < inputArray.length; i++) {
+            System.out.println("Enter a colour (w, y, b, g, r, o) or u to undo");
+            char input = scan.next().toUpperCase().charAt(0);
+            if (input == 'U') {
+                if (i > 0) {
+                    inputArray[i] = ' ';
+                    inputArray[i - 1] = '*';
+                    i -= 2;
+                }
+            } else {
+                inputArray[i] = input;
+                if (i + 1 < inputArray.length) {
+                    inputArray[i + 1] = '*';
+                }
+            }
+            displayInputCube(inputArray);
+        }
+        scan.close();
+        return parseUserInput(inputArray);
+    }
+
+    public static boolean parseUserInputHelper(char[] inputC, int[] searchI, String colours) {
+        if (searchI.length == 3)
+            return colours.contains(Character.toString(inputC[searchI[0]]))
+                    && colours.contains(Character.toString(inputC[searchI[1]]))
+                    && colours.contains(Character.toString(inputC[searchI[2]]));
+        else
+            return colours.contains(Character.toString(inputC[searchI[0]]))
+                    && colours.contains(Character.toString(inputC[searchI[1]]));
+    }
+
+    public static int[] parseUserInput(char[] inputCube) {
+        parseMap.put("YBO", deepCopy(ybo0x9x38));
+        parseMap.put("YGO", deepCopy(ygo2x29x36));
+        parseMap.put("YBR", deepCopy(ybr6x11x18));
+        parseMap.put("YRG", deepCopy(yrg8x20x27));
+        parseMap.put("BOW", deepCopy(bow15x44x51));
+        parseMap.put("BRW", deepCopy(brw17x24x45));
+        parseMap.put("RGW", deepCopy(rgw26x33x47));
+        parseMap.put("GOW", deepCopy(gow35x42x53));
+        parseMap.put("YO", deepCopy(yo1x37));
+        parseMap.put("YG", deepCopy(yg5x28));
+        parseMap.put("YR", deepCopy(yr7x19));
+        parseMap.put("YB", deepCopy(yb3x10));
+        parseMap.put("BR", deepCopy(br14x21));
+        parseMap.put("BO", deepCopy(bo12x41));
+        parseMap.put("RG", deepCopy(rg23x30));
+        parseMap.put("GO", deepCopy(go32x39));
+        parseMap.put("RW", deepCopy(rw25x46));
+        parseMap.put("GW", deepCopy(gw34x50));
+        parseMap.put("OW", deepCopy(ow43x52));
+        parseMap.put("BW", deepCopy(bw16x48));
+        parseMap.put("Y", YELLOW);
+        parseMap.put("B", BLUE);
+        parseMap.put("R", RED);
+        parseMap.put("G", GREEN);
+        parseMap.put("O", ORANGE);
+        parseMap.put("W", WHITE);
+        int[] cube = new int[54];
+        int[][] allCornerI = { deepCopy(ybo0x9x38), deepCopy(ybr6x11x18), deepCopy(ygo2x29x36), deepCopy(yrg8x20x27),
+                deepCopy(brw17x24x45), deepCopy(bow15x44x51), deepCopy(rgw26x33x47), deepCopy(gow35x42x53) };
+        int[][] allEdgeI = { deepCopy(yo1x37), deepCopy(yg5x28), deepCopy(yr7x19), deepCopy(yb3x10), deepCopy(br14x21),
+                deepCopy(bo12x41), deepCopy(rg23x30), deepCopy(go32x39), deepCopy(rw25x46), deepCopy(gw34x50),
+                deepCopy(ow43x52), deepCopy(bw16x48) };
+        for (int[] i : allCornerI) {
+            String key = "";
+            if (parseUserInputHelper(inputCube, i, "YBO"))
+                key = "YBO";
+            else if (parseUserInputHelper(inputCube, i, "YBR"))
+                key = "YBR";
+            else if (parseUserInputHelper(inputCube, i, "YRG"))
+                key = "YRG";
+            else if (parseUserInputHelper(inputCube, i, "YGO"))
+                key = "YGO";
+            else if (parseUserInputHelper(inputCube, i, "BOW"))
+                key = "BOW";
+            else if (parseUserInputHelper(inputCube, i, "BRW"))
+                key = "BRW";
+            else if (parseUserInputHelper(inputCube, i, "RGW"))
+                key = "RGW";
+            else // (parseUserInputHelper(inputCube, i, "GOW"))
+                key = "GOW";
+            int[] cornerToUse = parseMap.get(key);
+            cube[i[0]] = cornerToUse[key.indexOf(inputCube[i[0]])];
+            cube[i[1]] = cornerToUse[key.indexOf(inputCube[i[1]])];
+            cube[i[2]] = cornerToUse[key.indexOf(inputCube[i[2]])];
+        }
+        for (int[] i : allEdgeI) {
+            String key = "";
+            if (parseUserInputHelper(inputCube, i, "YB"))
+                key = "YB";
+            else if (parseUserInputHelper(inputCube, i, "YO"))
+                key = "YO";
+            else if (parseUserInputHelper(inputCube, i, "YG"))
+                key = "YG";
+            else if (parseUserInputHelper(inputCube, i, "YR"))
+                key = "YR";
+            else if (parseUserInputHelper(inputCube, i, "BR"))
+                key = "BR";
+            else if (parseUserInputHelper(inputCube, i, "BO"))
+                key = "BO";
+            else if (parseUserInputHelper(inputCube, i, "RG"))
+                key = "RG";
+            else if (parseUserInputHelper(inputCube, i, "GO"))
+                key = "GO";
+            else if (parseUserInputHelper(inputCube, i, "GW"))
+                key = "GW";
+            else if (parseUserInputHelper(inputCube, i, "BW"))
+                key = "BW";
+            else if (parseUserInputHelper(inputCube, i, "RW"))
+                key = "RW";
+            else // (parseUserInputHelper(inputCube, i, "OW"))
+                key = "OW";
+            int[] valsToUse = parseMap.get(key);
+            cube[i[0]] = valsToUse[key.indexOf(inputCube[i[0]])];
+            cube[i[1]] = valsToUse[key.indexOf(inputCube[i[1]])];
+        }
+        int[] temp = parseMap.get(Character.toString(inputCube[4]));
+        cube[4] = (temp[0] + temp[1]) / 2;
+        temp = parseMap.get(Character.toString(inputCube[13]));
+        cube[13] = (temp[0] + temp[1]) / 2;
+        temp = parseMap.get(Character.toString(inputCube[22]));
+        cube[22] = (temp[0] + temp[1]) / 2;
+        temp = parseMap.get(Character.toString(inputCube[31]));
+        cube[31] = (temp[0] + temp[1]) / 2;
+        temp = parseMap.get(Character.toString(inputCube[40]));
+        cube[40] = (temp[0] + temp[1]) / 2;
+        temp = parseMap.get(Character.toString(inputCube[49]));
+        cube[49] = (temp[0] + temp[1]) / 2;
+        return cube;
+    }
+
+    public static int[] getFaceC(char[] cube, int[] faceI) {
+        int[] face = new int[9];
+        int sI = 0;
+        for (int i = faceI[0]; i <= faceI[1]; i++, sI++) {
+            face[sI] = cube[i];
+        }
+        return face;
+    }
+
+    public static void printOutInput(int[] array, int start, int end) {
+        for (int i = start; i < end; i++) {
+            System.out.print((char) array[i] + "|");
+        }
+    }
+
+    public static void displayInputCube(char[] cube) {
+        int[] yellow = getFaceC(cube, YELLOW), blue = getFaceC(cube, BLUE), red = getFaceC(cube, RED);
+        int[] green = getFaceC(cube, GREEN), orange = getFaceC(cube, ORANGE), white = getFaceC(cube, WHITE);
+        System.out.printf("%6s|", " ");
+        printOutInput(yellow, 0, 3);
+        System.out.printf("\n%6s|", " ");
+        printOutInput(yellow, 3, 6);
+        System.out.printf("\n%6s|", " ");
+        printOutInput(yellow, 6, 9);
+        System.out.print("\n|");
+        printOutInput(blue, 0, 3);
+        printOutInput(red, 0, 3);
+        printOutInput(green, 0, 3);
+        printOutInput(orange, 0, 3);
+        System.out.print("\n|");
+        printOutInput(blue, 3, 6);
+        printOutInput(red, 3, 6);
+        printOutInput(green, 3, 6);
+        printOutInput(orange, 3, 6);
+        System.out.print("\n|");
+        printOutInput(blue, 6, 9);
+        printOutInput(red, 6, 9);
+        printOutInput(green, 6, 9);
+        printOutInput(orange, 6, 9);
+        System.out.printf("\n%6s|", " ");
+        printOutInput(white, 0, 3);
+        System.out.printf("\n%6s|", " ");
+        printOutInput(white, 3, 6);
+        System.out.printf("\n%6s|", " ");
+        printOutInput(white, 6, 9);
+        System.out.println();
     }
 
     public static int[] initColourMapHelper(int[] cube, int[] COLOURI, String colour) {
@@ -1093,192 +1282,36 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         return true;
     }
 
-    public static int[] getUserInput() {
-        char[] inputArray = new char[54];
-        for (int i = 0; i < inputArray.length; i++) {
-            inputArray[i] = ' ';
-        }
-        Scanner scan = new Scanner(System.in);
-        inputArray[0] = '*';
-        displayInputCube(inputArray);
-        for (int i = 0; i < inputArray.length; i++) {
-            System.out.println("Enter a colour (w, y, b, g, r, o) or u to undo");
-            char input = scan.next().toUpperCase().charAt(0);
-            if (input == 'U') {
-                if (i > 0) {
-                    inputArray[i] = ' ';
-                    inputArray[i - 1] = '*';
-                    i -= 2;
-                }
-            } else {
-                inputArray[i] = input;
-                if (i + 1 < inputArray.length) {
-                    inputArray[i + 1] = '*';
-                }
-            }
-            displayInputCube(inputArray);
-        }
-        scan.close();
-        return parseUserInput(inputArray);
+    public static void reduceMovesUsed() {
+        // Cancellations
+        movesMade = movesMade.replace("R2 R2", "");
+        movesMade = movesMade.replace("L2 L2", "");
+        movesMade = movesMade.replace("U2 U2", "");
+        movesMade = movesMade.replace("D2 D2", "");
+        movesMade = movesMade.replace("F2 F2", "");
+        movesMade = movesMade.replace("B2 B2", "");
+        movesMade = movesMade.replace("E2 E2", "");
+        movesMade = movesMade.replace("M2 M2", "");
+        movesMade = movesMade.replace("S2 S2", "");
+        movesMade = movesMade.replace("R R'", "");
+        movesMade = movesMade.replace("R' R", "");
+        movesMade = movesMade.replace("L L'", "");
+        movesMade = movesMade.replace("L' L", "");
+        movesMade = movesMade.replace("U U'", "");
+        movesMade = movesMade.replace("U' U", "");
+        movesMade = movesMade.replace("D D'", "");
+        movesMade = movesMade.replace("D' D", "");
+        movesMade = movesMade.replace("F F'", "");
+        movesMade = movesMade.replace("F' F", "");
+        movesMade = movesMade.replace("B B'", "");
+        movesMade = movesMade.replace("B' B", "");
+        movesMade = movesMade.replace("E E'", "");
+        movesMade = movesMade.replace("E' E", "");
+        movesMade = movesMade.replace("M M'", "");
+        movesMade = movesMade.replace("M' M", "");
+        movesMade = movesMade.replace("S S'", "");
+        movesMade = movesMade.replace("S' S", "");
+        //Merges
+        
     }
-
-    public static boolean parseUserInputHelper(char[] inputC, int[] searchI, String colours) {
-        if (searchI.length == 3)
-            return colours.contains(Character.toString(inputC[searchI[0]]))
-                    && colours.contains(Character.toString(inputC[searchI[1]]))
-                    && colours.contains(Character.toString(inputC[searchI[2]]));
-        else
-            return colours.contains(Character.toString(inputC[searchI[0]]))
-                    && colours.contains(Character.toString(inputC[searchI[1]]));
-    }
-
-    public static int[] parseUserInput(char[] inputCube) {
-        parseMap.put("YBO", deepCopy(ybo0x9x38));
-        parseMap.put("YGO", deepCopy(ygo2x29x36));
-        parseMap.put("YBR", deepCopy(ybr6x11x18));
-        parseMap.put("YRG", deepCopy(yrg8x20x27));
-        parseMap.put("BOW", deepCopy(bow15x44x51));
-        parseMap.put("BRW", deepCopy(brw17x24x45));
-        parseMap.put("RGW", deepCopy(rgw26x33x47));
-        parseMap.put("GOW", deepCopy(gow35x42x53));
-        parseMap.put("YO", deepCopy(yo1x37));
-        parseMap.put("YG", deepCopy(yg5x28));
-        parseMap.put("YR", deepCopy(yr7x19));
-        parseMap.put("YB", deepCopy(yb3x10));
-        parseMap.put("BR", deepCopy(br14x21));
-        parseMap.put("BO", deepCopy(bo12x41));
-        parseMap.put("RG", deepCopy(rg23x30));
-        parseMap.put("GO", deepCopy(go32x39));
-        parseMap.put("RW", deepCopy(rw25x46));
-        parseMap.put("GW", deepCopy(gw34x50));
-        parseMap.put("OW", deepCopy(ow43x52));
-        parseMap.put("BW", deepCopy(bw16x48));
-        parseMap.put("Y", YELLOW);
-        parseMap.put("B", BLUE);
-        parseMap.put("R", RED);
-        parseMap.put("G", GREEN);
-        parseMap.put("O", ORANGE);
-        parseMap.put("W", WHITE);
-        int[] cube = new int[54];
-        int[][] allCornerI = { deepCopy(ybo0x9x38), deepCopy(ybr6x11x18), deepCopy(ygo2x29x36), deepCopy(yrg8x20x27),
-                deepCopy(brw17x24x45), deepCopy(bow15x44x51), deepCopy(rgw26x33x47), deepCopy(gow35x42x53) };
-        int[][] allEdgeI = { deepCopy(yo1x37), deepCopy(yg5x28), deepCopy(yr7x19), deepCopy(yb3x10), deepCopy(br14x21),
-                deepCopy(bo12x41), deepCopy(rg23x30), deepCopy(go32x39), deepCopy(rw25x46), deepCopy(gw34x50),
-                deepCopy(ow43x52), deepCopy(bw16x48) };
-        for (int[] i : allCornerI) {
-            String key = "";
-            if (parseUserInputHelper(inputCube, i, "YBO"))
-                key = "YBO";
-            else if (parseUserInputHelper(inputCube, i, "YBR"))
-                key = "YBR";
-            else if (parseUserInputHelper(inputCube, i, "YRG"))
-                key = "YRG";
-            else if (parseUserInputHelper(inputCube, i, "YGO"))
-                key = "YGO";
-            else if (parseUserInputHelper(inputCube, i, "BOW"))
-                key = "BOW";
-            else if (parseUserInputHelper(inputCube, i, "BRW"))
-                key = "BRW";
-            else if (parseUserInputHelper(inputCube, i, "RGW"))
-                key = "RGW";
-            else // (parseUserInputHelper(inputCube, i, "GOW"))
-                key = "GOW";
-            int[] cornerToUse = parseMap.get(key);
-            cube[i[0]] = cornerToUse[key.indexOf(inputCube[i[0]])];
-            cube[i[1]] = cornerToUse[key.indexOf(inputCube[i[1]])];
-            cube[i[2]] = cornerToUse[key.indexOf(inputCube[i[2]])];
-        }
-        for (int[] i : allEdgeI) {
-            String key = "";
-            if (parseUserInputHelper(inputCube, i, "YB"))
-                key = "YB";
-            else if (parseUserInputHelper(inputCube, i, "YO"))
-                key = "YO";
-            else if (parseUserInputHelper(inputCube, i, "YG"))
-                key = "YG";
-            else if (parseUserInputHelper(inputCube, i, "YR"))
-                key = "YR";
-            else if (parseUserInputHelper(inputCube, i, "BR"))
-                key = "BR";
-            else if (parseUserInputHelper(inputCube, i, "BO"))
-                key = "BO";
-            else if (parseUserInputHelper(inputCube, i, "RG"))
-                key = "RG";
-            else if (parseUserInputHelper(inputCube, i, "GO"))
-                key = "GO";
-            else if (parseUserInputHelper(inputCube, i, "GW"))
-                key = "GW";
-            else if (parseUserInputHelper(inputCube, i, "BW"))
-                key = "BW";
-            else if (parseUserInputHelper(inputCube, i, "RW"))
-                key = "RW";
-            else // (parseUserInputHelper(inputCube, i, "OW"))
-                key = "OW";
-            int[] valsToUse = parseMap.get(key);
-            cube[i[0]] = valsToUse[key.indexOf(inputCube[i[0]])];
-            cube[i[1]] = valsToUse[key.indexOf(inputCube[i[1]])];
-        }
-        int[] temp = parseMap.get(Character.toString(inputCube[4]));
-        cube[4] = (temp[0] + temp[1]) / 2;
-        temp = parseMap.get(Character.toString(inputCube[13]));
-        cube[13] = (temp[0] + temp[1]) / 2;
-        temp = parseMap.get(Character.toString(inputCube[22]));
-        cube[22] = (temp[0] + temp[1]) / 2;
-        temp = parseMap.get(Character.toString(inputCube[31]));
-        cube[31] = (temp[0] + temp[1]) / 2;
-        temp = parseMap.get(Character.toString(inputCube[40]));
-        cube[40] = (temp[0] + temp[1]) / 2;
-        temp = parseMap.get(Character.toString(inputCube[49]));
-        cube[49] = (temp[0] + temp[1]) / 2;
-        return cube;
-    }
-
-    public static int[] getFaceC(char[] cube, int[] faceI) {
-        int[] face = new int[9];
-        int sI = 0;
-        for (int i = faceI[0]; i <= faceI[1]; i++, sI++) {
-            face[sI] = cube[i];
-        }
-        return face;
-    }
-
-    public static void printOutInput(int[] array, int start, int end) {
-        for (int i = start; i < end; i++) {
-            System.out.print((char) array[i] + "|");
-        }
-    }
-
-    public static void displayInputCube(char[] cube) {
-        int[] yellow = getFaceC(cube, YELLOW), blue = getFaceC(cube, BLUE), red = getFaceC(cube, RED);
-        int[] green = getFaceC(cube, GREEN), orange = getFaceC(cube, ORANGE), white = getFaceC(cube, WHITE);
-        System.out.printf("%6s|", " ");
-        printOutInput(yellow, 0, 3);
-        System.out.printf("\n%6s|", " ");
-        printOutInput(yellow, 3, 6);
-        System.out.printf("\n%6s|", " ");
-        printOutInput(yellow, 6, 9);
-        System.out.print("\n|");
-        printOutInput(blue, 0, 3);
-        printOutInput(red, 0, 3);
-        printOutInput(green, 0, 3);
-        printOutInput(orange, 0, 3);
-        System.out.print("\n|");
-        printOutInput(blue, 3, 6);
-        printOutInput(red, 3, 6);
-        printOutInput(green, 3, 6);
-        printOutInput(orange, 3, 6);
-        System.out.print("\n|");
-        printOutInput(blue, 6, 9);
-        printOutInput(red, 6, 9);
-        printOutInput(green, 6, 9);
-        printOutInput(orange, 6, 9);
-        System.out.printf("\n%6s|", " ");
-        printOutInput(white, 0, 3);
-        System.out.printf("\n%6s|", " ");
-        printOutInput(white, 3, 6);
-        System.out.printf("\n%6s|", " ");
-        printOutInput(white, 6, 9);
-        System.out.println();
-    }
-
 }
