@@ -57,6 +57,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
     static String movesMade = "";
 
     public static void main(String[] args) throws Exception {
+        getUserInput();
         movesMade = "";
         cube = initCube(deepCopy(cube));
         cube = scrambleCube(deepCopy(cube), 5);
@@ -286,66 +287,21 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
 
     public static int[] solveCube(int[] cube) {
         cube = solveBlueCenter(deepCopy(cube));
-        displayCube(deepCopy(cube));
-        System.out.println(movesMade);
         cube = solveBlueWhiteEdge(deepCopy(cube));
-        displayCube(deepCopy(cube));
-        System.out.println(movesMade);
         cube = loadBlueRedEdge(deepCopy(cube));
-        displayCube(deepCopy(cube));
-        System.out.println(movesMade);
-
         cube = solveBlueRedEdge(deepCopy(cube));
-        displayCube(deepCopy(cube));
-        System.out.println(movesMade);
-
         cube = loadBlueOrangeEdge(deepCopy(cube));
-        displayCube(deepCopy(cube));
-        System.out.println(movesMade);
-
         cube = solveBlueOrangeEdge(deepCopy(cube));
-        displayCube(deepCopy(cube));
-        System.out.println(movesMade);
-
         cube = solveGreenWhiteEdge(deepCopy(cube));
-        displayCube(deepCopy(cube));
-        System.out.println(movesMade);
-
         cube = loadGreenRedEdge(deepCopy(cube));
-        displayCube(deepCopy(cube));
-        System.out.println(movesMade);
-
         cube = solveGreenRedEdge(deepCopy(cube));
-        displayCube(deepCopy(cube));
-        System.out.println(movesMade);
-
         cube = loadGreenOrangeEdge(deepCopy(cube));
-        displayCube(deepCopy(cube));
-        System.out.println(movesMade);
-
         cube = solveGreenOrangeEdge(deepCopy(cube));
-        displayCube(deepCopy(cube));
-        System.out.println(movesMade);
-
         cube = orientYellowCorners(deepCopy(cube));
-        displayCube(deepCopy(cube));
-        System.out.println(movesMade);
-
         cube = orientColouredCorners(deepCopy(cube));
-        displayCube(deepCopy(cube));
-        System.out.println(movesMade);
-
         cube = solveBadEdges(deepCopy(cube));
-        displayCube(deepCopy(cube));
-        System.out.println(movesMade);
-
         cube = solveBlueGreenSide(deepCopy(cube));
-        displayCube(deepCopy(cube));
-        System.out.println(movesMade);
-
         cube = solveRestOfCube(deepCopy(cube));
-        displayCube(deepCopy(cube));
-        System.out.println(movesMade);
         return cube;
     }
 
@@ -1139,4 +1095,66 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         }
         return true;
     }
+
+    public static int[] getUserInput() {
+        int[] inputCube = new int[54];
+        char[] inputArray = new char[54];
+        Scanner scan = new Scanner(System.in);
+        for (int i = 0; i < inputArray.length; i++) {
+            System.out.println("Enter a colour (w, y, b, g, r, o)");
+            inputArray[i] = scan.next().toUpperCase().charAt(0);
+            displayInputCube(inputArray);
+        }
+        scan.close();
+        return inputCube;
+    }
+
+    public static int[] getFaceC(char[] cube, int[] faceI) {
+        int[] face = new int[9];
+        int sI = 0;
+        for (int i = faceI[0]; i <= faceI[1]; i++, sI++) {
+            face[sI] = cube[i];
+        }
+        return face;
+    }
+
+    public static void printOutInput(int[] array, int start, int end) {
+        for (int i = start; i < end; i++) {
+            System.out.print((char) array[i]);
+        }
+    }
+
+    public static void displayInputCube(char[] cube) {
+        int[] yellow = getFaceC(cube, YELLOW), blue = getFaceC(cube, BLUE), red = getFaceC(cube, RED);
+        int[] green = getFaceC(cube, GREEN), orange = getFaceC(cube, ORANGE), white = getFaceC(cube, WHITE);
+        System.out.printf("%3s", " ");
+        printOutInput(yellow, 0, 3);
+        System.out.printf("\n%3s", " ");
+        printOutInput(yellow, 3, 6);
+        System.out.printf("\n%3s", " ");
+        printOutInput(yellow, 6, 9);
+        System.out.println();
+        printOutInput(blue, 0, 3);
+        printOutInput(red, 0, 3);
+        printOutInput(green, 0, 3);
+        printOutInput(orange, 0, 3);
+        System.out.println();
+        printOutInput(blue, 3, 6);
+        printOutInput(red, 3, 6);
+        printOutInput(green, 3, 6);
+        printOutInput(orange, 3, 6);
+        System.out.println();
+        printOutInput(blue, 6, 9);
+        printOutInput(red, 6, 9);
+        printOutInput(green, 6, 9);
+        printOutInput(orange, 6, 9);
+        System.out.printf("\n%3s", " ");
+        printOutInput(white, 0, 3);
+        System.out.printf("\n%3s", " ");
+        printOutInput(white, 3, 6);
+        System.out.printf("\n%3s", " ");
+        printOutInput(white, 6, 9);
+        System.out.println();
+    }
+
 }
