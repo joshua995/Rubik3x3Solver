@@ -68,14 +68,19 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers, Text
 
     static String movesMade = "";
 
+    static Scanner scan = new Scanner(System.in);
+
     public static void main(String[] args) throws Exception {
         movesMade = "";
-        cube = deepCopy(getUserInput());
-        // cube = initCube(deepCopy(cube));
         initMoveMap();
-        initColourMap(deepCopy(cube));
-        // cube = scrambleCube(deepCopy(cube), 10);
-        // cube = makeMoves(deepCopy(cube), "F E B2 L2 L'");
+        initColourMap();
+        System.out.println("Enter:\033[1m 1\033[0m for auto scramble and solve |\033[1m 2\033[0m to manually input colors");
+        char input = scan.next().charAt(0);
+        if (input == '1') {
+            cube = initCube(deepCopy(cube));
+            cube = scrambleCube(deepCopy(cube), 10);
+        } else if (input == '2')
+            cube = getUserInput();
         displayCube(deepCopy(cube));
         System.out.println(movesMade);
         movesMade = "";
@@ -90,7 +95,6 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers, Text
         for (int i = 0; i < inputArray.length; i++) {
             inputArray[i] = ' ';
         }
-        Scanner scan = new Scanner(System.in);
         inputArray[0] = '*';
         displayInputCube(inputArray);
         for (int i = 0; i < inputArray.length; i++) {
@@ -276,20 +280,19 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers, Text
         System.out.println(TWHITE);
     }
 
-    public static int[] initColourMapHelper(int[] cube, int[] COLOURI, String colour) {
+    public static void initColourMapHelper(int[] COLOURI, String colour) {
         for (int i = COLOURI[0]; i <= COLOURI[1]; i++) {
             colourMap.put(i, colour);
         }
-        return cube;
     }
 
-    public static void initColourMap(int[] cube) {
-        initColourMapHelper(cube, WHITE, "W");
-        initColourMapHelper(cube, YELLOW, "Y");
-        initColourMapHelper(cube, BLUE, "B");
-        initColourMapHelper(cube, RED, "R");
-        initColourMapHelper(cube, ORANGE, "O");
-        initColourMapHelper(cube, GREEN, "G");
+    public static void initColourMap() {
+        initColourMapHelper(WHITE, "W");
+        initColourMapHelper(YELLOW, "Y");
+        initColourMapHelper(BLUE, "B");
+        initColourMapHelper(RED, "R");
+        initColourMapHelper(ORANGE, "O");
+        initColourMapHelper(GREEN, "G");
     }
 
     public static void initMoveMap() {
