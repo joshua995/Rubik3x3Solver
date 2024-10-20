@@ -57,7 +57,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
     static String movesMade = "";
 
     public static void main(String[] args) throws Exception {
-        getUserInput();
+        //getUserInput();
         movesMade = "";
         cube = initCube(deepCopy(cube));
         cube = scrambleCube(deepCopy(cube), 5);
@@ -70,32 +70,20 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         System.out.println(movesMade);
     }
 
-    public static int[] initCubeHelper(int[] cube, int COLOUR, int start, int end) {
-        for (int i = start; i < end; i++) {
-            cube[i] = COLOUR;
+    public static int[] initCubeHelper(int[] cube, int[] COLOURI, String colour) {
+        for (int i = COLOURI[0]; i <= COLOURI[1]; i++) {
+            colourMap.put(i, colour);
         }
         return cube;
     }
 
     public static int[] initCube(int[] cube) {
-        for (int i = WHITE[0]; i <= WHITE[1]; i++) {
-            colourMap.put(i, "W");
-        }
-        for (int i = YELLOW[0]; i <= YELLOW[1]; i++) {
-            colourMap.put(i, "Y");
-        }
-        for (int i = RED[0]; i <= RED[1]; i++) {
-            colourMap.put(i, "R");
-        }
-        for (int i = ORANGE[0]; i <= ORANGE[1]; i++) {
-            colourMap.put(i, "O");
-        }
-        for (int i = BLUE[0]; i <= BLUE[1]; i++) {
-            colourMap.put(i, "B");
-        }
-        for (int i = GREEN[0]; i <= GREEN[1]; i++) {
-            colourMap.put(i, "G");
-        }
+        initCubeHelper(cube, WHITE, "W");
+        initCubeHelper(cube, YELLOW, "Y");
+        initCubeHelper(cube, BLUE, "B");
+        initCubeHelper(cube, RED, "R");
+        initCubeHelper(cube, ORANGE, "O");
+        initCubeHelper(cube, GREEN, "G");
         moveMap.put("R1", "R");
         moveMap.put("R2", "R2");
         moveMap.put("R3", "R'");
