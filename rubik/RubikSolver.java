@@ -42,7 +42,18 @@ interface MoveHelpers {// Indices of for making moves
     static final int[] S_MAIN = { 5, 4, 3, 10, 13, 16, 48, 49, 50, 34, 31, 28 };
 }
 
-public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
+interface TextColours {
+    static final String TRED = "\u001B[31m";
+    static final String TGREEN = "\u001B[32m";
+    static final String TYELLOW = "\u001B[33m";
+    static final String TBLUE = "\u001B[34m";
+    static final String TWHITE = "\u001B[37m";
+    static final String TORANGE = "\033[38;2;255;125;0m";
+    static final Map<String, String> TEXT_COLOUR = Map.of(
+            "Y", TYELLOW, "G", TGREEN, "R", TRED, "B", TBLUE, "W", TWHITE, "O", TORANGE);
+}
+
+public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers, TextColours {
     static final int[] YELLOW = { 0, 8 }, BLUE = { 9, 17 }, RED = { 18, 26 };
     static final int[] GREEN = { 27, 35 }, ORANGE = { 36, 44 }, WHITE = { 45, 53 };
 
@@ -59,11 +70,11 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
 
     public static void main(String[] args) throws Exception {
         movesMade = "";
-        // cube = deepCopy(getUserInput());
-        cube = initCube(deepCopy(cube));
+        cube = deepCopy(getUserInput());
+        // cube = initCube(deepCopy(cube));
         initMoveMap();
         initColourMap(deepCopy(cube));
-        cube = scrambleCube(deepCopy(cube), 5);
+        // cube = scrambleCube(deepCopy(cube), 10);
         // cube = makeMoves(deepCopy(cube), "F E B2 L2 L'");
         displayCube(deepCopy(cube));
         System.out.println(movesMade);
@@ -225,7 +236,10 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
 
     public static void printOutInput(int[] array, int start, int end) {
         for (int i = start; i < end; i++) {
-            System.out.print((char) array[i] + "|");
+            if (TEXT_COLOUR.keySet().contains(Character.toString((char) array[i])))
+                System.out.print(TEXT_COLOUR.get(Character.toString((char) array[i])) + (char) array[i] + TWHITE + "|");
+            else
+                System.out.print((char) array[i] + "|");
         }
     }
 
@@ -259,7 +273,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         printOutInput(white, 3, 6);
         System.out.printf("\n%6s|", " ");
         printOutInput(white, 6, 9);
-        System.out.println();
+        System.out.println(TWHITE);
     }
 
     public static int[] initColourMapHelper(int[] cube, int[] COLOURI, String colour) {
@@ -343,7 +357,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
 
     public static void printMapToColour(int[] array, int start, int end) {
         for (int i = start; i < end; i++) {
-            System.out.print(colourMap.get((int) array[i]));
+            System.out.print(TEXT_COLOUR.get(colourMap.get((int) array[i])) + colourMap.get((int) array[i]));
         }
     }
 
@@ -377,7 +391,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         printMapToColour(white, 3, 6);
         System.out.printf("\n%3s", " ");
         printMapToColour(white, 6, 9);
-        System.out.println();
+        System.out.println(TWHITE);
     }
 
     public static int[] moveHelper(int[] cube, int[] SIDE, int start, int end) {
@@ -1311,7 +1325,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         movesMade = movesMade.replace("M' M ", " ");
         movesMade = movesMade.replace("S S'", "");
         movesMade = movesMade.replace("S' S ", " ");
-        //Merges
+        // Merges
         movesMade = movesMade.replace("R R ", "R2 ");
         movesMade = movesMade.replace("R' R'", "R2");
         movesMade = movesMade.replace("L L ", "L2 ");
@@ -1330,7 +1344,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers {
         movesMade = movesMade.replace("M' M'", "M2");
         movesMade = movesMade.replace("S S ", "S2 ");
         movesMade = movesMade.replace("S' S'", "S2");
-        
+
         movesMade = movesMade.replace("R R2", "R'");
         movesMade = movesMade.replace("R2 R ", "R' ");
         movesMade = movesMade.replace("L L2", "L'");
