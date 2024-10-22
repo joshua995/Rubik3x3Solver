@@ -53,19 +53,7 @@ interface TextColours {
             "Y", TYELLOW, "G", TGREEN, "R", TRED, "B", TBLUE, "W", TWHITE, "O", TORANGE);
 }
 
-class HelperFuncs {
-
-    public static int[] getFace(char[] cube, int[] faceI) {
-        int[] face = new int[9];
-        int sI = 0;
-        for (int i = faceI[0]; i <= faceI[1]; i++, sI++) {
-            face[sI] = cube[i];
-        }
-        return face;
-    }
-}
-
-public class RubikSolver extends HelperFuncs implements EdgePairings, CornerTrios, MoveHelpers, TextColours {
+public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers, TextColours {
     static final int[] YELLOW = { 0, 8 }, BLUE = { 9, 17 }, RED = { 18, 26 };
     static final int[] GREEN = { 27, 35 }, ORANGE = { 36, 44 }, WHITE = { 45, 53 };
 
@@ -337,7 +325,7 @@ public class RubikSolver extends HelperFuncs implements EdgePairings, CornerTrio
         printMapToColour(yellow, 0, 3, isInput);
         System.out.printf("\n" + "%6s|", " ");
         printMapToColour(yellow, 3, 6, isInput);
-        System.out.printf("\n" + "\033[4m%6s|", " ");
+        System.out.printf("\n" + "\033[4m%6s|\033[0m", " ");
         printMapToColour(yellow, 6, 9, isInput);
         System.out.printf("\033[4m%12s\033[0m\n|", "_");
         printMapToColour(blue, 0, 3, isInput);
