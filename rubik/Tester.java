@@ -16,7 +16,7 @@ public class Tester {
 
     @Test
     public void testRMove() {
-        cube = RubikSolver.makeMove(cube, "R");
+        cube = RubikSolver.makeMoves(cube, "R");
         boolean isMatching = true;
         if (cube[2] != 20)
             isMatching = false;
