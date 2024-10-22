@@ -53,7 +53,19 @@ interface TextColours {
             "Y", TYELLOW, "G", TGREEN, "R", TRED, "B", TBLUE, "W", TWHITE, "O", TORANGE);
 }
 
-public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers, TextColours {
+class HelperFuncs {
+
+    public static int[] getFace(char[] cube, int[] faceI) {
+        int[] face = new int[9];
+        int sI = 0;
+        for (int i = faceI[0]; i <= faceI[1]; i++, sI++) {
+            face[sI] = cube[i];
+        }
+        return face;
+    }
+}
+
+public class RubikSolver extends HelperFuncs implements EdgePairings, CornerTrios, MoveHelpers, TextColours {
     static final int[] YELLOW = { 0, 8 }, BLUE = { 9, 17 }, RED = { 18, 26 };
     static final int[] GREEN = { 27, 35 }, ORANGE = { 36, 44 }, WHITE = { 45, 53 };
 
@@ -74,29 +86,30 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers, Text
         movesMade = "";
         initMoveMap();
         initColourMap();
-        System.out.println("Enter:\033[1m 1\033[0m for auto scramble and solve |\033[1m 2\033[0m to manually input colors");
+        System.out.println(
+                "Enter:\033[1m 1\033[0m for auto scramble and solve |\033[1m 2\033[0m to manually input colors");
         char input = scan.next().charAt(0);
         if (input == '1') {
             cube = initCube(deepCopy(cube));
             cube = scrambleCube(deepCopy(cube), 10);
         } else if (input == '2')
             cube = getUserInput();
-        displayCube(deepCopy(cube));
+        displayCube(deepCopy(cube), false);
         System.out.println(movesMade);
         movesMade = "";
         cube = solveCube(deepCopy(cube));
-        displayCube(deepCopy(cube));
+        displayCube(deepCopy(cube), false);
         reduceMovesUsed();
         System.out.println(movesMade);
     }
 
     public static int[] getUserInput() {
-        char[] inputArray = new char[54];
+        int[] inputArray = new int[54];
         for (int i = 0; i < inputArray.length; i++) {
             inputArray[i] = ' ';
         }
         inputArray[0] = '*';
-        displayInputCube(inputArray);
+        displayCube(inputArray, true);
         for (int i = 0; i < inputArray.length; i++) {
             System.out.println("Enter a colour (w, y, b, g, r, o) or u to undo");
             char input = scan.next().toUpperCase().charAt(0);
@@ -112,13 +125,13 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers, Text
                     inputArray[i + 1] = '*';
                 }
             }
-            displayInputCube(inputArray);
+            displayCube(inputArray, true);
         }
         scan.close();
         return parseUserInput(inputArray);
     }
 
-    public static boolean parseUserInputHelper(char[] inputC, int[] searchI, String colours) {
+    public static boolean parseUserInputHelper(int[] inputC, int[] searchI, String colours) {
         if (searchI.length == 3)
             return colours.contains(Character.toString(inputC[searchI[0]]))
                     && colours.contains(Character.toString(inputC[searchI[1]]))
@@ -128,7 +141,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers, Text
                     && colours.contains(Character.toString(inputC[searchI[1]]));
     }
 
-    public static int[] parseUserInput(char[] inputCube) {
+    public static int[] parseUserInput(int[] inputCube) {
         parseMap.put("YBO", deepCopy(ybo0x9x38));
         parseMap.put("YGO", deepCopy(ygo2x29x36));
         parseMap.put("YBR", deepCopy(ybr6x11x18));
@@ -214,70 +227,13 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers, Text
             cube[i[0]] = valsToUse[key.indexOf(inputCube[i[0]])];
             cube[i[1]] = valsToUse[key.indexOf(inputCube[i[1]])];
         }
-        int[] temp = parseMap.get(Character.toString(inputCube[4]));
-        cube[4] = (temp[0] + temp[1]) / 2;
-        temp = parseMap.get(Character.toString(inputCube[13]));
-        cube[13] = (temp[0] + temp[1]) / 2;
-        temp = parseMap.get(Character.toString(inputCube[22]));
-        cube[22] = (temp[0] + temp[1]) / 2;
-        temp = parseMap.get(Character.toString(inputCube[31]));
-        cube[31] = (temp[0] + temp[1]) / 2;
-        temp = parseMap.get(Character.toString(inputCube[40]));
-        cube[40] = (temp[0] + temp[1]) / 2;
-        temp = parseMap.get(Character.toString(inputCube[49]));
-        cube[49] = (temp[0] + temp[1]) / 2;
+        cube[4] = Arrays.stream(parseMap.get(Character.toString(inputCube[4]))).sum() / 2;
+        cube[13] = Arrays.stream(parseMap.get(Character.toString(inputCube[13]))).sum() / 2;
+        cube[22] = Arrays.stream(parseMap.get(Character.toString(inputCube[22]))).sum() / 2;
+        cube[31] = Arrays.stream(parseMap.get(Character.toString(inputCube[31]))).sum() / 2;
+        cube[40] = Arrays.stream(parseMap.get(Character.toString(inputCube[40]))).sum() / 2;
+        cube[49] = Arrays.stream(parseMap.get(Character.toString(inputCube[49]))).sum() / 2;
         return cube;
-    }
-
-    public static int[] getFaceC(char[] cube, int[] faceI) {
-        int[] face = new int[9];
-        int sI = 0;
-        for (int i = faceI[0]; i <= faceI[1]; i++, sI++) {
-            face[sI] = cube[i];
-        }
-        return face;
-    }
-
-    public static void printOutInput(int[] array, int start, int end) {
-        for (int i = start; i < end; i++) {
-            if (TEXT_COLOUR.keySet().contains(Character.toString((char) array[i])))
-                System.out.print(TEXT_COLOUR.get(Character.toString((char) array[i])) + (char) array[i] + TWHITE + "|");
-            else
-                System.out.print((char) array[i] + "|");
-        }
-    }
-
-    public static void displayInputCube(char[] cube) {
-        int[] yellow = getFaceC(cube, YELLOW), blue = getFaceC(cube, BLUE), red = getFaceC(cube, RED);
-        int[] green = getFaceC(cube, GREEN), orange = getFaceC(cube, ORANGE), white = getFaceC(cube, WHITE);
-        System.out.printf("%6s|", " ");
-        printOutInput(yellow, 0, 3);
-        System.out.printf("\n%6s|", " ");
-        printOutInput(yellow, 3, 6);
-        System.out.printf("\n%6s|", " ");
-        printOutInput(yellow, 6, 9);
-        System.out.print("\n|");
-        printOutInput(blue, 0, 3);
-        printOutInput(red, 0, 3);
-        printOutInput(green, 0, 3);
-        printOutInput(orange, 0, 3);
-        System.out.print("\n|");
-        printOutInput(blue, 3, 6);
-        printOutInput(red, 3, 6);
-        printOutInput(green, 3, 6);
-        printOutInput(orange, 3, 6);
-        System.out.print("\n|");
-        printOutInput(blue, 6, 9);
-        printOutInput(red, 6, 9);
-        printOutInput(green, 6, 9);
-        printOutInput(orange, 6, 9);
-        System.out.printf("\n%6s|", " ");
-        printOutInput(white, 0, 3);
-        System.out.printf("\n%6s|", " ");
-        printOutInput(white, 3, 6);
-        System.out.printf("\n%6s|", " ");
-        printOutInput(white, 6, 9);
-        System.out.println(TWHITE);
     }
 
     public static void initColourMapHelper(int[] COLOURI, String colour) {
@@ -358,42 +314,52 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers, Text
         return face;
     }
 
-    public static void printMapToColour(int[] array, int start, int end) {
+    public static void printMapToColour(int[] array, int start, int end, boolean isInput) {
         for (int i = start; i < end; i++) {
-            System.out.print(TEXT_COLOUR.get(colourMap.get((int) array[i])) + colourMap.get((int) array[i]));
+            if (!isInput)
+                System.out.print(
+                        "\033[4m" + TEXT_COLOUR.get(colourMap.get((int) array[i])) + colourMap.get((int) array[i]));
+            else {
+                if (TEXT_COLOUR.keySet().contains(Character.toString((char) array[i])))
+                    System.out.print(
+                            TEXT_COLOUR.get(Character.toString((char) array[i])) + (char) array[i]);
+                else
+                    System.out.print((char) array[i]);
+            }
+            System.out.print(TWHITE + "|\033[0m");
         }
     }
 
-    public static void displayCube(int[] cube) {
+    public static void displayCube(int[] cube, boolean isInput) {
         int[] yellow = getFace(cube, YELLOW), blue = getFace(cube, BLUE), red = getFace(cube, RED);
         int[] green = getFace(cube, GREEN), orange = getFace(cube, ORANGE), white = getFace(cube, WHITE);
-        System.out.printf("%3s", " ");
-        printMapToColour(yellow, 0, 3);
-        System.out.printf("\n%3s", " ");
-        printMapToColour(yellow, 3, 6);
-        System.out.printf("\n%3s", " ");
-        printMapToColour(yellow, 6, 9);
-        System.out.println();
-        printMapToColour(blue, 0, 3);
-        printMapToColour(red, 0, 3);
-        printMapToColour(green, 0, 3);
-        printMapToColour(orange, 0, 3);
-        System.out.println();
-        printMapToColour(blue, 3, 6);
-        printMapToColour(red, 3, 6);
-        printMapToColour(green, 3, 6);
-        printMapToColour(orange, 3, 6);
-        System.out.println();
-        printMapToColour(blue, 6, 9);
-        printMapToColour(red, 6, 9);
-        printMapToColour(green, 6, 9);
-        printMapToColour(orange, 6, 9);
-        System.out.printf("\n%3s", " ");
-        printMapToColour(white, 0, 3);
-        System.out.printf("\n%3s", " ");
-        printMapToColour(white, 3, 6);
-        System.out.printf("\n%3s", " ");
-        printMapToColour(white, 6, 9);
+        System.out.printf("%6s|", " ");
+        printMapToColour(yellow, 0, 3, isInput);
+        System.out.printf("\n" + "%6s|", " ");
+        printMapToColour(yellow, 3, 6, isInput);
+        System.out.printf("\n" + "\033[4m%6s|", " ");
+        printMapToColour(yellow, 6, 9, isInput);
+        System.out.printf("\033[4m%12s\033[0m\n|", "_");
+        printMapToColour(blue, 0, 3, isInput);
+        printMapToColour(red, 0, 3, isInput);
+        printMapToColour(green, 0, 3, isInput);
+        printMapToColour(orange, 0, 3, isInput);
+        System.out.print("\n|");
+        printMapToColour(blue, 3, 6, isInput);
+        printMapToColour(red, 3, 6, isInput);
+        printMapToColour(green, 3, 6, isInput);
+        printMapToColour(orange, 3, 6, isInput);
+        System.out.print("\n|");
+        printMapToColour(blue, 6, 9, isInput);
+        printMapToColour(red, 6, 9, isInput);
+        printMapToColour(green, 6, 9, isInput);
+        printMapToColour(orange, 6, 9, isInput);
+        System.out.printf("\n" + "%6s|", " ");
+        printMapToColour(white, 0, 3, isInput);
+        System.out.printf("\n" + "%6s|", " ");
+        printMapToColour(white, 3, 6, isInput);
+        System.out.printf("\n" + "%6s|", " ");
+        printMapToColour(white, 6, 9, isInput);
         System.out.println(TWHITE);
     }
 
