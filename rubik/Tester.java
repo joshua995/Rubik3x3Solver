@@ -17,72 +17,94 @@ public class Tester {
 
     @Test
     public void testRMove() {
-        cube = RubikSolver.makeMoves(RubikSolver.deepCopy(cube), "R");
-        boolean isMatching = true;
-        int[] sameVal = { 0, 1, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 24, 25, 31, 37, 38, 40,
-                41, 43, 44, 45, 46, 48, 49, 51, 52 };
-        for (int same : sameVal) {
-            if (cube[same] != same)
-                isMatching = false;
-        }
-        int[][] changeVal = { { 2, 20 }, { 5, 23 }, { 8, 26 },
-                { 20, 47 }, { 23, 50 }, { 26, 53 },
-                { 47, 42 }, { 50, 39 }, { 53, 36 },
-                { 42, 2 }, { 39, 5 }, { 36, 8 },
-                { 27, 33 }, { 33, 35 }, { 35, 29 }, { 29, 27 },
-                { 28, 30 }, { 30, 34 }, { 34, 32 }, { 32, 28 } };
-        for (int[] change : changeVal) {
-            if (cube[change[0]] != change[1])
-                isMatching = false;
-        }
-        assertTrue(isMatching);
+        cube = RubikSolver.makeMoves(RubikSolver.deepCopy(cube), "R"); // Make the move on the cube
+        int[] cubeAfterR = {
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
+                28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52,
+                53 }; // Cube array after R
+        cubeAfterR[2] = 20;
+        cubeAfterR[5] = 23;
+        cubeAfterR[8] = 26;
+        cubeAfterR[20] = 47;
+        cubeAfterR[23] = 50;
+        cubeAfterR[26] = 53;
+        cubeAfterR[47] = 42;
+        cubeAfterR[50] = 39;
+        cubeAfterR[53] = 36;
+        cubeAfterR[42] = 2;
+        cubeAfterR[39] = 5;
+        cubeAfterR[36] = 8;//
+        cubeAfterR[27] = 33;
+        cubeAfterR[33] = 35;
+        cubeAfterR[35] = 29;
+        cubeAfterR[29] = 27;//
+        cubeAfterR[28] = 30;
+        cubeAfterR[30] = 34;
+        cubeAfterR[34] = 32;
+        cubeAfterR[32] = 28;
+        assertArrayEquals(cubeAfterR, cube);
     }
 
     @Test
     public void testR2Move() {
-        cube = RubikSolver.makeMoves(RubikSolver.deepCopy(cube), "R2");
-        boolean isMatching = true;
-        int[] sameVal = { 0, 1, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 24, 25, 31, 37, 38, 40,
-                41, 43, 44, 45, 46, 48, 49, 51, 52 };
-        for (int same : sameVal) {
-            if (cube[same] != same)
-                isMatching = false;
-        }
-        int[][] changeVal = { { 2, 47 }, { 5, 50 }, { 8, 53 },
-                { 20, 42 }, { 23, 39 }, { 26, 36 },
-                { 47, 2 }, { 50, 5 }, { 53, 8 },
-                { 42, 20 }, { 39, 23 }, { 36, 26 },
-                { 27, 35 }, { 33, 29 }, { 35, 27 }, { 29, 33 },
-                { 28, 34 }, { 30, 32 }, { 34, 28 }, { 32, 30 } };
-        for (int[] change : changeVal) {
-            if (cube[change[0]] != change[1])
-                isMatching = false;
-        }
-        assertTrue(isMatching);
+        cube = RubikSolver.makeMoves(RubikSolver.deepCopy(cube), "R2"); // Make the move on the cube
+        int[] cubeAfterR = {
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
+                28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52,
+                53 }; // Cube array after R
+        cubeAfterR[42] = 20;
+        cubeAfterR[39] = 23;
+        cubeAfterR[36] = 26;
+        cubeAfterR[2] = 47;
+        cubeAfterR[5] = 50;
+        cubeAfterR[8] = 53;
+        cubeAfterR[20] = 42;
+        cubeAfterR[23] = 39;
+        cubeAfterR[26] = 36;
+        cubeAfterR[47] = 2;
+        cubeAfterR[50] = 5;
+        cubeAfterR[53] = 8;//
+        cubeAfterR[29] = 33;
+        cubeAfterR[27] = 35;
+        cubeAfterR[33] = 29;
+        cubeAfterR[35] = 27;//
+        cubeAfterR[32] = 30;
+        cubeAfterR[28] = 34;
+        cubeAfterR[30] = 32;
+        cubeAfterR[34] = 28;
+        assertArrayEquals(cubeAfterR, cube);
     }
 
     @Test
     public void testRIMove() {
-        cube = RubikSolver.makeMoves(RubikSolver.deepCopy(cube), "R'");
-        boolean isMatching = true;
-        int[] sameVal = { 0, 1, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 24, 25, 31, 37, 38, 40,
-                41, 43, 44, 45, 46, 48, 49, 51, 52 };
-        for (int same : sameVal) {
-            if (cube[same] != same)
-                isMatching = false;
-        }
-        int[][] changeVal = { { 2, 42 }, { 5, 39 }, { 8, 36 },
-                { 20, 2 }, { 23, 5 }, { 26, 8 },
-                { 47, 20 }, { 50, 23 }, { 53, 26 },
-                { 42, 47 }, { 39, 50 }, { 36, 53 },
-                { 27, 29 }, { 33, 27 }, { 35, 33 }, { 29, 35 },
-                { 28, 32 }, { 30, 28 }, { 34, 30 }, { 32, 34 } };
-        for (int[] change : changeVal) {
-            if (cube[change[0]] != change[1])
-                isMatching = false;
-        }
-        assertTrue(isMatching);
+        cube = RubikSolver.makeMoves(RubikSolver.deepCopy(cube), "R'"); // Make the move on the cube
+        int[] cubeAfterR = {
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
+                28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52,
+                53 }; // Cube array after R
+        cubeAfterR[47] = 20;
+        cubeAfterR[50] = 23;
+        cubeAfterR[53] = 26;
+        cubeAfterR[42] = 47;
+        cubeAfterR[39] = 50;
+        cubeAfterR[36] = 53;
+        cubeAfterR[2] = 42;
+        cubeAfterR[5] = 39;
+        cubeAfterR[8] = 36;
+        cubeAfterR[20] = 2;
+        cubeAfterR[23] = 5;
+        cubeAfterR[26] = 8;//
+        cubeAfterR[35] = 33;
+        cubeAfterR[29] = 35;
+        cubeAfterR[27] = 29;
+        cubeAfterR[33] = 27;//
+        cubeAfterR[34] = 30;
+        cubeAfterR[32] = 34;
+        cubeAfterR[28] = 32;
+        cubeAfterR[30] = 28;
+        assertArrayEquals(cubeAfterR, cube);
     }
+
     // @After
     // public void teardown() {
     // //cube = RubikSolver.initCube(cube);
