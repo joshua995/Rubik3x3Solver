@@ -61,9 +61,31 @@ public class Tester {
         assertTrue(isMatching);
     }
 
+    @Test
+    public void testRIMove() {
+        cube = RubikSolver.makeMoves(RubikSolver.deepCopy(cube), "R'");
+        boolean isMatching = true;
+        int[] sameVal = { 0, 1, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 24, 25, 31, 37, 38, 40,
+                41, 43, 44, 45, 46, 48, 49, 51, 52 };
+        for (int same : sameVal) {
+            if (cube[same] != same)
+                isMatching = false;
+        }
+        int[][] changeVal = { { 2, 42 }, { 5, 39 }, { 8, 36 },
+                { 20, 2 }, { 23, 5 }, { 26, 8 },
+                { 47, 20 }, { 50, 23 }, { 53, 26 },
+                { 42, 47 }, { 39, 50 }, { 36, 53 },
+                { 27, 29 }, { 33, 27 }, { 35, 33 }, { 29, 35 },
+                { 28, 32 }, { 30, 28 }, { 34, 30 }, { 32, 34 } };
+        for (int[] change : changeVal) {
+            if (cube[change[0]] != change[1])
+                isMatching = false;
+        }
+        assertTrue(isMatching);
+    }
     // @After
     // public void teardown() {
-    //     //cube = RubikSolver.initCube(cube);
-    //     //RubikSolver.initMoveMap();
+    // //cube = RubikSolver.initCube(cube);
+    // //RubikSolver.initMoveMap();
     // }
 }
