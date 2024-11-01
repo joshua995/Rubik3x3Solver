@@ -43,12 +43,8 @@ interface MoveHelpers {// Indices of for making moves
 }
 
 interface TextColours {
-    static final String TRED = "\u001B[31m";
-    static final String TGREEN = "\u001B[32m";
-    static final String TYELLOW = "\u001B[33m";
-    static final String TBLUE = "\u001B[34m";
-    static final String TWHITE = "\u001B[37m";
-    static final String TORANGE = "\033[38;2;255;125;0m";
+    static final String TRED = "\u001B[31m", TGREEN = "\u001B[32m", TYELLOW = "\u001B[33m";
+    static final String TBLUE = "\u001B[34m", TWHITE = "\u001B[37m", TORANGE = "\033[38;2;255;125;0m";
     static final Map<String, String> TEXT_COLOUR = Map.of(
             "Y", TYELLOW, "G", TGREEN, "R", TRED, "B", TBLUE, "W", TWHITE, "O", TORANGE);
 }
@@ -78,8 +74,7 @@ public class RubikSolver implements EdgePairings, CornerTrios, MoveHelpers, Text
                 "Enter:\033[1m 1\033[0m for auto scramble and solve |\033[1m 2\033[0m to manually input colors");
         char input = scan.next().charAt(0);
         if (input == '1') {
-            cube = initCube(deepCopy(cube));
-            cube = scrambleCube(deepCopy(cube), 10);
+            cube = scrambleCube(initCube(deepCopy(cube)), 10);
         } else if (input == '2')
             cube = getUserInput();
         displayCube(deepCopy(cube), false);
