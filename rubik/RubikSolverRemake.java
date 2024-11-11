@@ -654,150 +654,85 @@ public class RubikSolverRemake implements EdgePairings, CornerTrios, MoveHelpers
     }
 
     public static int[] solveGreenOrangeEdge(int[] cube) {
-        if (cube[go32x39[0]] == go32x39[0] && cube[gow35x42x53[0]] == gow35x42x53[0])
-            return cube;
-        else if (cube[rw25x46[0]] == go32x39[0] && cube[ybo0x9x38[0]] == gow35x42x53[0])
-            return makeMoves(deepCopy(cube), "U' M' U2 R' M U' R");
-        else if (cube[rw25x46[0]] == go32x39[0] && cube[ybo0x9x38[0]] == gow35x42x53[1])
-            return makeMoves(deepCopy(cube), "M2 R' U R");
-        else if (cube[rw25x46[0]] == go32x39[0] && cube[ybo0x9x38[0]] == gow35x42x53[2])
-            return makeMoves(deepCopy(cube), "R' U2 R U' M2 R' U R");
-        else if (cube[rw25x46[0]] == go32x39[0] && cube[ygo2x29x36[0]] == gow35x42x53[0])
-            return makeMoves(deepCopy(cube), "U2 M' U2 R' M U' R");
-        else if (cube[rw25x46[0]] == go32x39[0] && cube[ygo2x29x36[0]] == gow35x42x53[1])
-            return makeMoves(deepCopy(cube), "U' M2 R' U R");
-        else if (cube[rw25x46[0]] == go32x39[0] && cube[ygo2x29x36[0]] == gow35x42x53[2])
-            return makeMoves(deepCopy(cube), "R' U R M' U2 R' M U' R");
-        else if (cube[rw25x46[0]] == go32x39[0] && cube[yrg8x20x27[0]] == gow35x42x53[0])
-            return makeMoves(deepCopy(cube), "U M' U2 R' M U' R");
-        else if (cube[rw25x46[0]] == go32x39[0] && cube[yrg8x20x27[0]] == gow35x42x53[1])
-            return makeMoves(deepCopy(cube), "U2 M2 R' U R");
-        else if (cube[rw25x46[0]] == go32x39[0] && cube[yrg8x20x27[0]] == gow35x42x53[2])
-            return makeMoves(deepCopy(cube), "U' R' U R M' U2 R' M U' R");
-        else if (cube[rw25x46[0]] == go32x39[0] && cube[ybr6x11x18[0]] == gow35x42x53[0])
-            return makeMoves(deepCopy(cube), "M' U2 R' M U' R");
-        else if (cube[rw25x46[0]] == go32x39[0] && cube[ybr6x11x18[0]] == gow35x42x53[1])
-            return makeMoves(deepCopy(cube), "U M2 R' U R");
-        else if (cube[rw25x46[0]] == go32x39[0] && cube[ybr6x11x18[0]] == gow35x42x53[2])
-            return makeMoves(deepCopy(cube), "R' U' R U' M2 R' U R");
-        else if (cube[rw25x46[0]] == go32x39[0] && cube[gow35x42x53[0]] == gow35x42x53[0])
-            return makeMoves(deepCopy(cube), "R' U' M2 U R");
-        else if (cube[rw25x46[0]] == go32x39[0] && cube[gow35x42x53[0]] == gow35x42x53[1])
-            return makeMoves(deepCopy(cube), "R' U R U' M2 R' U R");
-        else if (cube[rw25x46[0]] == go32x39[0] && cube[gow35x42x53[0]] == gow35x42x53[2])
-            return makeMoves(deepCopy(cube), "R' U2 R M' U2 R' M U' R");
-        else if (cube[rw25x46[0]] == go32x39[1] && cube[ybo0x9x38[0]] == gow35x42x53[0])
-            return makeMoves(deepCopy(cube), "U R' M' U' R");
-        else if (cube[rw25x46[0]] == go32x39[1] && cube[ybo0x9x38[0]] == gow35x42x53[1])
-            return makeMoves(deepCopy(cube), "R' U2 M' U' R");
-        else if (cube[rw25x46[0]] == go32x39[1] && cube[ybo0x9x38[0]] == gow35x42x53[2])
-            return makeMoves(deepCopy(cube), "U R' U R U2 R' M' U' R");
-        else if (cube[rw25x46[0]] == go32x39[1] && cube[ygo2x29x36[0]] == gow35x42x53[0])
-            return makeMoves(deepCopy(cube), "R' M' U' R");
-        else if (cube[rw25x46[0]] == go32x39[1] && cube[ygo2x29x36[0]] == gow35x42x53[1])
-            return makeMoves(deepCopy(cube), "U M' U R' U2 R");
-        else if (cube[rw25x46[0]] == go32x39[1] && cube[ygo2x29x36[0]] == gow35x42x53[2])
-            return makeMoves(deepCopy(cube), "R' U' M2 U' R U R' M U' R");
-        else if (cube[rw25x46[0]] == go32x39[1] && cube[yrg8x20x27[0]] == gow35x42x53[0])
-            return makeMoves(deepCopy(cube), "U' R' M' U' R");
-        else if (cube[rw25x46[0]] == go32x39[1] && cube[yrg8x20x27[0]] == gow35x42x53[1])
-            return makeMoves(deepCopy(cube), "U R' U' M' U' R");
-        else if (cube[rw25x46[0]] == go32x39[1] && cube[yrg8x20x27[0]] == gow35x42x53[2])
-            return makeMoves(deepCopy(cube), "U' R' U R U2 R' M' U' R");
-        else if (cube[rw25x46[0]] == go32x39[1] && cube[ybr6x11x18[0]] == gow35x42x53[0])
-            return makeMoves(deepCopy(cube), "U2 R' M' U' R");
-        else if (cube[rw25x46[0]] == go32x39[1] && cube[ybr6x11x18[0]] == gow35x42x53[1])
-            return makeMoves(deepCopy(cube), "R' U' M' U' R");
-        else if (cube[rw25x46[0]] == go32x39[1] && cube[ybr6x11x18[0]] == gow35x42x53[2])
-            return makeMoves(deepCopy(cube), "R' U' R U M' U R' U2 R");
-        else if (cube[rw25x46[0]] == go32x39[1] && cube[gow35x42x53[0]] == gow35x42x53[0])
-            return makeMoves(deepCopy(cube), "R' U M' U' R");
-        else if (cube[rw25x46[0]] == go32x39[1] && cube[gow35x42x53[0]] == gow35x42x53[1])
-            return makeMoves(deepCopy(cube), "R' U R U M' U R' U2 R");
-        else // (cube[rw25x46[0]] == go32x39[1] && cube[gow35x42x53[0]] == gow35x42x53[2])
-            return makeMoves(deepCopy(cube), "R' M2 U2 R U2 R' M U' R");
+        return cube[go32x39[0]] == go32x39[0] && cube[gow35x42x53[0]] == gow35x42x53[0]?cube
+        :cube[rw25x46[0]] == go32x39[0] && cube[ybo0x9x38[0]] == gow35x42x53[0]?makeMoves(deepCopy(cube), "U' M' U2 R' M U' R")
+        :cube[rw25x46[0]] == go32x39[0] && cube[ybo0x9x38[0]] == gow35x42x53[1]?makeMoves(deepCopy(cube), "M2 R' U R")
+        :cube[rw25x46[0]] == go32x39[0] && cube[ybo0x9x38[0]] == gow35x42x53[2]?makeMoves(deepCopy(cube), "R' U2 R U' M2 R' U R")
+        :cube[rw25x46[0]] == go32x39[0] && cube[ygo2x29x36[0]] == gow35x42x53[0]?makeMoves(deepCopy(cube), "U2 M' U2 R' M U' R")
+        :cube[rw25x46[0]] == go32x39[0] && cube[ygo2x29x36[0]] == gow35x42x53[1]?makeMoves(deepCopy(cube), "U' M2 R' U R")
+        :cube[rw25x46[0]] == go32x39[0] && cube[ygo2x29x36[0]] == gow35x42x53[2]?makeMoves(deepCopy(cube), "R' U R M' U2 R' M U' R")
+        :cube[rw25x46[0]] == go32x39[0] && cube[yrg8x20x27[0]] == gow35x42x53[0]?makeMoves(deepCopy(cube), "U M' U2 R' M U' R")
+        :cube[rw25x46[0]] == go32x39[0] && cube[yrg8x20x27[0]] == gow35x42x53[1]?makeMoves(deepCopy(cube), "U2 M2 R' U R")
+        :cube[rw25x46[0]] == go32x39[0] && cube[yrg8x20x27[0]] == gow35x42x53[2]?makeMoves(deepCopy(cube), "U' R' U R M' U2 R' M U' R")
+        :cube[rw25x46[0]] == go32x39[0] && cube[ybr6x11x18[0]] == gow35x42x53[0]?makeMoves(deepCopy(cube), "M' U2 R' M U' R")
+        :cube[rw25x46[0]] == go32x39[0] && cube[ybr6x11x18[0]] == gow35x42x53[1]?makeMoves(deepCopy(cube), "U M2 R' U R")
+        :cube[rw25x46[0]] == go32x39[0] && cube[ybr6x11x18[0]] == gow35x42x53[2]?makeMoves(deepCopy(cube), "R' U' R U' M2 R' U R")
+        :cube[rw25x46[0]] == go32x39[0] && cube[gow35x42x53[0]] == gow35x42x53[0]?makeMoves(deepCopy(cube), "R' U' M2 U R")
+        :cube[rw25x46[0]] == go32x39[0] && cube[gow35x42x53[0]] == gow35x42x53[1]?makeMoves(deepCopy(cube), "R' U R U' M2 R' U R")
+        :cube[rw25x46[0]] == go32x39[0] && cube[gow35x42x53[0]] == gow35x42x53[2]?makeMoves(deepCopy(cube), "R' U2 R M' U2 R' M U' R")
+        :cube[rw25x46[0]] == go32x39[1] && cube[ybo0x9x38[0]] == gow35x42x53[0]?makeMoves(deepCopy(cube), "U R' M' U' R")
+        :cube[rw25x46[0]] == go32x39[1] && cube[ybo0x9x38[0]] == gow35x42x53[1]?makeMoves(deepCopy(cube), "R' U2 M' U' R")
+        :cube[rw25x46[0]] == go32x39[1] && cube[ybo0x9x38[0]] == gow35x42x53[2]?makeMoves(deepCopy(cube), "U R' U R U2 R' M' U' R")
+        :cube[rw25x46[0]] == go32x39[1] && cube[ygo2x29x36[0]] == gow35x42x53[0]?makeMoves(deepCopy(cube), "R' M' U' R")
+        :cube[rw25x46[0]] == go32x39[1] && cube[ygo2x29x36[0]] == gow35x42x53[1]?makeMoves(deepCopy(cube), "U M' U R' U2 R")
+        :cube[rw25x46[0]] == go32x39[1] && cube[ygo2x29x36[0]] == gow35x42x53[2]?makeMoves(deepCopy(cube), "R' U' M2 U' R U R' M U' R")
+        :cube[rw25x46[0]] == go32x39[1] && cube[yrg8x20x27[0]] == gow35x42x53[0]?makeMoves(deepCopy(cube), "U' R' M' U' R")
+        :cube[rw25x46[0]] == go32x39[1] && cube[yrg8x20x27[0]] == gow35x42x53[1]?makeMoves(deepCopy(cube), "U R' U' M' U' R")
+        :cube[rw25x46[0]] == go32x39[1] && cube[yrg8x20x27[0]] == gow35x42x53[2]?makeMoves(deepCopy(cube), "U' R' U R U2 R' M' U' R")
+        :cube[rw25x46[0]] == go32x39[1] && cube[ybr6x11x18[0]] == gow35x42x53[0]?makeMoves(deepCopy(cube), "U2 R' M' U' R")
+        :cube[rw25x46[0]] == go32x39[1] && cube[ybr6x11x18[0]] == gow35x42x53[1]?makeMoves(deepCopy(cube), "R' U' M' U' R")
+        :cube[rw25x46[0]] == go32x39[1] && cube[ybr6x11x18[0]] == gow35x42x53[2]?makeMoves(deepCopy(cube), "R' U' R U M' U R' U2 R")
+        :cube[rw25x46[0]] == go32x39[1] && cube[gow35x42x53[0]] == gow35x42x53[0]?makeMoves(deepCopy(cube), "R' U M' U' R")
+        :cube[rw25x46[0]] == go32x39[1] && cube[gow35x42x53[0]] == gow35x42x53[1]?makeMoves(deepCopy(cube), "R' U R U M' U R' U2 R")
+        :makeMoves(deepCopy(cube), "R' M2 U2 R U2 R' M U' R");
     }
 
-    public static boolean orientYellowCornersHelper(int[] cube, int i, int i1, int i2, int i3) {
+    public static boolean OYCHelper(int[] cube, int i, int i1, int i2, int i3) {
         return colourMap.get(cube[i]) == colourMap.get(cube[i1]) && colourMap.get(cube[i1]) == colourMap.get(cube[i2])
                 && colourMap.get(cube[i2]) == colourMap.get(cube[i3]) && colourMap.get(cube[i]) == "Y";
     }
 
     public static int[] orientYellowCorners(int[] cube) {
-        if (orientYellowCornersHelper(deepCopy(cube), ybo0x9x38[0], ygo2x29x36[0], yrg8x20x27[0], ybr6x11x18[0]))
-            return cube;
-        else if (orientYellowCornersHelper(deepCopy(cube), ybr6x11x18[2], yrg8x20x27[1], ygo2x29x36[2], ybo0x9x38[2]))
-            return makeMoves(deepCopy(cube), "R U2 R' U' R U R' U' R U' R'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ybr6x11x18[1], yrg8x20x27[2], ygo2x29x36[1], ybo0x9x38[1]))
-            return makeMoves(deepCopy(cube), "U R U2 R' U' R U R' U' R U' R'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ybo0x9x38[1], ybr6x11x18[1], ygo2x29x36[2], yrg8x20x27[1]))
-            return makeMoves(deepCopy(cube), "F R U R' U' R U R' U' F'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ybo0x9x38[2], ygo2x29x36[2], ybr6x11x18[1], yrg8x20x27[2]))
-            return makeMoves(deepCopy(cube), "U' F R U R' U' R U R' U' F'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ybr6x11x18[2], ybo0x9x38[2], ygo2x29x36[1], yrg8x20x27[2]))
-            return makeMoves(deepCopy(cube), "U2 F R U R' U' R U R' U' F'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ybo0x9x38[1], ybr6x11x18[2], yrg8x20x27[1], ygo2x29x36[1]))
-            return makeMoves(deepCopy(cube), "U F R U R' U' R U R' U' F'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ybo0x9x38[0], ybr6x11x18[0], yrg8x20x27[2], ygo2x29x36[1]))
-            return makeMoves(deepCopy(cube), "U2 F R U R' U' F'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ybr6x11x18[0], yrg8x20x27[0], ybo0x9x38[2], ygo2x29x36[2]))
-            return makeMoves(deepCopy(cube), "U' F R U R' U' F'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ygo2x29x36[0], yrg8x20x27[0], ybo0x9x38[1], ybr6x11x18[1]))
-            return makeMoves(deepCopy(cube), "F R U R' U' F'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ybo0x9x38[0], ygo2x29x36[0], ybr6x11x18[2], yrg8x20x27[1]))
-            return makeMoves(deepCopy(cube), "U F R U R' U' F'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ygo2x29x36[0], yrg8x20x27[0], ybo0x9x38[2], ybr6x11x18[2]))
-            return makeMoves(deepCopy(cube), "R U R' U' R' F R F'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ybo0x9x38[0], ygo2x29x36[0], ybr6x11x18[1], yrg8x20x27[2]))
-            return makeMoves(deepCopy(cube), "U R U R' U' R' F R F'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ybo0x9x38[0], ybr6x11x18[0], ygo2x29x36[2], yrg8x20x27[1]))
-            return makeMoves(deepCopy(cube), "U2 R U R' U' R' F R F'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ybr6x11x18[0], yrg8x20x27[0], ybo0x9x38[1], ygo2x29x36[1]))
-            return makeMoves(deepCopy(cube), "U' R U R' U' R' F R F'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ybr6x11x18[0], yrg8x20x27[1], ygo2x29x36[1], ybo0x9x38[2]))
-            return makeMoves(deepCopy(cube), "R U R' U R U2 R'");
-        else if (orientYellowCornersHelper(deepCopy(cube), yrg8x20x27[0], ygo2x29x36[1], ybo0x9x38[2], ybr6x11x18[1]))
-            return makeMoves(deepCopy(cube), "U R U R' U R U2 R'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ygo2x29x36[0], ybo0x9x38[2], ybr6x11x18[1], yrg8x20x27[1]))
-            return makeMoves(deepCopy(cube), "U2 R U R' U R U2 R'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ybo0x9x38[0], ybr6x11x18[1], yrg8x20x27[1], ygo2x29x36[1]))
-            return makeMoves(deepCopy(cube), "U' R U R' U R U2 R'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ybo0x9x38[0], ybr6x11x18[2], yrg8x20x27[2], ygo2x29x36[2]))
-            return makeMoves(deepCopy(cube), "R' U' R U' R' U2 R");
-        else if (orientYellowCornersHelper(deepCopy(cube), ybr6x11x18[0], ybo0x9x38[1], yrg8x20x27[2], ygo2x29x36[2]))
-            return makeMoves(deepCopy(cube), "U R' U' R U' R' U2 R");
-        else if (orientYellowCornersHelper(deepCopy(cube), yrg8x20x27[0], ybr6x11x18[2], ybo0x9x38[1], ygo2x29x36[2]))
-            return makeMoves(deepCopy(cube), "U2 R' U' R U' R' U2 R");
-        else if (orientYellowCornersHelper(deepCopy(cube), ygo2x29x36[0], ybo0x9x38[1], ybr6x11x18[2], yrg8x20x27[2]))
-            return makeMoves(deepCopy(cube), "U' R' U' R U' R' U2 R");
-        else if (orientYellowCornersHelper(deepCopy(cube), ybo0x9x38[0], yrg8x20x27[0], ybr6x11x18[2], ygo2x29x36[1]))
-            return makeMoves(deepCopy(cube), "F R' F' R U R U' R'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ygo2x29x36[0], ybr6x11x18[0], yrg8x20x27[2], ybo0x9x38[2]))
-            return makeMoves(deepCopy(cube), "U F R' F' R U R U' R'");
-        else if (orientYellowCornersHelper(deepCopy(cube), ybo0x9x38[0], yrg8x20x27[0], ybr6x11x18[1], ygo2x29x36[2]))
-            return makeMoves(deepCopy(cube), "U2 F R' F' R U R U' R'");
-        else // (orientYellowCornersHelper(deepCopy(cube),ygo2x29x36[0],ybr6x11x18[0],yrg8x20x27[1],ybo0x9x38[1]))
-            return makeMoves(deepCopy(cube), "U' F R' F' R U R U' R'");
+        return OYCHelper(deepCopy(cube), ybo0x9x38[0], ygo2x29x36[0], yrg8x20x27[0], ybr6x11x18[0])?cube
+        :OYCHelper(deepCopy(cube), ybr6x11x18[2], yrg8x20x27[1], ygo2x29x36[2], ybo0x9x38[2])?makeMoves(deepCopy(cube), "R U2 R' U' R U R' U' R U' R'")
+        :OYCHelper(deepCopy(cube), ybr6x11x18[1], yrg8x20x27[2], ygo2x29x36[1], ybo0x9x38[1])?makeMoves(deepCopy(cube), "U R U2 R' U' R U R' U' R U' R'")
+        :OYCHelper(deepCopy(cube), ybo0x9x38[1], ybr6x11x18[1], ygo2x29x36[2], yrg8x20x27[1])?makeMoves(deepCopy(cube), "F R U R' U' R U R' U' F'")
+        :OYCHelper(deepCopy(cube), ybo0x9x38[2], ygo2x29x36[2], ybr6x11x18[1], yrg8x20x27[2])?makeMoves(deepCopy(cube), "U' F R U R' U' R U R' U' F'")
+        :OYCHelper(deepCopy(cube), ybr6x11x18[2], ybo0x9x38[2], ygo2x29x36[1], yrg8x20x27[2])?makeMoves(deepCopy(cube), "U2 F R U R' U' R U R' U' F'")
+        :OYCHelper(deepCopy(cube), ybo0x9x38[1], ybr6x11x18[2], yrg8x20x27[1], ygo2x29x36[1])?makeMoves(deepCopy(cube), "U F R U R' U' R U R' U' F'")
+        :OYCHelper(deepCopy(cube), ybo0x9x38[0], ybr6x11x18[0], yrg8x20x27[2], ygo2x29x36[1])?makeMoves(deepCopy(cube), "U2 F R U R' U' F'")
+        :OYCHelper(deepCopy(cube), ybr6x11x18[0], yrg8x20x27[0], ybo0x9x38[2], ygo2x29x36[2])?makeMoves(deepCopy(cube), "U' F R U R' U' F'")
+        :OYCHelper(deepCopy(cube), ygo2x29x36[0], yrg8x20x27[0], ybo0x9x38[1], ybr6x11x18[1])?makeMoves(deepCopy(cube), "F R U R' U' F'")
+        :OYCHelper(deepCopy(cube), ybo0x9x38[0], ygo2x29x36[0], ybr6x11x18[2], yrg8x20x27[1])?makeMoves(deepCopy(cube), "U F R U R' U' F'")
+        :OYCHelper(deepCopy(cube), ygo2x29x36[0], yrg8x20x27[0], ybo0x9x38[2], ybr6x11x18[2])?makeMoves(deepCopy(cube), "R U R' U' R' F R F'")
+        :OYCHelper(deepCopy(cube), ybo0x9x38[0], ygo2x29x36[0], ybr6x11x18[1], yrg8x20x27[2])?makeMoves(deepCopy(cube), "U R U R' U' R' F R F'")
+        :OYCHelper(deepCopy(cube), ybo0x9x38[0], ybr6x11x18[0], ygo2x29x36[2], yrg8x20x27[1])?makeMoves(deepCopy(cube), "U2 R U R' U' R' F R F'")
+        :OYCHelper(deepCopy(cube), ybr6x11x18[0], yrg8x20x27[0], ybo0x9x38[1], ygo2x29x36[1])?makeMoves(deepCopy(cube), "U' R U R' U' R' F R F'")
+        :OYCHelper(deepCopy(cube), ybr6x11x18[0], yrg8x20x27[1], ygo2x29x36[1], ybo0x9x38[2])?makeMoves(deepCopy(cube), "R U R' U R U2 R'")
+        :OYCHelper(deepCopy(cube), yrg8x20x27[0], ygo2x29x36[1], ybo0x9x38[2], ybr6x11x18[1])?makeMoves(deepCopy(cube), "U R U R' U R U2 R'")
+        :OYCHelper(deepCopy(cube), ygo2x29x36[0], ybo0x9x38[2], ybr6x11x18[1], yrg8x20x27[1])?makeMoves(deepCopy(cube), "U2 R U R' U R U2 R'")
+        :OYCHelper(deepCopy(cube), ybo0x9x38[0], ybr6x11x18[1], yrg8x20x27[1], ygo2x29x36[1])?makeMoves(deepCopy(cube), "U' R U R' U R U2 R'")
+        :OYCHelper(deepCopy(cube), ybo0x9x38[0], ybr6x11x18[2], yrg8x20x27[2], ygo2x29x36[2])?makeMoves(deepCopy(cube), "R' U' R U' R' U2 R")
+        :OYCHelper(deepCopy(cube), ybr6x11x18[0], ybo0x9x38[1], yrg8x20x27[2], ygo2x29x36[2])?makeMoves(deepCopy(cube), "U R' U' R U' R' U2 R")
+        :OYCHelper(deepCopy(cube), yrg8x20x27[0], ybr6x11x18[2], ybo0x9x38[1], ygo2x29x36[2])?makeMoves(deepCopy(cube), "U2 R' U' R U' R' U2 R")
+        :OYCHelper(deepCopy(cube), ygo2x29x36[0], ybo0x9x38[1], ybr6x11x18[2], yrg8x20x27[2])?makeMoves(deepCopy(cube), "U' R' U' R U' R' U2 R")
+        :OYCHelper(deepCopy(cube), ybo0x9x38[0], yrg8x20x27[0], ybr6x11x18[2], ygo2x29x36[1])?makeMoves(deepCopy(cube), "F R' F' R U R U' R'")
+        :OYCHelper(deepCopy(cube), ygo2x29x36[0], ybr6x11x18[0], yrg8x20x27[2], ybo0x9x38[2])?makeMoves(deepCopy(cube), "U F R' F' R U R U' R'")
+        :OYCHelper(deepCopy(cube), ybo0x9x38[0], yrg8x20x27[0], ybr6x11x18[1], ygo2x29x36[2])?makeMoves(deepCopy(cube), "U2 F R' F' R U R U' R'")
+        :makeMoves(deepCopy(cube), "U' F R' F' R U R U' R'");
     }
 
     public static int[] orientColouredCorners(int[] cube) {
-        if (colourMap.get(cube[ybo0x9x38[1]]) == colourMap.get(cube[ybr6x11x18[1]])
-                && colourMap.get(cube[ybr6x11x18[2]]) == colourMap.get(cube[yrg8x20x27[1]]))
-            return cube;
-        else if (colourMap.get(cube[ybo0x9x38[1]]) == colourMap.get(cube[ybr6x11x18[1]]))
-            return makeMoves(deepCopy(cube), "R U R' U' R' F R2 U' R' U' R U R' F'");
-        else if (colourMap.get(cube[ybr6x11x18[2]]) == colourMap.get(cube[yrg8x20x27[1]]))
-            return makeMoves(deepCopy(cube), "U R U R' U' R' F R2 U' R' U' R U R' F'");
-        else if (colourMap.get(cube[yrg8x20x27[2]]) == colourMap.get(cube[ygo2x29x36[1]]))
-            return makeMoves(deepCopy(cube), "U2 R U R' U' R' F R2 U' R' U' R U R' F'");
-        else if (colourMap.get(cube[ybo0x9x38[2]]) == colourMap.get(cube[ygo2x29x36[2]]))
-            return makeMoves(deepCopy(cube), "U' R U R' U' R' F R2 U' R' U' R U R' F'");
-        else
-            return makeMoves(deepCopy(cube),
-                    "R U R' U' R' F R2 U' R' U' R U R' F' U2 R U R' U' R' F R2 U' R' U' R U R' F'");
+        return colourMap.get(cube[ybo0x9x38[1]]) == colourMap.get(cube[ybr6x11x18[1]])
+                && colourMap.get(cube[ybr6x11x18[2]]) == colourMap.get(cube[yrg8x20x27[1]])?cube
+        :colourMap.get(cube[ybo0x9x38[1]]) == colourMap.get(cube[ybr6x11x18[1]])?makeMoves(deepCopy(cube), "R U R' U' R' F R2 U' R' U' R U R' F'")
+        :colourMap.get(cube[ybr6x11x18[2]]) == colourMap.get(cube[yrg8x20x27[1]])?makeMoves(deepCopy(cube), "U R U R' U' R' F R2 U' R' U' R U R' F'")
+        :colourMap.get(cube[yrg8x20x27[2]]) == colourMap.get(cube[ygo2x29x36[1]])?makeMoves(deepCopy(cube), "U2 R U R' U' R' F R2 U' R' U' R U R' F'")
+        :colourMap.get(cube[ybo0x9x38[2]]) == colourMap.get(cube[ygo2x29x36[2]])?makeMoves(deepCopy(cube), "U' R U R' U' R' F R2 U' R' U' R U R' F'")
+        :makeMoves(deepCopy(cube), "R U R' U' R' F R2 U' R' U' R U R' F' U2 R U R' U' R' F R2 U' R' U' R U R' F'");
     }
 
-    public static boolean solveBadEdgesHelper(int[] cube, int i, int i1, int i2, int i3, int i4, int i5) {
+    public static boolean SBEHelper(int[] cube, int i, int i1, int i2, int i3, int i4, int i5) {
         return (colourMap.get(cube[i]) == "Y" || colourMap.get(cube[i]) == "W")
                 && (colourMap.get(cube[i1]) == "Y" || colourMap.get(cube[i1]) == "W")
                 && (colourMap.get(cube[i2]) == "Y" || colourMap.get(cube[i2]) == "W")
@@ -807,175 +742,76 @@ public class RubikSolverRemake implements EdgePairings, CornerTrios, MoveHelpers
     }
 
     public static int[] solveBadEdges(int[] cube) {
-        if (colourMap.get(cube[4]) != "Y" && colourMap.get(cube[4]) != "W")
-            cube = makeMoves(deepCopy(cube), "M");
-        if (solveBadEdgesHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[0], yg5x28[0], rw25x46[1], ow43x52[1]))
-            return cube;
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[0], yb3x10[1], yr7x19[1], yg5x28[1], rw25x46[0],
-                ow43x52[1]))
-            return makeMoves(deepCopy(cube), "M' U M");// Arrow
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[1], yb3x10[1], yr7x19[1], yg5x28[0], rw25x46[0],
-                ow43x52[1]))
-            return makeMoves(deepCopy(cube), "U' M' U M");// Arrow
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[1], yb3x10[1], yr7x19[0], yg5x28[1], rw25x46[0],
-                ow43x52[1]))
-            return makeMoves(deepCopy(cube), "U2 M' U M");// Arrow
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[1], yb3x10[0], yr7x19[1], yg5x28[1], rw25x46[0],
-                ow43x52[1]))
-            return makeMoves(deepCopy(cube), "U M' U M");// Arrow
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[1], yb3x10[1], yr7x19[0], yg5x28[1], rw25x46[1],
-                ow43x52[0]))
-            return makeMoves(deepCopy(cube), "M U M");// Arrow
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[1], yb3x10[1], yr7x19[1], yg5x28[0], rw25x46[1],
-                ow43x52[0]))
-            return makeMoves(deepCopy(cube), "U M U M");// Arrow
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[0], yb3x10[1], yr7x19[1], yg5x28[1], rw25x46[1],
-                ow43x52[0]))
-            return makeMoves(deepCopy(cube), "U2 M U M");// Arrow
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[1], yb3x10[0], yr7x19[1], yg5x28[1], rw25x46[1],
-                ow43x52[0]))
-            return makeMoves(deepCopy(cube), "U' M U M");// Arrow
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[1], yb3x10[0], yr7x19[1], yg5x28[0], rw25x46[0],
-                ow43x52[0]))
-            return makeMoves(deepCopy(cube), "U M' U2 M U2 M U M"); // Across 2-down
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[0], yb3x10[1], yr7x19[0], yg5x28[1], rw25x46[0],
-                ow43x52[0]))
-            return makeMoves(deepCopy(cube), "M' U2 M U2 M U M");// Across 2-down
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[1], yg5x28[1], rw25x46[0],
-                ow43x52[0]))
-            return makeMoves(deepCopy(cube), "M U2 M' U' M' U M");// Adj 2-down
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[1], yb3x10[1], yr7x19[0], yg5x28[0], rw25x46[0],
-                ow43x52[0]))
-            return makeMoves(deepCopy(cube), "M' U2 M U' M U M");// Adj 2-down
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[1], yb3x10[0], yr7x19[0], yg5x28[1], rw25x46[0],
-                ow43x52[0]))
-            return makeMoves(deepCopy(cube), "M' U2 M U M U M");// Adj 2-down
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[0], yg5x28[0], rw25x46[1],
-                ow43x52[1]))
-            return makeMoves(deepCopy(cube), "M' U M' U' M U M");
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[1], yb3x10[0], yr7x19[1], yg5x28[0], rw25x46[1],
-                ow43x52[1]))
-            return makeMoves(deepCopy(cube), "M U M' U' M U M");
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[0], yb3x10[1], yr7x19[0], yg5x28[1], rw25x46[1],
-                ow43x52[1]))
-            return makeMoves(deepCopy(cube), "U M U M' U' M U M");
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[1], yb3x10[0], yr7x19[0], yg5x28[1], rw25x46[1],
-                ow43x52[1]))
-            return makeMoves(deepCopy(cube), "M' U' M' U2 M' U M");
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[1], yb3x10[1], yr7x19[0], yg5x28[0], rw25x46[1],
-                ow43x52[1]))
-            return makeMoves(deepCopy(cube), "M' U M' U2 M' U M");
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[0], yb3x10[1], yr7x19[1], yg5x28[0], rw25x46[1],
-                ow43x52[1]))
-            return makeMoves(deepCopy(cube), "M U' M U2 M U M");
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[1], yg5x28[1], rw25x46[1],
-                ow43x52[1]))
-            return makeMoves(deepCopy(cube), "M U M U2 M U M");
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[1], yb3x10[0], yr7x19[0], yg5x28[0], rw25x46[1],
-                ow43x52[0]))
-            return makeMoves(deepCopy(cube), "U M' U M U2 M U M");
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[0], yb3x10[1], yr7x19[0], yg5x28[0], rw25x46[1],
-                ow43x52[0]))
-            return makeMoves(deepCopy(cube), "M' U' M U2 M U M");
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[1], yg5x28[0], rw25x46[1],
-                ow43x52[0]))
-            return makeMoves(deepCopy(cube), "U M' U' M U2 M U M");
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[0], yg5x28[1], rw25x46[1],
-                ow43x52[0]))
-            return makeMoves(deepCopy(cube), "M' U M U2 M U M");
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[1], yb3x10[0], yr7x19[0], yg5x28[0], rw25x46[0],
-                ow43x52[1]))
-            return makeMoves(deepCopy(cube), "U M U' M U2 M' U M");
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[0], yb3x10[1], yr7x19[0], yg5x28[0], rw25x46[0],
-                ow43x52[1]))
-            return makeMoves(deepCopy(cube), "M U M U2 M' U M");
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[1], yg5x28[0], rw25x46[0],
-                ow43x52[1]))
-            return makeMoves(deepCopy(cube), "U M U M U2 M' U M");
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[0], yg5x28[1], rw25x46[0],
-                ow43x52[1]))
-            return makeMoves(deepCopy(cube), "M U' M U2 M' U M");
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[0], yg5x28[0], rw25x46[0],
-                ow43x52[0]))
-            return makeMoves(deepCopy(cube), "M U M U' M' U M");
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[0], yb3x10[1], yr7x19[1], yg5x28[0], rw25x46[0],
-                ow43x52[0]))
-            return makeMoves(deepCopy(cube), "M U2 M' U M' U M");
-        else if (solveBadEdgesHelper(deepCopy(cube), yo1x37[1], yb3x10[1], yr7x19[1], yg5x28[1], rw25x46[1],
-                ow43x52[1]))
-            return makeMoves(deepCopy(cube), "M' U2 M U2 M' U M");
-        else // (solveBadEdgesHelper(deepCopy(cube),yo1x37[1],yb3x10[1],yr7x19[1],yg5x28[1],rw25x46[0],ow43x52[0]))
-            return makeMoves(deepCopy(cube), "M' U M' U2 M U M U M' U M'");
+        cube = colourMap.get(cube[4]) != "Y" && colourMap.get(cube[4]) != "W" ? makeMoves(deepCopy(cube), "M") : cube;
+        return SBEHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[0], yg5x28[0], rw25x46[1], ow43x52[1]) ? cube
+        :SBEHelper(deepCopy(cube), yo1x37[0], yb3x10[1], yr7x19[1], yg5x28[1], rw25x46[0],ow43x52[1])?makeMoves(deepCopy(cube), "M' U M")
+        :SBEHelper(deepCopy(cube), yo1x37[1], yb3x10[1], yr7x19[1], yg5x28[0], rw25x46[0],ow43x52[1])?makeMoves(deepCopy(cube), "U' M' U M")
+        :SBEHelper(deepCopy(cube), yo1x37[1], yb3x10[1], yr7x19[0], yg5x28[1], rw25x46[0],ow43x52[1])?makeMoves(deepCopy(cube), "U2 M' U M")
+        :SBEHelper(deepCopy(cube), yo1x37[1], yb3x10[0], yr7x19[1], yg5x28[1], rw25x46[0],ow43x52[1])?makeMoves(deepCopy(cube), "U M' U M")
+        :SBEHelper(deepCopy(cube), yo1x37[1], yb3x10[1], yr7x19[0], yg5x28[1], rw25x46[1],ow43x52[0])?makeMoves(deepCopy(cube), "M U M")
+        :SBEHelper(deepCopy(cube), yo1x37[1], yb3x10[1], yr7x19[1], yg5x28[0], rw25x46[1],ow43x52[0])?makeMoves(deepCopy(cube), "U M U M")
+        :SBEHelper(deepCopy(cube), yo1x37[0], yb3x10[1], yr7x19[1], yg5x28[1], rw25x46[1],ow43x52[0])?makeMoves(deepCopy(cube), "U2 M U M")
+        :SBEHelper(deepCopy(cube), yo1x37[1], yb3x10[0], yr7x19[1], yg5x28[1], rw25x46[1],ow43x52[0])?makeMoves(deepCopy(cube), "U' M U M")
+        :SBEHelper(deepCopy(cube), yo1x37[1], yb3x10[0], yr7x19[1], yg5x28[0], rw25x46[0],ow43x52[0])?makeMoves(deepCopy(cube), "U M' U2 M U2 M U M")
+        :SBEHelper(deepCopy(cube), yo1x37[0], yb3x10[1], yr7x19[0], yg5x28[1], rw25x46[0],ow43x52[0])?makeMoves(deepCopy(cube), "M' U2 M U2 M U M")
+        :SBEHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[1], yg5x28[1], rw25x46[0],ow43x52[0])?makeMoves(deepCopy(cube), "M U2 M' U' M' U M")
+        :SBEHelper(deepCopy(cube), yo1x37[1], yb3x10[1], yr7x19[0], yg5x28[0], rw25x46[0],ow43x52[0])?makeMoves(deepCopy(cube), "M' U2 M U' M U M")
+        :SBEHelper(deepCopy(cube), yo1x37[1], yb3x10[0], yr7x19[0], yg5x28[1], rw25x46[0],ow43x52[0])?makeMoves(deepCopy(cube), "M' U2 M U M U M")
+        :SBEHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[0], yg5x28[0], rw25x46[1],ow43x52[1])?makeMoves(deepCopy(cube), "M' U M' U' M U M")
+        :SBEHelper(deepCopy(cube), yo1x37[1], yb3x10[0], yr7x19[1], yg5x28[0], rw25x46[1],ow43x52[1])?makeMoves(deepCopy(cube), "M U M' U' M U M")
+        :SBEHelper(deepCopy(cube), yo1x37[0], yb3x10[1], yr7x19[0], yg5x28[1], rw25x46[1],ow43x52[1])?makeMoves(deepCopy(cube), "U M U M' U' M U M")
+        :SBEHelper(deepCopy(cube), yo1x37[1], yb3x10[0], yr7x19[0], yg5x28[1], rw25x46[1],ow43x52[1])?makeMoves(deepCopy(cube), "M' U' M' U2 M' U M")
+        :SBEHelper(deepCopy(cube), yo1x37[1], yb3x10[1], yr7x19[0], yg5x28[0], rw25x46[1],ow43x52[1])?makeMoves(deepCopy(cube), "M' U M' U2 M' U M")
+        :SBEHelper(deepCopy(cube), yo1x37[0], yb3x10[1], yr7x19[1], yg5x28[0], rw25x46[1],ow43x52[1])?makeMoves(deepCopy(cube), "M U' M U2 M U M")
+        :SBEHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[1], yg5x28[1], rw25x46[1],ow43x52[1])?makeMoves(deepCopy(cube), "M U M U2 M U M")
+        :SBEHelper(deepCopy(cube), yo1x37[1], yb3x10[0], yr7x19[0], yg5x28[0], rw25x46[1],ow43x52[0])?makeMoves(deepCopy(cube), "U M' U M U2 M U M")
+        :SBEHelper(deepCopy(cube), yo1x37[0], yb3x10[1], yr7x19[0], yg5x28[0], rw25x46[1],ow43x52[0])?makeMoves(deepCopy(cube), "M' U' M U2 M U M")
+        :SBEHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[1], yg5x28[0], rw25x46[1],ow43x52[0])?makeMoves(deepCopy(cube), "U M' U' M U2 M U M")
+        :SBEHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[0], yg5x28[1], rw25x46[1],ow43x52[0])?makeMoves(deepCopy(cube), "M' U M U2 M U M")
+        :SBEHelper(deepCopy(cube), yo1x37[1], yb3x10[0], yr7x19[0], yg5x28[0], rw25x46[0],ow43x52[1])?makeMoves(deepCopy(cube), "U M U' M U2 M' U M")
+        :SBEHelper(deepCopy(cube), yo1x37[0], yb3x10[1], yr7x19[0], yg5x28[0], rw25x46[0],ow43x52[1])?makeMoves(deepCopy(cube), "M U M U2 M' U M")
+        :SBEHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[1], yg5x28[0], rw25x46[0],ow43x52[1])?makeMoves(deepCopy(cube), "U M U M U2 M' U M")
+        :SBEHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[0], yg5x28[1], rw25x46[0],ow43x52[1])?makeMoves(deepCopy(cube), "M U' M U2 M' U M")
+        :SBEHelper(deepCopy(cube), yo1x37[0], yb3x10[0], yr7x19[0], yg5x28[0], rw25x46[0],ow43x52[0])?makeMoves(deepCopy(cube), "M U M U' M' U M")
+        :SBEHelper(deepCopy(cube), yo1x37[0], yb3x10[1], yr7x19[1], yg5x28[0], rw25x46[0],ow43x52[0])?makeMoves(deepCopy(cube), "M U2 M' U M' U M")
+        :SBEHelper(deepCopy(cube), yo1x37[1], yb3x10[1], yr7x19[1], yg5x28[1], rw25x46[1],ow43x52[1])?makeMoves(deepCopy(cube), "M' U2 M U2 M' U M")
+        :makeMoves(deepCopy(cube), "M' U M' U2 M U M U M' U M'");
     }
 
     public static int[] solveBlueGreenSide(int[] cube) {
-        if (cube[yrg8x20x27[1]] == ybr6x11x18[1])
-            cube = makeMoves(deepCopy(cube), "U");
-        else if (cube[ygo2x29x36[1]] == ybr6x11x18[1])
-            cube = makeMoves(deepCopy(cube), "U2");
-        else if (cube[ybo0x9x38[2]] == ybr6x11x18[1])
-            cube = makeMoves(deepCopy(cube), "U'");
-        if (cube[yb3x10[1]] == yb3x10[1] && cube[yg5x28[1]] == yg5x28[1])
-            return cube;
-        else if (cube[yb3x10[1]] == yg5x28[1] && cube[yg5x28[1]] == yb3x10[1])
-            return makeMoves(deepCopy(cube), "U M2 U2 M2 U");
-        else if (cube[yb3x10[1]] == yb3x10[1] && cube[rw25x46[0]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "U M' U2 M' U2 M2 U'");
-        else if (cube[yb3x10[1]] == yb3x10[1] && cube[yo1x37[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "M2 U M' U2 M' U2 M2 U'");
-        else if (cube[yb3x10[1]] == yb3x10[1] && cube[ow43x52[0]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "U' M U2 M U2 M2 U");
-        else if (cube[yb3x10[1]] == yb3x10[1] && cube[yr7x19[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "M2 U' M U2 M U2 M2 U");
-        else if (cube[rw25x46[0]] == yb3x10[1] && cube[yg5x28[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "U' M' U2 M' U2 M2 U");
-        else if (cube[ow43x52[0]] == yb3x10[1] && cube[yg5x28[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "U M U2 M U2 M2 U'");
-        else if (cube[yr7x19[1]] == yb3x10[1] && cube[yg5x28[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "M2 U M U2 M U2 M2 U'");
-        else if (cube[yo1x37[1]] == yb3x10[1] && cube[yg5x28[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "M2 U' M' U2 M' U2 M2 U");
-        else if (cube[yr7x19[1]] == yb3x10[1] && cube[yb3x10[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "M2 U' M U2 M' U'");
-        else if (cube[yr7x19[1]] == yb3x10[1] && cube[yo1x37[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "M2 U' M2 U");
-        else if (cube[yr7x19[1]] == yb3x10[1] && cube[rw25x46[0]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "U2 M' U2 M' U M2 U'");
-        else if (cube[yr7x19[1]] == yb3x10[1] && cube[ow43x52[0]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "M U2 M U M2 U");
-        else if (cube[yo1x37[1]] == yb3x10[1] && cube[yb3x10[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "M2 U M' U2 M U");
-        else if (cube[yo1x37[1]] == yb3x10[1] && cube[ow43x52[0]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "U2 M U2 M U' M2 U");
-        else if (cube[yo1x37[1]] == yb3x10[1] && cube[yr7x19[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "M2 U M2 U'");
-        else if (cube[yo1x37[1]] == yb3x10[1] && cube[rw25x46[0]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "M' U2 M' U' M2 U'");
-        else if (cube[yg5x28[1]] == yb3x10[1] && cube[rw25x46[0]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "U' M' U2 M U'");
-        else if (cube[yg5x28[1]] == yb3x10[1] && cube[ow43x52[0]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "U M U2 M' U");
-        else if (cube[yg5x28[1]] == yb3x10[1] && cube[yr7x19[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "M2 U M U2 M' U");
-        else if (cube[yg5x28[1]] == yb3x10[1] && cube[yo1x37[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "M2 U' M' U2 M U'");
-        else if (cube[rw25x46[0]] == yb3x10[1] && cube[yb3x10[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "U M' U2 M U");
-        else if (cube[rw25x46[0]] == yb3x10[1] && cube[yo1x37[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "M' U2 M' U M2 U");
-        else if (cube[rw25x46[0]] == yb3x10[1] && cube[ow43x52[0]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "U M2 U'");
-        else if (cube[rw25x46[0]] == yb3x10[1] && cube[yr7x19[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "U2 M' U2 M' U' M2 U");
-        else if (cube[ow43x52[0]] == yb3x10[1] && cube[rw25x46[0]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "U' M2 U");
-        else if (cube[ow43x52[0]] == yb3x10[1] && cube[yo1x37[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "U2 M U2 M U M2 U'");
-        else if (cube[ow43x52[0]] == yb3x10[1] && cube[yr7x19[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "M U2 M U' M2 U'");
-        else if (cube[ow43x52[0]] == yb3x10[1] && cube[yb3x10[1]] == yg5x28[1])
-            return makeMoves(deepCopy(cube), "U' M U2 M' U'");
-        return cube;
+        cube = cube[yrg8x20x27[1]] == ybr6x11x18[1] ? makeMoves(deepCopy(cube), "U")
+        : cube[ygo2x29x36[1]] == ybr6x11x18[1] ? makeMoves(deepCopy(cube), "U2")
+        : cube[ybo0x9x38[2]] == ybr6x11x18[1] ? makeMoves(deepCopy(cube), "U'") : cube;
+        return cube[yb3x10[1]] == yb3x10[1] && cube[yg5x28[1]] == yg5x28[1]?cube
+        :cube[yb3x10[1]] == yg5x28[1] && cube[yg5x28[1]] == yb3x10[1]?makeMoves(deepCopy(cube), "U M2 U2 M2 U")
+        :cube[yb3x10[1]] == yb3x10[1] && cube[rw25x46[0]] == yg5x28[1]?makeMoves(deepCopy(cube), "U M' U2 M' U2 M2 U'")
+        :cube[yb3x10[1]] == yb3x10[1] && cube[yo1x37[1]] == yg5x28[1]?makeMoves(deepCopy(cube), "M2 U M' U2 M' U2 M2 U'")
+        :cube[yb3x10[1]] == yb3x10[1] && cube[ow43x52[0]] == yg5x28[1]?makeMoves(deepCopy(cube), "U' M U2 M U2 M2 U")
+        :cube[yb3x10[1]] == yb3x10[1] && cube[yr7x19[1]] == yg5x28[1]?makeMoves(deepCopy(cube), "M2 U' M U2 M U2 M2 U")
+        :cube[rw25x46[0]] == yb3x10[1] && cube[yg5x28[1]] == yg5x28[1]?makeMoves(deepCopy(cube), "U' M' U2 M' U2 M2 U")
+        :cube[ow43x52[0]] == yb3x10[1] && cube[yg5x28[1]] == yg5x28[1]?makeMoves(deepCopy(cube), "U M U2 M U2 M2 U'")
+        :cube[yr7x19[1]] == yb3x10[1] && cube[yg5x28[1]] == yg5x28[1]?makeMoves(deepCopy(cube), "M2 U M U2 M U2 M2 U'")
+        :cube[yo1x37[1]] == yb3x10[1] && cube[yg5x28[1]] == yg5x28[1]?makeMoves(deepCopy(cube), "M2 U' M' U2 M' U2 M2 U")
+        :cube[yr7x19[1]] == yb3x10[1] && cube[yb3x10[1]] == yg5x28[1]?makeMoves(deepCopy(cube), "M2 U' M U2 M' U'")
+        :cube[yr7x19[1]] == yb3x10[1] && cube[yo1x37[1]] == yg5x28[1]?makeMoves(deepCopy(cube), "M2 U' M2 U")
+        :cube[yr7x19[1]] == yb3x10[1] && cube[rw25x46[0]] == yg5x28[1]?makeMoves(deepCopy(cube), "U2 M' U2 M' U M2 U'")
+        :cube[yr7x19[1]] == yb3x10[1] && cube[ow43x52[0]] == yg5x28[1]?makeMoves(deepCopy(cube), "M U2 M U M2 U")
+        :cube[yo1x37[1]] == yb3x10[1] && cube[yb3x10[1]] == yg5x28[1]?makeMoves(deepCopy(cube), "M2 U M' U2 M U")
+        :cube[yo1x37[1]] == yb3x10[1] && cube[ow43x52[0]] == yg5x28[1]?makeMoves(deepCopy(cube), "U2 M U2 M U' M2 U")
+        :cube[yo1x37[1]] == yb3x10[1] && cube[yr7x19[1]] == yg5x28[1]?makeMoves(deepCopy(cube), "M2 U M2 U'")
+        :cube[yo1x37[1]] == yb3x10[1] && cube[rw25x46[0]] == yg5x28[1]?makeMoves(deepCopy(cube), "M' U2 M' U' M2 U'")
+        :cube[yg5x28[1]] == yb3x10[1] && cube[rw25x46[0]] == yg5x28[1]?makeMoves(deepCopy(cube), "U' M' U2 M U'")
+        :cube[yg5x28[1]] == yb3x10[1] && cube[ow43x52[0]] == yg5x28[1]?makeMoves(deepCopy(cube), "U M U2 M' U")
+        :cube[yg5x28[1]] == yb3x10[1] && cube[yr7x19[1]] == yg5x28[1]?makeMoves(deepCopy(cube), "M2 U M U2 M' U")
+        :cube[yg5x28[1]] == yb3x10[1] && cube[yo1x37[1]] == yg5x28[1]?makeMoves(deepCopy(cube), "M2 U' M' U2 M U'")
+        :cube[rw25x46[0]] == yb3x10[1] && cube[yb3x10[1]] == yg5x28[1]?makeMoves(deepCopy(cube), "U M' U2 M U")
+        :cube[rw25x46[0]] == yb3x10[1] && cube[yo1x37[1]] == yg5x28[1]?makeMoves(deepCopy(cube), "M' U2 M' U M2 U")
+        :cube[rw25x46[0]] == yb3x10[1] && cube[ow43x52[0]] == yg5x28[1]?makeMoves(deepCopy(cube), "U M2 U'")
+        :cube[rw25x46[0]] == yb3x10[1] && cube[yr7x19[1]] == yg5x28[1]?makeMoves(deepCopy(cube), "U2 M' U2 M' U' M2 U")
+        :cube[ow43x52[0]] == yb3x10[1] && cube[rw25x46[0]] == yg5x28[1]?makeMoves(deepCopy(cube), "U' M2 U")
+        :cube[ow43x52[0]] == yb3x10[1] && cube[yo1x37[1]] == yg5x28[1]?makeMoves(deepCopy(cube), "U2 M U2 M U M2 U'")
+        :cube[ow43x52[0]] == yb3x10[1] && cube[yr7x19[1]] == yg5x28[1]?makeMoves(deepCopy(cube), "M U2 M U' M2 U'")
+        :makeMoves(deepCopy(cube), "U' M U2 M' U'");
     }
 
     public static int[] solveRestOfCube(int[] cube) {
