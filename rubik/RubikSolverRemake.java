@@ -409,12 +409,9 @@ public class RubikSolverRemake implements EdgePairings, CornerTrios, MoveHelpers
     }
 
     public static int[] solveBlueCenter(int[] cube) {
-        return (cube[13] == 13) ? cube
-                : (cube[22] == 13) ? makeMoves(deepCopy(cube), "E'")
-                        : (cube[4] == 13) ? makeMoves(deepCopy(cube), "S'")
-                                : (cube[31] == 13) ? makeMoves(deepCopy(cube), "E2")
-                                        : (cube[40] == 13) ? makeMoves(deepCopy(cube), "E")
-                                                : makeMoves(deepCopy(cube), "S");
+        return cube[13] == 13 ? cube : cube[22] == 13 ? makeMoves(deepCopy(cube), "E'")
+        : cube[4] == 13 ? makeMoves(deepCopy(cube), "S'") : cube[31] == 13 ? makeMoves(deepCopy(cube), "E2")
+        : cube[40] == 13 ? makeMoves(deepCopy(cube), "E") : makeMoves(deepCopy(cube), "S");
     }
 
     public static int[] solveBlueWhiteEdge(int[] cube) {
@@ -434,7 +431,7 @@ public class RubikSolverRemake implements EdgePairings, CornerTrios, MoveHelpers
         : cube[rg23x30[0]] == bw16x48[0] ? makeMoves(deepCopy(cube), "F D'")
         : cube[rg23x30[0]] == bw16x48[1] ? makeMoves(deepCopy(cube), "F2 L")
         : cube[rw25x46[0]] == bw16x48[0] ? makeMoves(deepCopy(cube), "D'")
-        : cube[rw25x46[0]] == bw16x48[1] ? makeMoves(deepCopy( cube), "F L")
+        : cube[rw25x46[0]] == bw16x48[1] ? makeMoves(deepCopy(cube), "F L")
         : cube[go32x39[0]] == bw16x48[0] ? makeMoves(deepCopy(cube), "B2 L'")
         : cube[go32x39[0]] == bw16x48[1] ? makeMoves(deepCopy(cube), "B' D")
         : cube[gw34x50[0]] == bw16x48[0] ? makeMoves(deepCopy(cube), "D2")
@@ -445,32 +442,23 @@ public class RubikSolverRemake implements EdgePairings, CornerTrios, MoveHelpers
     }
 
     public static int[] loadBlueRedEdge(int[] cube) {
-        if ((cube[br14x21[0]] == br14x21[0] && cube[brw17x24x45[0]] == brw17x24x45[0])
-                || (cube[rw25x46[0]] == br14x21[0]) || (cube[rw25x46[0]] == br14x21[1]))
-            return cube;
-        else if (cube[yo1x37[0]] == br14x21[0] || cube[yo1x37[0]] == br14x21[1])
-            return makeMoves(deepCopy(cube), "M2");
-        else if (cube[yg5x28[0]] == br14x21[0] || cube[yg5x28[0]] == br14x21[1])
-            return makeMoves(deepCopy(cube), "U M");
-        else if (cube[yr7x19[0]] == br14x21[0] || cube[yr7x19[0]] == br14x21[1])
-            return makeMoves(deepCopy(cube), "M");
-        else if (cube[yb3x10[0]] == br14x21[0] || cube[yb3x10[0]] == br14x21[1])
-            return makeMoves(deepCopy(cube), "U' M");
-        else if (cube[bo12x41[0]] == br14x21[0] || cube[bo12x41[0]] == br14x21[1])
-            return makeMoves(deepCopy(cube), "B M'");
-        else if (cube[br14x21[0]] == br14x21[0] || cube[br14x21[0]] == br14x21[1])
-            return makeMoves(deepCopy(cube), "F'");
-        else if (cube[rg23x30[0]] == br14x21[0] || cube[rg23x30[0]] == br14x21[1])
-            return makeMoves(deepCopy(cube), "F");
-        else if (cube[go32x39[0]] == br14x21[0] || cube[go32x39[0]] == br14x21[1])
-            return makeMoves(deepCopy(cube), "R2 F");
-        else if (cube[gw34x50[0]] == br14x21[0] || cube[gw34x50[0]] == br14x21[1])
-            return makeMoves(deepCopy(cube), "R F");
-        else // (cube[ow43x52[0]] == br14x21[0] || cube[ow43x52[0]] == br14x21[1])
-            return makeMoves(deepCopy(cube), "M'");
+        return (cube[br14x21[0]] == br14x21[0] && cube[brw17x24x45[0]] == brw17x24x45[0])
+                || (cube[rw25x46[0]] == br14x21[0]) || (cube[rw25x46[0]] == br14x21[1]) ? cube
+        : cube[yo1x37[0]] == br14x21[0] || cube[yo1x37[0]] == br14x21[1] ? makeMoves(deepCopy(cube), "M2")
+        : cube[yg5x28[0]] == br14x21[0] || cube[yg5x28[0]] == br14x21[1] ? makeMoves(deepCopy(cube), "U M")
+        : cube[yr7x19[0]] == br14x21[0] || cube[yr7x19[0]] == br14x21[1] ? makeMoves(deepCopy(cube), "M")
+        : cube[yb3x10[0]] == br14x21[0] || cube[yb3x10[0]] == br14x21[1] ? makeMoves(deepCopy(cube), "U' M")
+        : cube[bo12x41[0]] == br14x21[0] || cube[bo12x41[0]] == br14x21[1] ? makeMoves(deepCopy(cube), "B M'")
+        : cube[br14x21[0]] == br14x21[0] || cube[br14x21[0]] == br14x21[1] ? makeMoves(deepCopy(cube), "F'")
+        : cube[rg23x30[0]] == br14x21[0] || cube[rg23x30[0]] == br14x21[1] ? makeMoves(deepCopy(cube), "F")
+        : cube[go32x39[0]] == br14x21[0] || cube[go32x39[0]] == br14x21[1] ? makeMoves(deepCopy(cube), "R2 F")
+        : cube[gw34x50[0]] == br14x21[0] || cube[gw34x50[0]] == br14x21[1] ? makeMoves(deepCopy(cube), "R F")
+        : makeMoves(deepCopy(cube), "M'");
+
     }
 
     public static int[] solveBlueRedEdge(int[] cube) {
+        
         if (cube[br14x21[0]] == br14x21[0] && cube[brw17x24x45[0]] == brw17x24x45[0])
             return cube;
         else if (cube[rw25x46[0]] == br14x21[0] && cube[ybo0x9x38[0]] == brw17x24x45[0])
