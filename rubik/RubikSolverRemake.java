@@ -818,27 +818,16 @@ public class RubikSolverRemake implements EdgePairings, CornerTrios, MoveHelpers
         if (isSolved(cube))
             return cube;
         while (!isSolved(cube)) {
-            if (cube[yr7x19[1]] == yo1x37[0] && cube[22] == 4 && cube[rw25x46[0]] == yr7x19[0])
-                cube = makeMoves(deepCopy(cube), "M'");
-            else if (cube[rw25x46[1]] == yo1x37[0] && cube[49] == 4 && cube[ow43x52[1]] == yr7x19[0])
-                cube = makeMoves(deepCopy(cube), "M2");
-            else if (cube[ow43x52[0]] == yo1x37[0] && cube[40] == 4 && cube[yo1x37[1]] == yr7x19[0])
-                cube = makeMoves(deepCopy(cube), "M");
-            else if (colourMap.get(cube[yr7x19[0]]) == colourMap.get(cube[yo1x37[0]])
-                    && colourMap.get(cube[yr7x19[0]]) == colourMap.get(cube[4])
-                    && colourMap.get(cube[yr7x19[1]]) == colourMap.get(cube[rw25x46[0]]))
-                cube = makeMoves(deepCopy(cube), "M2 U2 M2 U2");
-            else if (colourMap.get(cube[yr7x19[1]]) == colourMap.get(cube[22])
-                    && colourMap.get(cube[yr7x19[1]]) == colourMap.get(cube[rw25x46[0]])
-                    && colourMap.get(cube[yr7x19[0]]) == colourMap.get(cube[yo1x37[0]]))
-                cube = makeMoves(deepCopy(cube), "M U2 M2 U2");
-            else if (colourMap.get(cube[yr7x19[1]]) != colourMap.get(cube[22])
-                    && colourMap.get(cube[yr7x19[1]]) == colourMap.get(cube[rw25x46[0]])
-                    && colourMap.get(cube[yr7x19[0]]) == colourMap.get(cube[yo1x37[0]])
-                    && colourMap.get(cube[yr7x19[0]]) != colourMap.get(cube[4]))
-                cube = makeMoves(deepCopy(cube), "E2 M E2");
-            else
-                cube = makeMoves(deepCopy(cube), "U2 M' U2 M");
+            cube = cube[yr7x19[1]] == yo1x37[0] && cube[22] == 4 && cube[rw25x46[0]] == yr7x19[0]? makeMoves(deepCopy(cube), "M'")
+            :cube[rw25x46[1]] == yo1x37[0] && cube[49] == 4 && cube[ow43x52[1]] == yr7x19[0]?makeMoves(deepCopy(cube), "M2")
+            :cube[ow43x52[0]] == yo1x37[0] && cube[40] == 4 && cube[yo1x37[1]] == yr7x19[0]?makeMoves(deepCopy(cube), "M")
+            :colourMap.get(cube[yr7x19[0]]) == colourMap.get(cube[yo1x37[0]]) && colourMap.get(cube[yr7x19[0]]) == colourMap.get(cube[4])
+            && colourMap.get(cube[yr7x19[1]]) == colourMap.get(cube[rw25x46[0]])?makeMoves(deepCopy(cube), "M2 U2 M2 U2")
+            :colourMap.get(cube[yr7x19[1]]) == colourMap.get(cube[22]) && colourMap.get(cube[yr7x19[1]]) == colourMap.get(cube[rw25x46[0]])
+            && colourMap.get(cube[yr7x19[0]]) == colourMap.get(cube[yo1x37[0]])?makeMoves(deepCopy(cube), "M U2 M2 U2")
+            :colourMap.get(cube[yr7x19[1]]) != colourMap.get(cube[22]) && colourMap.get(cube[yr7x19[1]]) == colourMap.get(cube[rw25x46[0]])
+            && colourMap.get(cube[yr7x19[0]]) == colourMap.get(cube[yo1x37[0]]) && colourMap.get(cube[yr7x19[0]]) != colourMap.get(cube[4])
+            ?makeMoves(deepCopy(cube), "E2 M E2"):makeMoves(deepCopy(cube), "U2 M' U2 M");
         }
         return cube;
     }
