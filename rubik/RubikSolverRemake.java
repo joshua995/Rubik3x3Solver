@@ -510,27 +510,17 @@ public class RubikSolverRemake implements EdgePairings, CornerTrios, MoveHelpers
     }
 
     public static int[] loadBlueOrangeEdge(int[] cube) {
-        if ((cube[bo12x41[0]] == bo12x41[0] && cube[bow15x44x51[0]] == bow15x44x51[0])
-                || (cube[rw25x46[0]] == bo12x41[0]) || (cube[rw25x46[0]] == bo12x41[1]))
-            return cube;
-        else if (cube[yo1x37[0]] == bo12x41[0] || cube[yo1x37[0]] == bo12x41[1])
-            return makeMoves(deepCopy(cube), "M2");
-        else if (cube[yg5x28[0]] == bo12x41[0] || cube[yg5x28[0]] == bo12x41[1])
-            return makeMoves(deepCopy(cube), "U M");
-        else if (cube[yr7x19[0]] == bo12x41[0] || cube[yr7x19[0]] == bo12x41[1])
-            return makeMoves(deepCopy(cube), "M");
-        else if (cube[yb3x10[0]] == bo12x41[0] || cube[yb3x10[0]] == bo12x41[1])
-            return makeMoves(deepCopy(cube), "U' M");
-        else if (cube[bo12x41[0]] == bo12x41[0] || cube[bo12x41[0]] == bo12x41[1])
-            return makeMoves(deepCopy(cube), "B M'");
-        else if (cube[rg23x30[0]] == bo12x41[0] || cube[rg23x30[0]] == bo12x41[1])
-            return makeMoves(deepCopy(cube), "L F L'");
-        else if (cube[go32x39[0]] == bo12x41[0] || cube[go32x39[0]] == bo12x41[1])
-            return makeMoves(deepCopy(cube), "R' U M");
-        else if (cube[gw34x50[0]] == bo12x41[0] || cube[gw34x50[0]] == bo12x41[1])
-            return makeMoves(deepCopy(cube), "L' D' L");
-        else // (cube[ow43x52[0]] == bo12x41[0] || cube[ow43x52[0]] == bo12x41[1])
-            return makeMoves(deepCopy(cube), "M'");
+        return (cube[bo12x41[0]] == bo12x41[0] && cube[bow15x44x51[0]] == bow15x44x51[0])
+        || (cube[rw25x46[0]] == bo12x41[0]) || (cube[rw25x46[0]] == bo12x41[1])?cube
+        :cube[yo1x37[0]] == bo12x41[0] || cube[yo1x37[0]] == bo12x41[1]?makeMoves(deepCopy(cube), "M2")
+        :cube[yg5x28[0]] == bo12x41[0] || cube[yg5x28[0]] == bo12x41[1]?makeMoves(deepCopy(cube), "U M")
+        :cube[yr7x19[0]] == bo12x41[0] || cube[yr7x19[0]] == bo12x41[1]?makeMoves(deepCopy(cube), "M")
+        :cube[yb3x10[0]] == bo12x41[0] || cube[yb3x10[0]] == bo12x41[1]?makeMoves(deepCopy(cube), "U' M")
+        :cube[bo12x41[0]] == bo12x41[0] || cube[bo12x41[0]] == bo12x41[1]?makeMoves(deepCopy(cube), "B M'")
+        :cube[rg23x30[0]] == bo12x41[0] || cube[rg23x30[0]] == bo12x41[1]?makeMoves(deepCopy(cube), "L F L'")
+        :cube[go32x39[0]] == bo12x41[0] || cube[go32x39[0]] == bo12x41[1]?makeMoves(deepCopy(cube), "R' U M")
+        :cube[gw34x50[0]] == bo12x41[0] || cube[gw34x50[0]] == bo12x41[1]?makeMoves(deepCopy(cube), "L' D' L")
+        :makeMoves(deepCopy(cube), "M'");
     }
 
     public static int[] solveBlueOrangeEdge(int[] cube) {
