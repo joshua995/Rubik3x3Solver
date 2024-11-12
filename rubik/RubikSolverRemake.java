@@ -157,13 +157,9 @@ public class RubikSolverRemake implements EdgePairings, CornerTrios, MoveHelpers
                 deepCopy(ow43x52), deepCopy(bw16x48) };
         for (int[] i : allCornerI) {
             String key = (parseUserInputHelper(inputCube, i, "YBO")) ? "YBO"
-                    : (parseUserInputHelper(inputCube, i, "YBR")) ? "YBR"
-                            : (parseUserInputHelper(inputCube, i, "YRG")) ? "YRG"
-                                    : (parseUserInputHelper(inputCube, i, "YGO")) ? "YGO"
-                                            : (parseUserInputHelper(inputCube, i, "BOW")) ? "BOW"
-                                                    : (parseUserInputHelper(inputCube, i, "BRW")) ? "BRW"
-                                                            : (parseUserInputHelper(inputCube, i, "RGW")) ? "RGW"
-                                                                    : "GOW";
+            : (parseUserInputHelper(inputCube, i, "YBR")) ? "YBR" : (parseUserInputHelper(inputCube, i, "YRG")) ? "YRG"
+            : (parseUserInputHelper(inputCube, i, "YGO")) ? "YGO" : (parseUserInputHelper(inputCube, i, "BOW")) ? "BOW"
+            : (parseUserInputHelper(inputCube, i, "BRW")) ? "BRW" : (parseUserInputHelper(inputCube, i, "RGW")) ? "RGW" : "GOW";
             int[] cornerToUse = parseMap.get(key);
             cube[i[0]] = cornerToUse[key.indexOf(inputCube[i[0]])];
             cube[i[1]] = cornerToUse[key.indexOf(inputCube[i[1]])];
@@ -171,23 +167,11 @@ public class RubikSolverRemake implements EdgePairings, CornerTrios, MoveHelpers
         }
         for (int[] i : allEdgeI) {
             String key = (parseUserInputHelper(inputCube, i, "YB")) ? "YB"
-                    : (parseUserInputHelper(inputCube, i, "YO")) ? "YO"
-                            : (parseUserInputHelper(inputCube, i, "YG")) ? "YG"
-                                    : (parseUserInputHelper(inputCube, i, "YR")) ? "YR"
-                                            : (parseUserInputHelper(inputCube, i, "BR")) ? "BR"
-                                                    : (parseUserInputHelper(inputCube, i, "BO")) ? "BO"
-                                                            : (parseUserInputHelper(inputCube, i, "RG")) ? "RG"
-                                                                    : (parseUserInputHelper(inputCube, i, "GO")) ? "GO"
-                                                                            : (parseUserInputHelper(inputCube, i, "GW"))
-                                                                                    ? "GW"
-                                                                                    : (parseUserInputHelper(inputCube,
-                                                                                            i, "BW"))
-                                                                                                    ? "BW"
-                                                                                                    : (parseUserInputHelper(
-                                                                                                            inputCube,
-                                                                                                            i, "RW"))
-                                                                                                                    ? "RW"
-                                                                                                                    : "OW";
+            : (parseUserInputHelper(inputCube, i, "YO")) ? "YO" : (parseUserInputHelper(inputCube, i, "YG")) ? "YG"
+            : (parseUserInputHelper(inputCube, i, "YR")) ? "YR" : (parseUserInputHelper(inputCube, i, "BR")) ? "BR"
+            : (parseUserInputHelper(inputCube, i, "BO")) ? "BO" : (parseUserInputHelper(inputCube, i, "RG")) ? "RG"
+            : (parseUserInputHelper(inputCube, i, "GO")) ? "GO" : (parseUserInputHelper(inputCube, i, "GW")) ? "GW"
+            : (parseUserInputHelper(inputCube, i, "BW")) ? "BW" : (parseUserInputHelper(inputCube, i, "RW")) ? "RW" : "OW";
             int[] valsToUse = parseMap.get(key);
             cube[i[0]] = valsToUse[key.indexOf(inputCube[i[0]])];
             cube[i[1]] = valsToUse[key.indexOf(inputCube[i[1]])];
