@@ -269,8 +269,7 @@ public class RubikSolverRemake implements EdgePairings, CornerTrios, MoveHelpers
                     ? "\033[4m" + TEXT_COLOUR.get(colourMap.get((int) array[i])) + colourMap.get((int) array[i])
                     : (TEXT_COLOUR.keySet().contains(Character.toString((char) array[i])))
                             ? TEXT_COLOUR.get(Character.toString((char) array[i])) + (char) array[i]
-                            : (char) array[i])
-                    + TWHITE + "|\033[0m");
+                            : (char) array[i]) + TWHITE + "|\033[0m");
         }
     }
 
