@@ -17,3 +17,10 @@ B  B  B  R  R  R  G  G  G  O  O  O
          45 46 47
          48 49 50
          51 52 53
+
+    a b
+    d c
+e f i j m n q r
+h g l k p o t s
+    u v
+    x w
