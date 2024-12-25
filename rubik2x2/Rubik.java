@@ -2,23 +2,28 @@
  * Joshua Liu
  * Rubik's cube 
  * TODO make cube representation one full bitstring and a,b,c,... as int[] of substring start and end indices
+ * Test multithreaded generate states
  */
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+class State {
+    private String[] value;
+    private HashMap<String, State> neighbours = new HashMap<>();
+
+    public State(String movesFromSolved, String cubeState) {
+        this.value = new String[] { movesFromSolved, cubeState };
+    }
+}
+
 public class Rubik {
-    static final int FACE_BITS = 3 * 4;
-    static final int FACE_EDGE_BITS = 3 * 8;
-    static final String YELLOW = "000";
-    static final String BLUE = "001";
-    static final String GREEN = "010";
-    static final String ORANGE = "011";
-    static final String RED = "100";
-    static final String WHITE = "101";
+    static final int FACE_BITS = 3 * 4, FACE_EDGE_BITS = 3 * 8;
+    static final String YELLOW = "000", BLUE = "001", GREEN = "010";
+    static final String ORANGE = "011", RED = "100", WHITE = "101";
     static final String[] MOVES = { "R", "R2", "R'", "L", "L2", "L'", "U", "U2", "U'",
-            "D", "D2", "D'", "F", "F2", "F'", "B", "B2", "B'" };
+            "D", "D2", "D'", "F", "F2", "F'", "B", "B2", "B'" }; // TODO Maybe remove double moves
 
     static final Map<String, String> colourMap = Map.of(
             YELLOW, "Y", BLUE, "B", RED, "R", GREEN, "G", ORANGE, "O", WHITE, "W");
@@ -27,13 +32,6 @@ public class Rubik {
             + GREEN + GREEN + GREEN + GREEN + ORANGE + ORANGE + ORANGE + ORANGE + WHITE + WHITE + WHITE + WHITE;
 
     static final Map<String, int[]> cubeMap = new HashMap<>();
-    // // Representation of the cube a-x per sticker
-    // static String a = YELLOW, b = YELLOW, c = YELLOW, d = YELLOW;
-    // static String e = BLUE, f = BLUE, g = BLUE, h = BLUE;
-    // static String i = RED, j = RED, k = RED, l = RED;
-    // static String m = GREEN, n = GREEN, o = GREEN, p = GREEN;
-    // static String q = ORANGE, r = ORANGE, s = ORANGE, t = ORANGE;
-    // static String u = WHITE, v = WHITE, w = WHITE, x = WHITE;
 
     static String movesUsed = "";
 
@@ -163,7 +161,7 @@ public class Rubik {
      * param: direction -> 1 = L, 2 = L2, 3 = L'
      */
     static void L(int direction) {
-        moveHelper("e", "f", "g", h, a, d, i, l, u, x, s, r, direction);
+        moveHelper("E", "F", "G", "H", "A", "D", "I", "L", "U", "X", "S", "R", direction);
     }
 
     /*
@@ -171,22 +169,7 @@ public class Rubik {
      * param: direction -> 1 = U, 2 = U2, 3 = U'
      */
     static void U(int direction) {
-        String[] move = moveHelper(a, b, c, d, r, q, n, m, j, i, f, e, direction);
-        // Set Main face a, b, c, d
-        a = move[0].substring(0, 3);
-        b = move[0].substring(3, 6);
-        c = move[0].substring(6, 9);
-        d = move[0].substring(9);
-
-        // Set Edge r, q, n, m, j, i, f, e
-        r = move[1].substring(0, 3);
-        q = move[1].substring(3, 6);
-        n = move[1].substring(6, 9);
-        m = move[1].substring(9, 12);
-        j = move[1].substring(12, 15);
-        i = move[1].substring(15, 18);
-        f = move[1].substring(18, 21);
-        e = move[1].substring(21);
+        moveHelper("A", "B", "C", "D", "R", "Q", "N", "M", "J", "I", "F", "E", direction);
     }
 
     /*
@@ -194,22 +177,7 @@ public class Rubik {
      * param: direction -> 1 = D, 2 = D2, 3 = D'
      */
     static void D(int direction) {
-        String[] move = moveHelper(u, v, w, x, h, g, l, k, p, o, t, s, direction);
-        // Set Main face u, v, w, x
-        u = move[0].substring(0, 3);
-        v = move[0].substring(3, 6);
-        w = move[0].substring(6, 9);
-        x = move[0].substring(9);
-
-        // Set Edge h, g, l, k, p, o, t, s
-        h = move[1].substring(0, 3);
-        g = move[1].substring(3, 6);
-        l = move[1].substring(6, 9);
-        k = move[1].substring(9, 12);
-        p = move[1].substring(12, 15);
-        o = move[1].substring(15, 18);
-        t = move[1].substring(18, 21);
-        s = move[1].substring(21);
+        moveHelper("U", "V", "W", "X", "H", "G", "L", "K", "P", "O", "T", "S", direction);
     }
 
     /*
@@ -217,22 +185,7 @@ public class Rubik {
      * param: direction -> 1 = F, 2 = F2, 3 = F'
      */
     static void F(int direction) {
-        String[] move = moveHelper(i, j, k, l, d, c, m, p, v, u, g, f, direction);
-        // Set Main face i, j, k, l
-        i = move[0].substring(0, 3);
-        j = move[0].substring(3, 6);
-        k = move[0].substring(6, 9);
-        l = move[0].substring(9);
-
-        // Set Edge d, c, m, p, v, u, g, f
-        d = move[1].substring(0, 3);
-        c = move[1].substring(3, 6);
-        m = move[1].substring(6, 9);
-        p = move[1].substring(9, 12);
-        v = move[1].substring(12, 15);
-        u = move[1].substring(15, 18);
-        g = move[1].substring(18, 21);
-        f = move[1].substring(21);
+        moveHelper("I", "J", "K", "L", "D", "C", "M", "P", "V", "U", "G", "F", direction);
     }
 
     /*
@@ -240,22 +193,7 @@ public class Rubik {
      * param: direction -> 1 = B, 2 = B2, 3 = B'
      */
     static void B(int direction) {
-        String[] move = moveHelper(q, r, s, t, b, a, e, h, x, w, o, n, direction);
-        // Set Main face q, r, s, t
-        q = move[0].substring(0, 3);
-        r = move[0].substring(3, 6);
-        s = move[0].substring(6, 9);
-        t = move[0].substring(9);
-
-        // Set Edge b, a, e, h, x, w, o, n,
-        b = move[1].substring(0, 3);
-        a = move[1].substring(3, 6);
-        e = move[1].substring(6, 9);
-        h = move[1].substring(9, 12);
-        x = move[1].substring(12, 15);
-        w = move[1].substring(15, 18);
-        o = move[1].substring(18, 21);
-        n = move[1].substring(21);
+        moveHelper("Q", "R", "S", "T", "B", "A", "E", "H", "X", "W", "O", "N", direction);
     }
 
     static void makeMoves(String moves) {
@@ -317,6 +255,7 @@ public class Rubik {
                 case "B'":
                     B(3);
                     break;
+                // Add x, y, z moves
                 default:
                     break;
             }
@@ -327,6 +266,22 @@ public class Rubik {
         for (int i = 0; i < amount; i++) {
             makeMoves(MOVES[new Random().nextInt(MOVES.length)]);
         }
+    }
+
+    static String reverseMove(String move) {
+        return move == "R" ? "R'"
+                : move == "R'" ? "R"
+                        : move == "L" ? "L'"
+                                : move == "L'" ? "L"
+                                        : move == "U" ? "U'"
+                                                : move == "U'" ? "U"
+                                                        : move == "D" ? "D'"
+                                                                : move == "D'" ? "D"
+                                                                        : move == "F" ? "F'"
+                                                                                : move == "F'" ? "F"
+                                                                                        : move == "B" ? "B'"
+                                                                                                : move == "B'" ? "B"
+                                                                                                        : "";
     }
 
     static void generateStates() {
