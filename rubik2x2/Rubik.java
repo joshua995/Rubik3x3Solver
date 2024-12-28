@@ -1,29 +1,18 @@
-/*
- * Joshua Liu
- * Rubik's cube 
- * TODO make cube representation one full bitstring and a,b,c,... as int[] of substring start and end indices
- * Test multithreaded generate states
- */
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-
-class State {
-    private String[] value;
-    private HashMap<String, State> neighbours = new HashMap<>();
-
-    public State(String movesFromSolved, String cubeState) {
-        this.value = new String[] { movesFromSolved, cubeState };
-    }
-}
 
 public class Rubik {
     static final int FACE_BITS = 3 * 4, FACE_EDGE_BITS = 3 * 8;
     static final String YELLOW = "000", BLUE = "001", GREEN = "010";
     static final String ORANGE = "011", RED = "100", WHITE = "101";
     static final String[] MOVES = { "R", "R2", "R'", "L", "L2", "L'", "U", "U2", "U'",
-            "D", "D2", "D'", "F", "F2", "F'", "B", "B2", "B'" }; // TODO Maybe remove double moves
+            "D", "D2", "D'", "F", "F2", "F'", "B", "B2", "B'", "X", "X2", "X'", "Y", "Y2", "Y'", "Z", "Z2", "Z'" }; // TODO
+                                                                                                                    // Maybe
+                                                                                                                    // remove
+                                                                                                                    // double
+                                                                                                                    // moves
 
     static final Map<String, String> colourMap = Map.of(
             YELLOW, "Y", BLUE, "B", RED, "R", GREEN, "G", ORANGE, "O", WHITE, "W");
@@ -35,10 +24,12 @@ public class Rubik {
 
     static String movesUsed = "";
 
+    static LinkedList list = new LinkedList();
+
     public static void main(String[] args) {
         initCubeMap();
         displayCube(cube);
-        R(1);
+        makeMoves("X");
         // scrambleCube(5);
         displayCube(cube);
         System.out.println(movesUsed);
@@ -254,6 +245,42 @@ public class Rubik {
                     break;
                 case "B'":
                     B(3);
+                    break;
+                case "X":
+                    R(1);
+                    L(3);
+                    break;
+                case "X'":
+                    R(3);
+                    L(1);
+                    break;
+                case "X2":
+                    R(2);
+                    L(2);
+                    break;
+                case "Y":
+                    U(1);
+                    D(3);
+                    break;
+                case "Y'":
+                    U(3);
+                    D(1);
+                    break;
+                case "Y2":
+                    U(2);
+                    D(2);
+                    break;
+                case "Z":
+                    F(1);
+                    B(3);
+                    break;
+                case "Z'":
+                    F(3);
+                    B(1);
+                    break;
+                case "Z2":
+                    F(2);
+                    B(2);
                     break;
                 // Add x, y, z moves
                 default:
