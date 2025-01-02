@@ -8,11 +8,8 @@ public class Rubik {
     static final String YELLOW = "000", BLUE = "001", GREEN = "010";
     static final String ORANGE = "011", RED = "100", WHITE = "101";
     static final String[] MOVES = { "R", "R2", "R'", "L", "L2", "L'", "U", "U2", "U'",
-            "D", "D2", "D'", "F", "F2", "F'", "B", "B2", "B'", "X", "X2", "X'", "Y", "Y2", "Y'", "Z", "Z2", "Z'" }; // TODO
-                                                                                                                    // Maybe
-                                                                                                                    // remove
-                                                                                                                    // double
-                                                                                                                    // moves
+            "D", "D2", "D'", "F", "F2", "F'", "B", "B2", "B'",
+            "X", "X2", "X'", "Y", "Y2", "Y'", "Z", "Z2", "Z'" }; // TODO Maybe remove double moves
 
     static final Map<String, String> colourMap = Map.of(
             YELLOW, "Y", BLUE, "B", RED, "R", GREEN, "G", ORANGE, "O", WHITE, "W");
@@ -28,11 +25,20 @@ public class Rubik {
 
     public static void main(String[] args) {
         initCubeMap();
-        displayCube(cube);
-        makeMoves("X");
-        // scrambleCube(5);
-        displayCube(cube);
-        System.out.println(movesUsed);
+        // list.add(cube, "/");
+        // displayCube(cube);
+        // displayCube(cube);
+        // generateStates();
+        // list.fileOutput();
+        list.fileInput(true, list);
+        list.print();
+        String testcube = YELLOW + YELLOW + YELLOW + YELLOW + BLUE + BLUE + BLUE + BLUE + RED + RED + RED + RED
+                + GREEN + GREEN + GREEN + GREEN + ORANGE + ORANGE + ORANGE + ORANGE + WHITE + WHITE + WHITE + WHITE;
+        testcube = makeMoves(testcube, "R R' F B");
+
+        if (list.containsState(testcube))
+            System.out.println(list.shared.movesForState());
+        // System.out.println(movesUsed);
     }
 
     static void initCubeMap() {
@@ -88,12 +94,12 @@ public class Rubik {
                 + colourMap.get(cube.substring(cubeMap.get("W")[0], cubeMap.get("W")[1])) + "|");
     }
 
-    static void updateCubeHelper(String sticker, String newValues, int start, int end) {
-        cube = cube.substring(0, cubeMap.get(sticker)[0]) + newValues.substring(start, end)
+    static String updateCubeHelper(String cube, String sticker, String newValues, int start, int end) {
+        return cube.substring(0, cubeMap.get(sticker)[0]) + newValues.substring(start, end)
                 + cube.substring(cubeMap.get(sticker)[0] + 3);
     }
 
-    static void moveHelper(String m1st, String m2nd, String m3rd, String m4th,
+    static String moveHelper(String cube, String m1st, String m2nd, String m3rd, String m4th,
             String e1st, String e2nd, String e3rd, String e4th, String e5th, String e6th, String e7th, String e8th,
             int shiftFactor) {
         String format = "%" + FACE_BITS / 4 + "s";
@@ -107,10 +113,10 @@ public class Rubik {
                 format,
                 Integer.toBinaryString(rightCircularShift(Integer.parseInt(mainFace, 2), 3 * shiftFactor, FACE_BITS)))
                 .replace(" ", "0");
-        updateCubeHelper(m1st, mainFaceAfterMove, 0, 3);
-        updateCubeHelper(m2nd, mainFaceAfterMove, 3, 6);
-        updateCubeHelper(m3rd, mainFaceAfterMove, 6, 9);
-        updateCubeHelper(m4th, mainFaceAfterMove, 9, 12);
+        cube = updateCubeHelper(cube, m1st, mainFaceAfterMove, 0, 3);
+        cube = updateCubeHelper(cube, m2nd, mainFaceAfterMove, 3, 6);
+        cube = updateCubeHelper(cube, m3rd, mainFaceAfterMove, 6, 9);
+        cube = updateCubeHelper(cube, m4th, mainFaceAfterMove, 9, 12);
 
         format = "%" + FACE_EDGE_BITS / 8 + "s";
         String edgeFace = String.format(format,
@@ -129,170 +135,173 @@ public class Rubik {
                         rightCircularShift(Integer.parseInt(edgeFace, 2), 3 * shiftFactor * 2, FACE_EDGE_BITS)))
                 .replace(" ", "0");
 
-        updateCubeHelper(e1st, edgeFaceAfterMove, 0, 3);
-        updateCubeHelper(e2nd, edgeFaceAfterMove, 3, 6);
-        updateCubeHelper(e3rd, edgeFaceAfterMove, 6, 9);
-        updateCubeHelper(e4th, edgeFaceAfterMove, 9, 12);
-        updateCubeHelper(e5th, edgeFaceAfterMove, 12, 15);
-        updateCubeHelper(e6th, edgeFaceAfterMove, 15, 18);
-        updateCubeHelper(e7th, edgeFaceAfterMove, 18, 21);
-        updateCubeHelper(e8th, edgeFaceAfterMove, 21, 24);
+        cube = updateCubeHelper(cube, e1st, edgeFaceAfterMove, 0, 3);
+        cube = updateCubeHelper(cube, e2nd, edgeFaceAfterMove, 3, 6);
+        cube = updateCubeHelper(cube, e3rd, edgeFaceAfterMove, 6, 9);
+        cube = updateCubeHelper(cube, e4th, edgeFaceAfterMove, 9, 12);
+        cube = updateCubeHelper(cube, e5th, edgeFaceAfterMove, 12, 15);
+        cube = updateCubeHelper(cube, e6th, edgeFaceAfterMove, 15, 18);
+        cube = updateCubeHelper(cube, e7th, edgeFaceAfterMove, 18, 21);
+        cube = updateCubeHelper(cube, e8th, edgeFaceAfterMove, 21, 24);
+        return cube;
     }
 
     /*
      * R move
      * param: direction -> 1 = R, 2 = R2, 3 = R'
      */
-    static void R(int direction) {
-        moveHelper("M", "N", "O", "P", "Q", "T", "W", "V", "K", "J", "C", "B", direction);
+    static String R(String cube, int direction) {
+        return moveHelper(cube, "M", "N", "O", "P", "Q", "T", "W", "V", "K", "J", "C", "B", direction);
     }
 
     /*
      * L move
      * param: direction -> 1 = L, 2 = L2, 3 = L'
      */
-    static void L(int direction) {
-        moveHelper("E", "F", "G", "H", "A", "D", "I", "L", "U", "X", "S", "R", direction);
+    static String L(String cube, int direction) {
+        return moveHelper(cube, "E", "F", "G", "H", "A", "D", "I", "L", "U", "X", "S", "R", direction);
     }
 
     /*
      * U move
      * param: direction -> 1 = U, 2 = U2, 3 = U'
      */
-    static void U(int direction) {
-        moveHelper("A", "B", "C", "D", "R", "Q", "N", "M", "J", "I", "F", "E", direction);
+    static String U(String cube, int direction) {
+        return moveHelper(cube, "A", "B", "C", "D", "R", "Q", "N", "M", "J", "I", "F", "E", direction);
     }
 
     /*
      * D move
      * param: direction -> 1 = D, 2 = D2, 3 = D'
      */
-    static void D(int direction) {
-        moveHelper("U", "V", "W", "X", "H", "G", "L", "K", "P", "O", "T", "S", direction);
+    static String D(String cube, int direction) {
+        return moveHelper(cube, "U", "V", "W", "X", "H", "G", "L", "K", "P", "O", "T", "S", direction);
     }
 
     /*
      * F move
      * param: direction -> 1 = F, 2 = F2, 3 = F'
      */
-    static void F(int direction) {
-        moveHelper("I", "J", "K", "L", "D", "C", "M", "P", "V", "U", "G", "F", direction);
+    static String F(String cube, int direction) {
+        return moveHelper(cube, "I", "J", "K", "L", "D", "C", "M", "P", "V", "U", "G", "F", direction);
     }
 
     /*
      * B move
      * param: direction -> 1 = B, 2 = B2, 3 = B'
      */
-    static void B(int direction) {
-        moveHelper("Q", "R", "S", "T", "B", "A", "E", "H", "X", "W", "O", "N", direction);
+    static String B(String cube, int direction) {
+        return moveHelper(cube, "Q", "R", "S", "T", "B", "A", "E", "H", "X", "W", "O", "N", direction);
     }
 
-    static void makeMoves(String moves) {
+    static String makeMoves(String cube, String moves) {
         String[] splitMoves = moves.split(" ");
         movesUsed += moves + " ";
         for (String move : splitMoves) {
             switch (move) {
                 case "R":
-                    R(1);
+                    cube = R(cube, 1);
                     break;
                 case "R2":
-                    R(2);
+                    cube = R(cube, 2);
                     break;
                 case "R'":
-                    R(3);
+                    cube = R(cube, 3);
                     break;
                 case "L":
-                    L(1);
+                    cube = L(cube, 1);
                     break;
                 case "L2":
-                    L(2);
+                    cube = L(cube, 2);
                     break;
                 case "L'":
-                    L(3);
+                    cube = L(cube, 3);
                     break;
                 case "U":
-                    U(1);
+                    cube = U(cube, 1);
                     break;
                 case "U2":
-                    U(2);
+                    cube = U(cube, 2);
                     break;
                 case "U'":
-                    U(3);
+                    cube = U(cube, 3);
                     break;
                 case "D":
-                    D(1);
+                    cube = D(cube, 1);
                     break;
                 case "D2":
-                    D(2);
+                    cube = D(cube, 2);
                     break;
                 case "D'":
-                    D(3);
+                    cube = D(cube, 3);
                     break;
                 case "F":
-                    F(1);
+                    cube = F(cube, 1);
                     break;
                 case "F2":
-                    F(2);
+                    cube = F(cube, 2);
                     break;
                 case "F'":
-                    F(3);
+                    cube = F(cube, 3);
                     break;
                 case "B":
-                    B(1);
+                    cube = B(cube, 1);
                     break;
                 case "B2":
-                    B(2);
+                    cube = B(cube, 2);
                     break;
                 case "B'":
-                    B(3);
+                    cube = B(cube, 3);
                     break;
                 case "X":
-                    R(1);
-                    L(3);
+                    cube = R(cube, 1);
+                    cube = L(cube, 3);
                     break;
                 case "X'":
-                    R(3);
-                    L(1);
+                    cube = R(cube, 3);
+                    cube = L(cube, 1);
                     break;
                 case "X2":
-                    R(2);
-                    L(2);
+                    cube = R(cube, 2);
+                    cube = L(cube, 2);
                     break;
                 case "Y":
-                    U(1);
-                    D(3);
+                    cube = U(cube, 1);
+                    cube = D(cube, 3);
                     break;
                 case "Y'":
-                    U(3);
-                    D(1);
+                    cube = U(cube, 3);
+                    cube = D(cube, 1);
                     break;
                 case "Y2":
-                    U(2);
-                    D(2);
+                    cube = U(cube, 2);
+                    cube = D(cube, 2);
                     break;
                 case "Z":
-                    F(1);
-                    B(3);
+                    cube = F(cube, 1);
+                    cube = B(cube, 3);
                     break;
                 case "Z'":
-                    F(3);
-                    B(1);
+                    cube = F(cube, 3);
+                    cube = B(cube, 1);
                     break;
                 case "Z2":
-                    F(2);
-                    B(2);
+                    cube = F(cube, 2);
+                    cube = B(cube, 2);
                     break;
                 // Add x, y, z moves
                 default:
                     break;
             }
         }
+        return cube;
     }
 
-    static void scrambleCube(int amount) {
+    static String scrambleCube(String cube, int amount) {
         for (int i = 0; i < amount; i++) {
-            makeMoves(MOVES[new Random().nextInt(MOVES.length)]);
+            cube = makeMoves(cube, MOVES[new Random().nextInt(MOVES.length)]);
         }
+        return cube;
     }
 
     static String reverseMove(String move) {
@@ -312,6 +321,19 @@ public class Rubik {
     }
 
     static void generateStates() {
-
+        LinkedList genList = new LinkedList();
+        genList.add(cube, "/");
+        while (!genList.isEmpty()) {
+            String[] currentState = genList.dequeue();
+            String currentCube = currentState[0];
+            String currentMoves = currentState[1];
+            for (String move : MOVES) {
+                String tempCube = makeMoves(currentCube, move);
+                if (!list.containsState(tempCube))
+                    list.add(tempCube, currentMoves + "." + move);
+                if (!genList.containsState(tempCube))
+                    genList.add(tempCube, currentMoves + "." + move);
+            }
+        }
     }
 }
