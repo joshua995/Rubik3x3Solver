@@ -155,9 +155,9 @@ public class LinkedList {
         }
     }
 
-    public void fileOutput() {
+    public void fileOutput(String filename, boolean append) {
         try {
-            FileWriter myWriter = new FileWriter("rubik2x2.txt");
+            FileWriter myWriter = new FileWriter(filename, append);
             Node current = first;
             while (current != null) {
                 myWriter.write(current.value[0] + " " + current.value[1] + ",");
@@ -169,9 +169,9 @@ public class LinkedList {
         }
     }
 
-    public void fileInput(boolean clearList, LinkedList list) {
+    public void fileInput(boolean clearList, LinkedList list, String filename) {
         try {
-            Scanner scanner = new Scanner(new FileReader("rubik2x2.txt"));
+            Scanner scanner = new Scanner(new FileReader(filename));
             if (clearList) {
                 list.clear();
                 String text = scanner.nextLine();

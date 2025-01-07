@@ -2,6 +2,24 @@
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Scanner;
+
+class Stopper implements Runnable {
+    private LinkedList list;
+
+    public Stopper(LinkedList list) {
+        this.list = list;
+    }
+
+    @Override
+    public void run() {
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.nextLine() != "")
+            ;
+        this.list.shared.stopGenerating(true);
+        scanner.close();
+    }
+}
 
 public class Rubik {
     static final int FACE_BITS = 3 * 4, FACE_EDGE_BITS = 3 * 8;
@@ -24,20 +42,26 @@ public class Rubik {
     static LinkedList list = new LinkedList();
 
     public static void main(String[] args) {
+        Thread stopperThread = new Thread(new Stopper(list));
+        stopperThread.start();
         initCubeMap();
-        // list.add(cube, "/");
+        list.fileInput(true, list, "rubik2x2.txt");
+        //list.add(cube, "/");
         // displayCube(cube);
         // displayCube(cube);
-        // generateStates();
-        // list.fileOutput();
-        list.fileInput(true, list);
+        generateStates(true);
+        list.fileOutput("rubik2x2.txt", false);
+        // list.fileInput(true, list, "rubik2x2.txt");
         list.print();
-        String testcube = YELLOW + YELLOW + YELLOW + YELLOW + BLUE + BLUE + BLUE + BLUE + RED + RED + RED + RED
-                + GREEN + GREEN + GREEN + GREEN + ORANGE + ORANGE + ORANGE + ORANGE + WHITE + WHITE + WHITE + WHITE;
-        testcube = makeMoves(testcube, "R R' F B");
 
-        if (list.containsState(testcube))
-            System.out.println(list.shared.movesForState());
+        // String testcube = YELLOW + YELLOW + YELLOW + YELLOW + BLUE + BLUE + BLUE +
+        // BLUE + RED + RED + RED + RED
+        // + GREEN + GREEN + GREEN + GREEN + ORANGE + ORANGE + ORANGE + ORANGE + WHITE +
+        // WHITE + WHITE + WHITE;
+        // testcube = makeMoves(testcube, "R R' F B");
+
+        // if (list.containsState(testcube))
+        // System.out.println(list.shared.movesForState());
         // System.out.println(movesUsed);
     }
 
@@ -320,20 +344,28 @@ public class Rubik {
                                                                                                         : "";
     }
 
-    static void generateStates() {
+    static void generateStates(boolean continu) {
         LinkedList genList = new LinkedList();
-        genList.add(cube, "/");
-        while (!genList.isEmpty()) {
+        if (continu)
+            genList.fileInput(true, genList, "genlist.txt");
+        else
+            genList.add(cube, "/");
+
+        while (!genList.isEmpty() && !list.shared.stopGenerating()) {
             String[] currentState = genList.dequeue();
             String currentCube = currentState[0];
             String currentMoves = currentState[1];
             for (String move : MOVES) {
                 String tempCube = makeMoves(currentCube, move);
-                if (!list.containsState(tempCube))
+                if (!list.containsState(tempCube)) {
                     list.add(tempCube, currentMoves + "." + move);
-                if (!genList.containsState(tempCube))
                     genList.add(tempCube, currentMoves + "." + move);
+                }
+                if (list.shared.stopGenerating()) {
+                    break;
+                }
             }
         }
+        genList.fileOutput("genlist.txt", false);
     }
 }
