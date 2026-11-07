@@ -22,6 +22,7 @@ BBB RRR GGG OOO
 */
 
 import java.util.HashMap;
+import java.util.Random;
 
 public class RubikBitmap {
     static final int WHITE = 0b000;
@@ -42,27 +43,46 @@ public class RubikBitmap {
 
     static int faceU = 0b001_001_001_001_001_001_001_001_001;// 0
     static int faceD = 0b000_000_000_000_000_000_000_000_000;// 1
-    static int faceR = 0b001_011_101_010_001_001_100_001_011;// 2
-    static int faceL = 0b001_011_101_010_001_001_100_001_011;// 3
+    static int faceR = 0b011_011_011_011_011_011_011_011_011;// 2
+    static int faceL = 0b010_010_010_010_010_010_010_010_010;// 3
     static int faceF = 0b100_100_100_100_100_100_100_100_100;// 4
     static int faceB = 0b101_101_101_101_101_101_101_101_101;// 5
 
-    static int[] cube = { faceU, faceD, faceR, faceL, faceF, faceB };
+    static int[] cube = { faceU, faceD, faceR, faceL, faceF, faceB }; // Shallow references throughout the code
 
     static HashMap<Integer, String> bitsToColorMap = new HashMap<>();
+
+    static String[] allMovesList = {
+            "U", "U2", "U'",
+            "D", "D2", "D'",
+            "R", "R2", "R'",
+            "L", "L2", "L'",
+            "F", "F2", "F'",
+            "B", "B2", "B'", };
 
     public static void main(String[] args) {
         initColorMap();
         displayCube();
-        // for (int g = 0; g < 100; g++) {
-        // long startTime = System.nanoTime();
-        // for (int i = 0; i < 100000000; i++) {
-        // makeMoves("UI");
-        // }
-        // long endTime = System.nanoTime();
-        // System.out.println((endTime - startTime) / 1000000);
-        // }
-        BI();
+        long startTime = System.nanoTime();
+        scrambleCube(100000000);
+        long endTime = System.nanoTime();
+        System.out.println((endTime - startTime) / 1000000);
+        B();
+        // B2();
+        // BI();
+        // B2();
+        // R();
+        // R2();
+        // RI();
+        // R2();
+        // L();
+        // L2();
+        // LI();
+        // L2();
+        // U();
+        // U2();
+        // UI();
+        // U2();
         displayCube();
     }
 
@@ -124,6 +144,15 @@ public class RubikBitmap {
 
     static String getColor(int face, int shiftAmount) {
         return bitsToColorMap.get((face >> (3 * shiftAmount)) & 0b111);
+    }
+
+    public static void scrambleCube(int amt) {
+        for (int i = 0; i < amt; i++) {
+            String chosenMove = allMovesList[new Random().nextInt(allMovesList.length)];
+            // System.out.println(chosenMove);
+            makeMoves(chosenMove);
+            // displayCube();
+        }
     }
 
     /**
@@ -284,8 +313,8 @@ public class RubikBitmap {
         cube[1] = updatePos(cube[1], CLEAR_COL_3_MASK, temp, KEEP_COL_3_MASK);
         temp = cube[4];
         // To match the back face to the rest of the cube
-        cube[4] = updatePos(cube[4], CLEAR_COL_3_MASK, rotate90(cube[5], false, false), KEEP_COL_3_MASK);
-        cube[5] = updatePos(cube[5], CLEAR_COL_1_MASK, rotate90(temp, false, false), KEEP_COL_1_MASK);
+        cube[4] = updatePos(cube[4], CLEAR_COL_3_MASK, rotate90(cube[5], false, true), KEEP_COL_3_MASK);
+        cube[5] = updatePos(cube[5], CLEAR_COL_1_MASK, rotate90(temp, false, true), KEEP_COL_1_MASK);
     }
 
     static void RI() {

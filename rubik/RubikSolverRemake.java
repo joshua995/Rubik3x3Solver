@@ -72,15 +72,10 @@ public class RubikSolverRemake implements EdgePairings, CornerTrios, MoveHelpers
                 initMoveMap();
                 initColourMap();
                 cube = initCube(deepCopy(cube));
-                for (int g = 0; g < 100; g++) {
-                        long startTime = System.nanoTime();
-                        for (int i = 0; i < 100000000; i++) {
-                                cube = moveHelper(moveHelper(deepCopy(cube), RIGHT_MAIN, 3, 12),
-                                                RIGHT_SUB, 2, 8);
-                        }
-                        long endTime = System.nanoTime();
-                        System.out.println((endTime - startTime) / 1000000);
-                }
+                long startTime = System.nanoTime();
+                scrambleCube(cube, 100000000);
+                long endTime = System.nanoTime();
+                System.out.println((endTime - startTime) / 1000000);
                 // System.out.println(
                 // "Enter:\033[1m 1\033[0m for auto scramble and solve |\033[1m 2\033[0m to
                 // manually input colors");
