@@ -40,10 +40,10 @@ public class RubikBitmap {
     static final int KEEP_COL_1_MASK = 0b111_000_000_111_000_000_111_000_000;
     static final int CLEAR_COL_1_MASK = 0b000_111_111_000_111_111_000_111_111;
 
-    static int faceU = 0b001_011_101_010_001_001_100_001_011;// 0
+    static int faceU = 0b001_001_001_001_001_001_001_001_001;// 0
     static int faceD = 0b000_000_000_000_000_000_000_000_000;// 1
-    static int faceR = 0b011_011_011_011_011_011_011_011_011;// 2
-    static int faceL = 0b010_010_010_010_010_010_010_010_010;// 3
+    static int faceR = 0b001_011_101_010_001_001_100_001_011;// 2
+    static int faceL = 0b001_011_101_010_001_001_100_001_011;// 3
     static int faceF = 0b100_100_100_100_100_100_100_100_100;// 4
     static int faceB = 0b101_101_101_101_101_101_101_101_101;// 5
 
@@ -57,12 +57,12 @@ public class RubikBitmap {
         // for (int g = 0; g < 100; g++) {
         // long startTime = System.nanoTime();
         // for (int i = 0; i < 100000000; i++) {
-        // makeMoves("U");
+        // makeMoves("UI");
         // }
         // long endTime = System.nanoTime();
         // System.out.println((endTime - startTime) / 1000000);
         // }
-        U2();
+        BI();
         displayCube();
     }
 
@@ -142,9 +142,52 @@ public class RubikBitmap {
                     U2();
                     break;
                 case "U'":
-                    U();
-                    U();
-                    U();
+                    UI();
+                    break;
+                case "D":
+                    D();
+                    break;
+                case "D2":
+                    D2();
+                    break;
+                case "D'":
+                    DI();
+                    break;
+                case "R":
+                    R();
+                    break;
+                case "R2":
+                    R2();
+                    break;
+                case "R'":
+                    RI();
+                    break;
+                case "L":
+                    L();
+                    break;
+                case "L2":
+                    L2();
+                    break;
+                case "L'":
+                    LI();
+                    break;
+                case "F":
+                    F();
+                    break;
+                case "F2":
+                    F2();
+                    break;
+                case "F'":
+                    FI();
+                    break;
+                case "B":
+                    B();
+                    break;
+                case "B2":
+                    B2();
+                    break;
+                case "B'":
+                    BI();
                     break;
                 default:
                     break;
@@ -163,7 +206,7 @@ public class RubikBitmap {
      */
     static void U() {
         cube[0] = rotate90(cube[0], false, false);
-        int temp = cube[3] & KEEP_ROW_1_MASK;
+        int temp = cube[3];
         // Clear the row, then replace with correct row
         cube[3] = updatePos(cube[3], CLEAR_ROW_1_MASK, cube[4], KEEP_ROW_1_MASK);
         cube[4] = updatePos(cube[4], CLEAR_ROW_1_MASK, cube[2], KEEP_ROW_1_MASK);
@@ -173,22 +216,53 @@ public class RubikBitmap {
 
     static void U2() {
         cube[0] = rotate90(cube[0], false, true);
-        int temp = cube[3] & KEEP_ROW_1_MASK;
-        // Clear the row, then replace with correct row
-        cube[3] = updatePos(cube[3], CLEAR_ROW_1_MASK, cube[4], KEEP_ROW_1_MASK);
-        cube[4] = updatePos(cube[4], CLEAR_ROW_1_MASK, cube[2], KEEP_ROW_1_MASK);
-        cube[2] = updatePos(cube[2], CLEAR_ROW_1_MASK, cube[5], KEEP_ROW_1_MASK);
+        int temp = cube[3];
+        cube[3] = updatePos(cube[3], CLEAR_ROW_1_MASK, cube[2], KEEP_ROW_1_MASK);
+        cube[2] = updatePos(cube[2], CLEAR_ROW_1_MASK, temp, KEEP_ROW_1_MASK);
+        temp = cube[4];
+        cube[4] = updatePos(cube[4], CLEAR_ROW_1_MASK, cube[5], KEEP_ROW_1_MASK);
         cube[5] = updatePos(cube[5], CLEAR_ROW_1_MASK, temp, KEEP_ROW_1_MASK);
+    }
+
+    static void UI() {
+        cube[0] = rotate90(cube[0], true, false);
+        int temp = cube[3];
+        // Clear the row, then replace with correct row
+        cube[3] = updatePos(cube[3], CLEAR_ROW_1_MASK, cube[5], KEEP_ROW_1_MASK);
+        cube[5] = updatePos(cube[5], CLEAR_ROW_1_MASK, cube[2], KEEP_ROW_1_MASK);
+        cube[2] = updatePos(cube[2], CLEAR_ROW_1_MASK, cube[4], KEEP_ROW_1_MASK);
+        cube[4] = updatePos(cube[4], CLEAR_ROW_1_MASK, temp, KEEP_ROW_1_MASK);
     }
 
     static void D() {
         cube[1] = rotate90(cube[1], false, false);
-        int temp = cube[3] & KEEP_ROW_3_MASK;
+        int temp = cube[3];
         // Clear the row, then replace with correct row
         cube[3] = updatePos(cube[3], CLEAR_ROW_3_MASK, cube[5], KEEP_ROW_3_MASK);
         cube[5] = updatePos(cube[5], CLEAR_ROW_3_MASK, cube[2], KEEP_ROW_3_MASK);
         cube[2] = updatePos(cube[2], CLEAR_ROW_3_MASK, cube[4], KEEP_ROW_3_MASK);
         cube[4] = updatePos(cube[4], CLEAR_ROW_3_MASK, temp, KEEP_ROW_3_MASK);
+    }
+
+    static void D2() {
+        cube[1] = rotate90(cube[1], false, true);
+        int temp = cube[3];
+        // Clear the row, then replace with correct row
+        cube[3] = updatePos(cube[3], CLEAR_ROW_3_MASK, cube[2], KEEP_ROW_3_MASK);
+        cube[2] = updatePos(cube[2], CLEAR_ROW_3_MASK, temp, KEEP_ROW_3_MASK);
+        temp = cube[5];
+        cube[5] = updatePos(cube[5], CLEAR_ROW_3_MASK, cube[4], KEEP_ROW_3_MASK);
+        cube[4] = updatePos(cube[4], CLEAR_ROW_3_MASK, temp, KEEP_ROW_3_MASK);
+    }
+
+    static void DI() {
+        cube[1] = rotate90(cube[1], true, false);
+        int temp = cube[3] & KEEP_ROW_3_MASK;
+        // Clear the row, then replace with correct row
+        cube[3] = updatePos(cube[3], CLEAR_ROW_3_MASK, cube[4], KEEP_ROW_3_MASK);
+        cube[4] = updatePos(cube[4], CLEAR_ROW_3_MASK, cube[2], KEEP_ROW_3_MASK);
+        cube[2] = updatePos(cube[2], CLEAR_ROW_3_MASK, cube[5], KEEP_ROW_3_MASK);
+        cube[5] = updatePos(cube[5], CLEAR_ROW_3_MASK, temp, KEEP_ROW_3_MASK);
     }
 
     static void R() {
@@ -198,23 +272,60 @@ public class RubikBitmap {
         cube[0] = updatePos(cube[0], CLEAR_COL_3_MASK, cube[4], KEEP_COL_3_MASK);
         cube[4] = updatePos(cube[4], CLEAR_COL_3_MASK, cube[1], KEEP_COL_3_MASK);
         // To match the back face to the rest of the cube
-        cube[1] = updatePos(cube[1], CLEAR_COL_3_MASK, rotate90(rotate90(cube[5], false, false), false, false),
-                KEEP_COL_3_MASK);
-        cube[5] = updatePos(cube[5], CLEAR_COL_1_MASK, rotate90(rotate90(temp, false, false), false, false),
-                KEEP_COL_1_MASK);
+        cube[1] = updatePos(cube[1], CLEAR_COL_3_MASK, rotate90(cube[5], false, true), KEEP_COL_3_MASK);
+        cube[5] = updatePos(cube[5], CLEAR_COL_1_MASK, rotate90(temp, false, true), KEEP_COL_1_MASK);
+    }
+
+    static void R2() {
+        cube[2] = rotate90(cube[2], false, true);
+        int temp = cube[0];
+        // Clear the row, then replace with correct row
+        cube[0] = updatePos(cube[0], CLEAR_COL_3_MASK, cube[1], KEEP_COL_3_MASK);
+        cube[1] = updatePos(cube[1], CLEAR_COL_3_MASK, temp, KEEP_COL_3_MASK);
+        temp = cube[4];
+        // To match the back face to the rest of the cube
+        cube[4] = updatePos(cube[4], CLEAR_COL_3_MASK, rotate90(cube[5], false, false), KEEP_COL_3_MASK);
+        cube[5] = updatePos(cube[5], CLEAR_COL_1_MASK, rotate90(temp, false, false), KEEP_COL_1_MASK);
+    }
+
+    static void RI() {
+        cube[2] = rotate90(cube[2], true, false);
+        int temp = cube[0];
+        // Clear the row, then replace with correct row
+        cube[0] = updatePos(cube[0], CLEAR_COL_3_MASK, rotate90(cube[5], false, true), KEEP_COL_3_MASK);
+        cube[5] = updatePos(cube[5], CLEAR_COL_1_MASK, rotate90(cube[1], false, true), KEEP_COL_1_MASK);
+        cube[1] = updatePos(cube[1], CLEAR_COL_3_MASK, cube[4], KEEP_COL_3_MASK);
+        cube[4] = updatePos(cube[4], CLEAR_COL_3_MASK, temp, KEEP_COL_3_MASK);
     }
 
     static void L() {
         cube[3] = rotate90(cube[3], false, false);
-        int temp = cube[1] & KEEP_COL_1_MASK;
+        int temp = cube[1];
         // Clear the row, then replace with correct row
         cube[1] = updatePos(cube[1], CLEAR_COL_1_MASK, cube[4], KEEP_COL_1_MASK);
         cube[4] = updatePos(cube[4], CLEAR_COL_1_MASK, cube[0], KEEP_COL_1_MASK);
         // To match the back face to the rest of the cube
-        cube[0] = updatePos(cube[0], CLEAR_COL_1_MASK, rotate90(rotate90(cube[5], false, false), false, false),
-                KEEP_COL_1_MASK);
-        cube[5] = updatePos(cube[5], CLEAR_COL_3_MASK, rotate90(rotate90(temp, false, false), false, false),
-                KEEP_COL_3_MASK);
+        cube[0] = updatePos(cube[0], CLEAR_COL_1_MASK, rotate90(cube[5], false, true), KEEP_COL_1_MASK);
+        cube[5] = updatePos(cube[5], CLEAR_COL_3_MASK, rotate90(temp, false, true), KEEP_COL_3_MASK);
+    }
+
+    static void L2() {
+        cube[3] = rotate90(cube[3], false, true);
+        int temp = cube[1];
+        cube[1] = updatePos(cube[1], CLEAR_COL_1_MASK, cube[0], KEEP_COL_1_MASK);
+        cube[0] = updatePos(cube[0], CLEAR_COL_1_MASK, temp, KEEP_COL_1_MASK);
+        temp = cube[4];
+        cube[4] = updatePos(cube[4], CLEAR_COL_1_MASK, rotate90(cube[5], false, true), KEEP_COL_1_MASK);
+        cube[5] = updatePos(cube[5], CLEAR_COL_3_MASK, rotate90(temp, false, true), KEEP_COL_3_MASK);
+    }
+
+    static void LI() {
+        cube[3] = rotate90(cube[3], true, false);
+        int temp = cube[1];
+        cube[1] = updatePos(cube[1], CLEAR_COL_1_MASK, rotate90(cube[5], false, true), KEEP_COL_1_MASK);
+        cube[5] = updatePos(cube[5], CLEAR_COL_3_MASK, rotate90(cube[0], false, true), KEEP_COL_3_MASK);
+        cube[0] = updatePos(cube[0], CLEAR_COL_1_MASK, cube[4], KEEP_COL_1_MASK);
+        cube[4] = updatePos(cube[4], CLEAR_COL_1_MASK, temp, KEEP_COL_1_MASK);
     }
 
     static void F() {
@@ -226,6 +337,25 @@ public class RubikBitmap {
         cube[2] = updatePos(cube[2], CLEAR_COL_1_MASK, rotate90(temp, false, false), KEEP_COL_1_MASK);
     }
 
+    static void F2() {
+        cube[4] = rotate90(cube[4], false, true);
+        int temp = cube[0];
+        cube[0] = updatePos(cube[0], CLEAR_ROW_3_MASK, rotate90(cube[1], false, true), KEEP_ROW_3_MASK);
+        cube[1] = updatePos(cube[1], CLEAR_ROW_1_MASK, rotate90(temp, false, true), KEEP_ROW_1_MASK);
+        temp = cube[3];
+        cube[3] = updatePos(cube[3], CLEAR_COL_3_MASK, rotate90(cube[2], false, true), KEEP_COL_3_MASK);
+        cube[2] = updatePos(cube[2], CLEAR_COL_1_MASK, rotate90(temp, false, true), KEEP_COL_1_MASK);
+    }
+
+    static void FI() {
+        cube[4] = rotate90(cube[4], true, false);
+        int temp = cube[0];
+        cube[0] = updatePos(cube[0], CLEAR_ROW_3_MASK, rotate90(cube[2], true, false), KEEP_ROW_3_MASK);
+        cube[2] = updatePos(cube[2], CLEAR_COL_1_MASK, rotate90(cube[1], true, false), KEEP_COL_1_MASK);
+        cube[1] = updatePos(cube[1], CLEAR_ROW_1_MASK, rotate90(cube[3], true, false), KEEP_ROW_1_MASK);
+        cube[3] = updatePos(cube[3], CLEAR_COL_3_MASK, rotate90(temp, true, false), KEEP_COL_3_MASK);
+    }
+
     static void B() {
         cube[5] = rotate90(cube[5], false, false);
         int temp = cube[0];
@@ -233,6 +363,25 @@ public class RubikBitmap {
         cube[2] = updatePos(cube[2], CLEAR_COL_3_MASK, rotate90(cube[1], true, false), KEEP_COL_3_MASK);
         cube[1] = updatePos(cube[1], CLEAR_ROW_3_MASK, rotate90(cube[3], true, false), KEEP_ROW_3_MASK);
         cube[3] = updatePos(cube[3], CLEAR_COL_1_MASK, rotate90(temp, true, false), KEEP_COL_1_MASK);
+    }
+
+    static void B2() {
+        cube[5] = rotate90(cube[5], false, true);
+        int temp = cube[0];
+        cube[0] = updatePos(cube[0], CLEAR_ROW_1_MASK, rotate90(cube[1], false, true), KEEP_ROW_1_MASK);
+        cube[1] = updatePos(cube[1], CLEAR_ROW_3_MASK, rotate90(temp, false, true), KEEP_ROW_3_MASK);
+        temp = cube[2];
+        cube[2] = updatePos(cube[2], CLEAR_COL_3_MASK, rotate90(cube[3], false, true), KEEP_COL_3_MASK);
+        cube[3] = updatePos(cube[3], CLEAR_COL_1_MASK, rotate90(temp, false, true), KEEP_COL_1_MASK);
+    }
+
+    static void BI() {
+        cube[5] = rotate90(cube[5], true, false);
+        int temp = cube[0];
+        cube[0] = updatePos(cube[0], CLEAR_ROW_1_MASK, rotate90(cube[3], false, false), KEEP_ROW_1_MASK);
+        cube[3] = updatePos(cube[3], CLEAR_COL_1_MASK, rotate90(cube[1], false, false), KEEP_COL_1_MASK);
+        cube[1] = updatePos(cube[1], CLEAR_ROW_3_MASK, rotate90(cube[2], false, false), KEEP_ROW_3_MASK);
+        cube[2] = updatePos(cube[2], CLEAR_COL_3_MASK, rotate90(temp, false, false), KEEP_COL_3_MASK);
     }
 
     /*
