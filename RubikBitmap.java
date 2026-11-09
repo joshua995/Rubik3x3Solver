@@ -23,6 +23,8 @@ BBB RRR GGG OOO
 Middle slice moves are simulated by rotating the sides and the whole cube to
 */
 
+//TODO Recheck solver
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -761,76 +763,21 @@ public class RubikBitmap {
         solveBlueWhiteEdge();
         loadBlueRedEdge();
         solveBlueRedBlock();
-    }
-
-    static boolean colorMatch(int sticker, int stickerMask, int color) {
-        return ((((sticker & stickerMask) >> (3 * stickerToShifts.get(stickerMask))) & 0b111) == color);
-    }
-
-    /**
-     * Checks if an edge matches the search or a pair of sticker matches search
-     * 
-     * @param cubeI              1st face index
-     * @param stickerMaskRow
-     * @param stickerMaskCol     1st stickerMasks[stickerMaskRow][stickerMaskCol]
-     * @param color              1st to match
-     * @param cubeI1             2nd face index
-     * @param stickerMaskRow1
-     * @param stickerMaskCol1    2nd stickerMasks[stickerMaskRow1][stickerMaskCol1]
-     * @param color1             2nd to match
-     * @param checkFlippedColors return true if stickers match when colors are
-     *                           flipped
-     * @return Edge matches criteria
-     */
-    static boolean pairMatch(int cubeI, int stickerMaskRow, int stickerMaskCol, int color, int cubeI1,
-            int stickerMaskRow1, int stickerMaskCol1, int color1, boolean checkFlippedColors) {
-        return !checkFlippedColors ? colorMatch(cube[cubeI], stickerMasks[stickerMaskRow][stickerMaskCol], color)
-                && colorMatch(cube[cubeI1], stickerMasks[stickerMaskRow1][stickerMaskCol1], color1)
-                : (colorMatch(cube[cubeI], stickerMasks[stickerMaskRow][stickerMaskCol], color)
-                        && colorMatch(cube[cubeI1], stickerMasks[stickerMaskRow1][stickerMaskCol1], color1))
-                        || (colorMatch(cube[cubeI], stickerMasks[stickerMaskRow][stickerMaskCol], color1)
-                                && colorMatch(cube[cubeI1], stickerMasks[stickerMaskRow1][stickerMaskCol1], color));
-    }
-
-    // NOTE might be redundant. Checking two sides will determine the 3rd color
-    /**
-     * Checks if a corner or trio of stickers match the colors (similar to
-     * pairMatch)
-     * 
-     * @param cubeI
-     * @param stickerMaskRow
-     * @param stickerMaskCol
-     * @param color
-     * @param cubeI1
-     * @param stickerMaskRow1
-     * @param stickerMaskCol1
-     * @param color1
-     * @param cubeI2
-     * @param stickerMaskRow2
-     * @param stickerMaskCol2
-     * @param color2
-     * @return corner matches criteria
-     */
-    static boolean trioMatch(int cubeI, int stickerMaskRow, int stickerMaskCol, int color, int cubeI1,
-            int stickerMaskRow1, int stickerMaskCol1, int color1, int cubeI2, int stickerMaskRow2, int stickerMaskCol2,
-            int color2) {
-        return pairMatch(cubeI, stickerMaskRow, stickerMaskCol, color, cubeI1, stickerMaskRow1, stickerMaskCol1, color1,
-                false)
-                && colorMatch(cube[cubeI2], stickerMasks[stickerMaskRow2][stickerMaskCol2], color2);
+        loadBlueOrangeEdge();
     }
 
     static void solveBlueCenter() {
-        if (colorMatch(cube[3], stickerMasks[1][1], BLUE)) { // In position faceL
+        if (colorMatch(3, 1, 1, BLUE)) { // In position faceL
             return;
-        } else if (colorMatch(cube[0], stickerMasks[1][1], BLUE)) { // On faceU
+        } else if (colorMatch(0, 1, 1, BLUE)) { // On faceU
             makeMoves("z'");
-        } else if (colorMatch(cube[1], stickerMasks[1][1], BLUE)) { // On faceD
+        } else if (colorMatch(1, 1, 1, BLUE)) { // On faceD
             makeMoves("z");
-        } else if (colorMatch(cube[2], stickerMasks[1][1], BLUE)) { // On faceR
+        } else if (colorMatch(2, 1, 1, BLUE)) { // On faceR
             makeMoves("y2");
-        } else if (colorMatch(cube[4], stickerMasks[1][1], BLUE)) { // On faceF
+        } else if (colorMatch(4, 1, 1, BLUE)) { // On faceF
             makeMoves("y");
-        } else if (colorMatch(cube[5], stickerMasks[1][1], BLUE)) { // On faceB
+        } else if (colorMatch(5, 1, 1, BLUE)) { // On faceB
             makeMoves("y'");
         }
     }
@@ -842,60 +789,59 @@ public class RubikBitmap {
         } // Check blue on faceL
         else if (pairMatch(3, 1, 2, BLUE, 4, 1, 0, WHITE, false)) {
             makeMoves("L");
-        } else if (colorMatch(cube[3], stickerMasks[0][1], BLUE) && colorMatch(cube[0], stickerMasks[1][0], WHITE)) {
+        } else if (colorMatch(3, 0, 1, BLUE) && colorMatch(0, 1, 0, WHITE)) {
             makeMoves("L2");
-        } else if (colorMatch(cube[3], stickerMasks[1][0], BLUE) && colorMatch(cube[5], stickerMasks[1][2], WHITE)) {
+        } else if (colorMatch(3, 1, 0, BLUE) && colorMatch(5, 1, 2, WHITE)) {
             makeMoves("L'");
         } // Check blue on faceU
-        else if (colorMatch(cube[0], stickerMasks[0][1], BLUE) && colorMatch(cube[5], stickerMasks[0][1], WHITE)) {
+        else if (colorMatch(0, 0, 1, BLUE) && colorMatch(5, 0, 1, WHITE)) {
             makeMoves("B L'");
-        } else if (colorMatch(cube[0], stickerMasks[1][0], BLUE) && colorMatch(cube[3], stickerMasks[0][1], WHITE)) {
+        } else if (colorMatch(0, 1, 0, BLUE) && colorMatch(3, 0, 1, WHITE)) {
             makeMoves("U B L'");
-        } else if (colorMatch(cube[0], stickerMasks[1][2], BLUE) && colorMatch(cube[2], stickerMasks[0][1], WHITE)) {
+        } else if (colorMatch(0, 1, 2, BLUE) && colorMatch(2, 0, 1, WHITE)) {
             makeMoves("U' B L'");
-        } else if (colorMatch(cube[0], stickerMasks[2][1], BLUE) && colorMatch(cube[4], stickerMasks[0][1], WHITE)) {
+        } else if (colorMatch(0, 2, 1, BLUE) && colorMatch(4, 0, 1, WHITE)) {
             makeMoves("F' L'");
         } // Check blue on faceF
-        else if (colorMatch(cube[4], stickerMasks[0][1], BLUE) && colorMatch(cube[0], stickerMasks[2][1], WHITE)) {
+        else if (colorMatch(4, 0, 1, BLUE) && colorMatch(0, 2, 1, WHITE)) {
             makeMoves("U L2");
-        } else if (colorMatch(cube[4], stickerMasks[1][0], BLUE) && colorMatch(cube[3], stickerMasks[1][2], WHITE)) {
+        } else if (colorMatch(4, 1, 0, BLUE) && colorMatch(3, 1, 2, WHITE)) {
             makeMoves("F' D'");
-        } else if (colorMatch(cube[4], stickerMasks[1][2], BLUE) && colorMatch(cube[2], stickerMasks[1][0], WHITE)) {
+        } else if (colorMatch(4, 1, 2, BLUE) && colorMatch(2, 1, 0, WHITE)) {
             makeMoves("F D'");
-        } else if (colorMatch(cube[4], stickerMasks[2][1], BLUE) && colorMatch(cube[1], stickerMasks[0][1], WHITE)) {
+        } else if (colorMatch(4, 2, 1, BLUE) && colorMatch(1, 0, 1, WHITE)) {
             makeMoves("D'");
         } // Check blue on faceR
-        else if (colorMatch(cube[2], stickerMasks[0][1], BLUE) && colorMatch(cube[0], stickerMasks[1][2], WHITE)) {
+        else if (colorMatch(2, 0, 1, BLUE) && colorMatch(0, 1, 2, WHITE)) {
             makeMoves("U2 L2");
-        } else if (colorMatch(cube[2], stickerMasks[1][0], BLUE) && colorMatch(cube[4], stickerMasks[1][2], WHITE)) {
+        } else if (colorMatch(2, 1, 0, BLUE) && colorMatch(4, 1, 2, WHITE)) {
             makeMoves("F2 L");
-        } else if (colorMatch(cube[2], stickerMasks[1][2], BLUE) && colorMatch(cube[5], stickerMasks[1][0], WHITE)) {
+        } else if (colorMatch(2, 1, 2, BLUE) && colorMatch(5, 1, 0, WHITE)) {
             makeMoves("B2 L'");
-        } else if (colorMatch(cube[2], stickerMasks[2][1], BLUE) && colorMatch(cube[1], stickerMasks[1][2], WHITE)) {
+        } else if (colorMatch(2, 2, 1, BLUE) && colorMatch(1, 1, 2, WHITE)) {
             makeMoves("D2");
         } // Check blue on faceD
-        else if (colorMatch(cube[1], stickerMasks[0][1], BLUE) && colorMatch(cube[4], stickerMasks[2][1], WHITE)) {
+        else if (colorMatch(1, 0, 1, BLUE) && colorMatch(4, 2, 1, WHITE)) {
             makeMoves("F L");
-        } else if (colorMatch(cube[1], stickerMasks[1][0], BLUE) && colorMatch(cube[3], stickerMasks[2][1], WHITE)) {
+        } else if (colorMatch(1, 1, 0, BLUE) && colorMatch(3, 2, 1, WHITE)) {
             makeMoves("D F L");
-        } else if (colorMatch(cube[1], stickerMasks[1][2], BLUE) && colorMatch(cube[2], stickerMasks[2][1], WHITE)) {
+        } else if (colorMatch(1, 1, 2, BLUE) && colorMatch(2, 2, 1, WHITE)) {
             makeMoves("D' F L");
-        } else if (colorMatch(cube[1], stickerMasks[2][1], BLUE) && colorMatch(cube[5], stickerMasks[2][1], WHITE)) {
+        } else if (colorMatch(1, 2, 1, BLUE) && colorMatch(5, 2, 1, WHITE)) {
             makeMoves("B' L'");
         } // Check blue on faceB
-        else if (colorMatch(cube[5], stickerMasks[0][1], BLUE) && colorMatch(cube[0], stickerMasks[0][1], WHITE)) {
+        else if (colorMatch(5, 0, 1, BLUE) && colorMatch(0, 0, 1, WHITE)) {
             makeMoves("U' L2");
-        } else if (colorMatch(cube[5], stickerMasks[1][0], BLUE) && colorMatch(cube[2], stickerMasks[1][2], WHITE)) {
+        } else if (colorMatch(5, 1, 0, BLUE) && colorMatch(2, 1, 2, WHITE)) {
             makeMoves("B' D");
-        } else if (colorMatch(cube[5], stickerMasks[1][2], BLUE) && colorMatch(cube[3], stickerMasks[1][0], WHITE)) {
+        } else if (colorMatch(5, 1, 2, BLUE) && colorMatch(3, 1, 0, WHITE)) {
             makeMoves("B D");
-        } else if (colorMatch(cube[5], stickerMasks[2][1], BLUE) && colorMatch(cube[1], stickerMasks[2][1], WHITE)) {
+        } else if (colorMatch(5, 2, 1, BLUE) && colorMatch(1, 2, 1, WHITE)) {
             makeMoves("D");
         }
     }
 
     static void loadBlueRedEdge() {
-        System.out.println("Called");
         if ((trioMatch(3, 2, 2, BLUE, 4, 2, 0, RED, 1, 0, 0, WHITE) && pairMatch(3, 1, 2, BLUE, 4, 1, 0, RED, false))
                 || pairMatch(4, 2, 1, BLUE, 1, 0, 1, RED, true)) {
             return;
@@ -930,63 +876,149 @@ public class RubikBitmap {
         if ((trioMatch(3, 2, 2, BLUE, 4, 2, 0, RED, 1, 0, 0, WHITE) && pairMatch(3, 1, 2, BLUE, 4, 1, 0, RED, false))) {
             return;
         } // faceF is BLUE
-        else if (colorMatch(cube[4], stickerMasks[2][1], BLUE)) {
-            System.out.println("Entered");
-            // faceU BLUE for the corner, WHITE for the other sticker, RED will follow
-            if (pairMatch(0, 0, 0, BLUE, 5, 0, 2, WHITE, false)) {
-                makeMoves("U' M' F'");
-            } else if (pairMatch(0, 0, 2, BLUE, 2, 0, 2, WHITE, false)) {
-                makeMoves("U2 M' F'");
-            } else if (pairMatch(0, 2, 0, BLUE, 3, 0, 2, WHITE, false)) {
-                makeMoves("M' F'");
-            } else if (pairMatch(0, 2, 2, BLUE, 4, 0, 2, WHITE, false)) {
-                makeMoves("U M' F'");
-            } // faceF BLUE...
-            else if (pairMatch(4, 0, 0, BLUE, 0, 2, 0, WHITE, false)) {
-                makeMoves("M F2 r U M' F'");
-            } else if (pairMatch(4, 0, 2, BLUE, 2, 0, 0, WHITE, false)) {
-                makeMoves("U2 M2 U2 r' F");
-            } else if (pairMatch(4, 2, 0, BLUE, 3, 2, 2, WHITE, false)) {
-                makeMoves("F' R U F'");
-            } else if (pairMatch(4, 2, 2, BLUE, 1, 0, 2, WHITE, false)) {
-                makeMoves("R U M' F'");
-            } // faceR BLUE...
-            else if (pairMatch(2, 0, 0, BLUE, 0, 2, 0, WHITE, false)) {
-                makeMoves("M F' M2 F'");
-            } else if (pairMatch(2, 0, 2, BLUE, 5, 0, 0, WHITE, false)) {
-                makeMoves("r' F' M2 F'");
-            } else if (pairMatch(2, 2, 0, BLUE, 4, 2, 2, WHITE, false)) {
-                makeMoves("R M F' M2 F'");
-            } else if (pairMatch(2, 2, 2, BLUE, 1, 2, 2, WHITE, false)) {
-                makeMoves("R2 M F' M2 F'");
-            } // faceB BLUE...
-            else if (pairMatch(5, 0, 0, BLUE, 0, 0, 2, WHITE, false)) {
-                makeMoves("R' U M' F'");
-            } else if (pairMatch(5, 0, 2, BLUE, 3, 0, 0, WHITE, false)) {
-                makeMoves("M2 U2 r' F");
-            } else if (pairMatch(5, 2, 0, BLUE, 2, 2, 2, WHITE, false)) {
-                makeMoves("R' U2 M' F'");
-            } else if (pairMatch(5, 2, 2, BLUE, 1, 2, 0, WHITE, false)) {
-                makeMoves("B2 R' U M' F'");
-            } // faceL BLUE...
-            else if (pairMatch(3, 0, 0, BLUE, 0, 0, 0, WHITE, false)) {
-                makeMoves("B' U2 M' F'");
-            } else if (pairMatch(3, 0, 2, BLUE, 4, 0, 0, WHITE, false)) {
-                makeMoves("U M2 U2 r' F");
-            } else if (pairMatch(3, 2, 0, BLUE, 5, 2, 2, WHITE, false)) {
-                makeMoves("B' U' M' F'");
-            } else if (pairMatch(3, 2, 2, BLUE, 1, 0, 0, WHITE, false)) {
-                makeMoves("M F M2 F'");
-            } // faceD BLUE...
-            else if (pairMatch(1, 0, 0, BLUE, 4, 2, 0, WHITE, false)) {
-                makeMoves("M F2 U M2 F'");
-            } else if (pairMatch(1, 0, 2, BLUE, 2, 2, 0, WHITE, false)) {
-                makeMoves("M F2 M2 F'");
-            } else if (pairMatch(1, 2, 0, BLUE, 3, 2, 0, WHITE, false)) {
-                makeMoves("M B2 U2 F'");
-            } else if (pairMatch(1, 2, 2, BLUE, 5, 2, 0, WHITE, false)) {
-                makeMoves("R2 U M2 F'");
-            }
+          // faceU BLUE for the corner, WHITE for the other sticker, RED will follow
+        else if (pairMatch(0, 0, 0, BLUE, 5, 0, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "U' M' F'" : "U R2 F");
+        } else if (pairMatch(0, 0, 2, BLUE, 2, 0, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "U2 M' F'" : "R2 F");
+        } else if (pairMatch(0, 2, 0, BLUE, 3, 0, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "M' F'" : "U2 R2 F");
+        } else if (pairMatch(0, 2, 2, BLUE, 4, 0, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "U M' F'" : "U' R2 F");
+        } // faceF BLUE...
+        else if (pairMatch(4, 0, 0, BLUE, 0, 2, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "M F2 r U M' F'" : "M F R' M' F");
+        } else if (pairMatch(4, 0, 2, BLUE, 2, 0, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "U2 M2 U2 r' F" : "R' F");
+        } else if (pairMatch(4, 2, 0, BLUE, 3, 2, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "F' R U F'" : "M F2 R' M' F");
+        } else if (pairMatch(4, 2, 2, BLUE, 1, 0, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "R U M' F'" : "M F' R' M' F");
+        } // faceR BLUE...
+        else if (pairMatch(2, 0, 0, BLUE, 0, 2, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "M F' M2 F'" : "R U R' F");
+        } else if (pairMatch(2, 0, 2, BLUE, 5, 0, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "r' F' M2 F'" : "U R' F");
+        } else if (pairMatch(2, 2, 0, BLUE, 4, 2, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "R M F' M2 F'" : "R2 U R' F");
+        } else if (pairMatch(2, 2, 2, BLUE, 1, 2, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "R2 M F' M2 F'" : "R' U R' F");
+        } // faceB BLUE...
+        else if (pairMatch(5, 0, 0, BLUE, 0, 0, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "R' U M' F'" : "B' R F");
+        } else if (pairMatch(5, 0, 2, BLUE, 3, 0, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "M2 U2 r' F" : "B2 R F");
+        } else if (pairMatch(5, 2, 0, BLUE, 2, 2, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "R' U2 M' F'" : "R F");
+        } else if (pairMatch(5, 2, 2, BLUE, 1, 2, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "B2 R' U M' F'" : "B R F");
+        } // faceL BLUE...
+        else if (pairMatch(3, 0, 0, BLUE, 0, 0, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "B' U2 M' F'" : "B' R2 F");
+        } else if (pairMatch(3, 0, 2, BLUE, 4, 0, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "U M2 U2 r' F" : "U' R' F");
+        } else if (pairMatch(3, 2, 0, BLUE, 5, 2, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "B' U' M' F'" : "B' U R2 F");
+        } else if (pairMatch(3, 2, 2, BLUE, 1, 0, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "M F M2 F'" : "M F' M' F");
+        } // faceD BLUE...
+        else if (pairMatch(1, 0, 0, BLUE, 4, 2, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "M F2 U M2 F'" : "M F U' R' M' F");
+        } else if (pairMatch(1, 0, 2, BLUE, 2, 2, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "M F2 M2 F'" : "F");
+        } else if (pairMatch(1, 2, 0, BLUE, 3, 2, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "M B2 U2 F'" : "B2 R2 F");
+        } else if (pairMatch(1, 2, 2, BLUE, 5, 2, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "R2 U M2 F'" : "R2 U' R2 F");
         }
+    }
+
+    // TODO
+    static void loadBlueOrangeEdge() {
+        if ((trioMatch(3, 2, 2, BLUE, 4, 2, 0, RED, 1, 0, 0, WHITE) && pairMatch(3, 1, 2, BLUE, 4, 1, 0, RED, false))
+                || pairMatch(4, 2, 1, BLUE, 1, 0, 1, RED, true)) {
+            return;
+        } // FaceU
+        else if (pairMatch(0, 0, 1, BLUE, 5, 0, 1, RED, true)) {
+            makeMoves("M2");
+        } else if (pairMatch(0, 1, 0, BLUE, 3, 0, 1, RED, true)) {
+            makeMoves("U' M");
+        } else if (pairMatch(0, 1, 1, BLUE, 2, 0, 1, RED, true)) {
+            makeMoves("U M");
+        } else if (pairMatch(0, 2, 1, BLUE, 4, 0, 1, RED, true)) {
+            makeMoves("M");
+        } // FaceF
+        else if (pairMatch(4, 1, 0, BLUE, 3, 1, 2, RED, true)) {
+            makeMoves("F'");
+        } else if (pairMatch(4, 1, 2, BLUE, 2, 1, 0, RED, true)) {
+            makeMoves("F");
+        } // FaceR
+        else if (pairMatch(2, 1, 2, BLUE, 5, 1, 0, RED, true)) {
+            makeMoves("R2 F");
+        } else if (pairMatch(2, 2, 1, BLUE, 1, 1, 2, RED, true)) {
+            makeMoves("R F");
+        } // FaceB
+        else if (pairMatch(5, 1, 2, BLUE, 3, 1, 0, RED, true)) {
+            makeMoves("B M'");
+        } else if (pairMatch(5, 2, 1, BLUE, 1, 2, 1, RED, true)) {
+            makeMoves("M'");
+        }
+    }
+
+    static boolean colorMatch(int cubeI, int stickerMaskRow, int stickerMaskCol, int color) {
+        return ((((cube[cubeI] & stickerMasks[stickerMaskRow][stickerMaskCol]) >> (3
+                * stickerToShifts.get(stickerMasks[stickerMaskRow][stickerMaskCol]))) & 0b111) == color);
+    }
+
+    /**
+     * Checks if an edge matches the search or a pair of sticker matches search
+     * 
+     * @param cubeI              1st face index
+     * @param stickerMaskRow
+     * @param stickerMaskCol     1st stickerMasks[stickerMaskRow][stickerMaskCol]
+     * @param color              1st to match
+     * @param cubeI1             2nd face index
+     * @param stickerMaskRow1
+     * @param stickerMaskCol1    2nd stickerMasks[stickerMaskRow1][stickerMaskCol1]
+     * @param color1             2nd to match
+     * @param checkFlippedColors return true if stickers match when colors are
+     *                           flipped
+     * @return Edge matches criteria
+     */
+    static boolean pairMatch(int cubeI, int stickerMaskRow, int stickerMaskCol, int color, int cubeI1,
+            int stickerMaskRow1, int stickerMaskCol1, int color1, boolean checkFlippedColors) {
+        return !checkFlippedColors ? colorMatch(cubeI, stickerMaskRow, stickerMaskCol, color)
+                && colorMatch(cubeI1, stickerMaskRow1, stickerMaskCol1, color1)
+                : (colorMatch(cubeI, stickerMaskRow, stickerMaskCol, color)
+                        && colorMatch(cubeI1, stickerMaskRow1, stickerMaskCol1, color1))
+                        || (colorMatch(cubeI, stickerMaskRow, stickerMaskCol, color1)
+                                && colorMatch(cubeI1, stickerMaskRow1, stickerMaskCol1, color));
+    }
+
+    // NOTE might be redundant. Checking two sides will determine the 3rd color
+    /**
+     * Checks if a corner or trio of stickers match the colors (similar to
+     * pairMatch)
+     * 
+     * @param cubeI
+     * @param stickerMaskRow
+     * @param stickerMaskCol
+     * @param color
+     * @param cubeI1
+     * @param stickerMaskRow1
+     * @param stickerMaskCol1
+     * @param color1
+     * @param cubeI2
+     * @param stickerMaskRow2
+     * @param stickerMaskCol2
+     * @param color2
+     * @return corner matches criteria
+     */
+    static boolean trioMatch(int cubeI, int stickerMaskRow, int stickerMaskCol, int color, int cubeI1,
+            int stickerMaskRow1, int stickerMaskCol1, int color1, int cubeI2, int stickerMaskRow2, int stickerMaskCol2,
+            int color2) {
+        return pairMatch(cubeI, stickerMaskRow, stickerMaskCol, color, cubeI1, stickerMaskRow1, stickerMaskCol1, color1,
+                false)
+                && colorMatch(cubeI2, stickerMaskRow2, stickerMaskCol2, color2);
     }
 }
