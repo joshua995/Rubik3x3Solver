@@ -79,7 +79,13 @@ public class RubikBitmap {
             "z", "z2", "z'",
             "S", "S2", "S'",
             "y", "y2", "y'",
-            "E", "E2", "E'", };
+            "E", "E2", "E'",
+            "u", "u2", "u'",
+            "d", "d2", "d'",
+            "r", "r2", "r'",
+            "l", "l2", "l'",
+            "f", "f2", "f'",
+            "b", "b2", "b'", };
 
     public static void main(String[] args) {
         initColorMap();
@@ -88,9 +94,9 @@ public class RubikBitmap {
         // scrambleCube(100000000);
         // long endTime = System.nanoTime();
         // System.out.println((endTime - startTime) / 1000000);
-        // E();
+        // E(1);
         scrambleCube(5);
-        // makeMoves("B2 E x' D' R2 D2 L U z2 R");
+        // makeMoves("M2 F2 x x' z");
         displayCube();
         solveCube();
         displayCube();
@@ -163,6 +169,7 @@ public class RubikBitmap {
             makeMoves(chosenMove);
             // displayCube();
         }
+        System.out.println();
     }
 
     /**
@@ -171,117 +178,171 @@ public class RubikBitmap {
      * @param moves separated by a space
      */
     static void makeMoves(String moves) {
-        System.out.println(moves);
+        System.out.print(moves + " ");
         String[] moveList = moves.split(" ");
         for (String move : moveList) {
             switch (move) {
                 case "U":
-                    U();
+                    U(1);
                     break;
                 case "U2":
-                    U2();
+                    U(2);
                     break;
                 case "U'":
-                    UI();
+                    U(3);
                     break;
                 case "D":
-                    D();
+                    D(1);
                     break;
                 case "D2":
-                    D2();
+                    D(2);
                     break;
                 case "D'":
-                    DI();
+                    D(3);
                     break;
                 case "R":
-                    R();
+                    R(1);
                     break;
                 case "R2":
-                    R2();
+                    R(2);
                     break;
                 case "R'":
-                    RI();
+                    R(3);
                     break;
                 case "L":
-                    L();
+                    L(1);
                     break;
                 case "L2":
-                    L2();
+                    L(2);
                     break;
                 case "L'":
-                    LI();
+                    L(3);
                     break;
                 case "F":
-                    F();
+                    F(1);
                     break;
                 case "F2":
-                    F2();
+                    F(2);
                     break;
                 case "F'":
-                    FI();
+                    F(3);
                     break;
                 case "B":
-                    B();
+                    B(1);
                     break;
                 case "B2":
-                    B2();
+                    B(2);
                     break;
                 case "B'":
-                    BI();
+                    B(3);
                     break;
                 case "x":
-                    x();
+                    x(1);
                     break;
                 case "x2":
-                    x2();
+                    x(2);
                     break;
                 case "x'":
-                    xI();
+                    x(3);
                     break;
                 case "M":
-                    M();
+                    M(1);
                     break;
                 case "M2":
-                    M2();
+                    M(2);
                     break;
                 case "M'":
-                    MI();
+                    M(3);
                     break;
                 case "y":
-                    y();
+                    y(1);
                     break;
                 case "y2":
-                    y2();
+                    y(2);
                     break;
                 case "y'":
-                    yI();
+                    y(3);
                     break;
                 case "E":
-                    E();
+                    E(1);
                     break;
                 case "E2":
-                    E2();
+                    E(2);
                     break;
                 case "E'":
-                    EI();
+                    E(3);
                     break;
                 case "z":
-                    z();
+                    z(1);
                     break;
                 case "z2":
-                    z2();
+                    z(2);
                     break;
                 case "z'":
-                    zI();
+                    z(3);
                     break;
                 case "S":
-                    S();
+                    S(1);
                     break;
                 case "S2":
-                    S2();
+                    S(2);
                     break;
                 case "S'":
-                    SI();
+                    S(3);
+                    break;
+                case "u":
+                    u(1);
+                    break;
+                case "u2":
+                    u(2);
+                    break;
+                case "u'":
+                    u(3);
+                    break;
+                case "d":
+                    d(1);
+                    break;
+                case "d2":
+                    d(2);
+                    break;
+                case "d'":
+                    d(3);
+                    break;
+                case "r":
+                    r(1);
+                    break;
+                case "r2":
+                    r(2);
+                    break;
+                case "r'":
+                    r(3);
+                    break;
+                case "l":
+                    l(1);
+                    break;
+                case "l2":
+                    l(2);
+                    break;
+                case "l'":
+                    l(3);
+                    break;
+                case "f":
+                    f(1);
+                    break;
+                case "f2":
+                    f(2);
+                    break;
+                case "f'":
+                    f(3);
+                    break;
+                case "b":
+                    b(1);
+                    break;
+                case "b2":
+                    b(2);
+                    break;
+                case "b'":
+                    b(3);
                     break;
                 default:
                     break;
@@ -289,7 +350,7 @@ public class RubikBitmap {
         }
     }
 
-    /*
+    /**
      * U Move: 2x = U2, 3x = U'
      * faceU bitmap becomes
      * 741
@@ -297,338 +358,370 @@ public class RubikBitmap {
      * 963
      * 1st row of faceL becomes 1st row for faceB
      * 1st row of faceF becomes 1st row for faceL...
+     * 
+     * @param rotations 1=Clockwise, 2=double, 3=Inverse/Counterclock
+     * @return
      */
-    static void U() {
-        cube[0] = rotate90(cube[0], false, false);
+    static void U(int rotations) {
         int temp = cube[3];
-        // Clear the row, then replace with correct row
-        cube[3] = updatePos(cube[3], CLEAR_ROW_1_MASK, cube[4], KEEP_ROW_1_MASK);
-        cube[4] = updatePos(cube[4], CLEAR_ROW_1_MASK, cube[2], KEEP_ROW_1_MASK);
-        cube[2] = updatePos(cube[2], CLEAR_ROW_1_MASK, cube[5], KEEP_ROW_1_MASK);
-        cube[5] = updatePos(cube[5], CLEAR_ROW_1_MASK, temp, KEEP_ROW_1_MASK);
+        if (rotations == 1) {
+            cube[0] = rotate90(cube[0], false, false);
+            // Clear the row, then replace with correct row
+            cube[3] = updatePos(cube[3], CLEAR_ROW_1_MASK, cube[4], KEEP_ROW_1_MASK);
+            cube[4] = updatePos(cube[4], CLEAR_ROW_1_MASK, cube[2], KEEP_ROW_1_MASK);
+            cube[2] = updatePos(cube[2], CLEAR_ROW_1_MASK, cube[5], KEEP_ROW_1_MASK);
+            cube[5] = updatePos(cube[5], CLEAR_ROW_1_MASK, temp, KEEP_ROW_1_MASK);
+        } else if (rotations == 2) {
+            cube[0] = rotate90(cube[0], false, true);
+            cube[3] = updatePos(cube[3], CLEAR_ROW_1_MASK, cube[2], KEEP_ROW_1_MASK);
+            cube[2] = updatePos(cube[2], CLEAR_ROW_1_MASK, temp, KEEP_ROW_1_MASK);
+            temp = cube[4];
+            cube[4] = updatePos(cube[4], CLEAR_ROW_1_MASK, cube[5], KEEP_ROW_1_MASK);
+            cube[5] = updatePos(cube[5], CLEAR_ROW_1_MASK, temp, KEEP_ROW_1_MASK);
+        } else {
+            cube[0] = rotate90(cube[0], true, false);
+            // Clear the row, then replace with correct row
+            cube[3] = updatePos(cube[3], CLEAR_ROW_1_MASK, cube[5], KEEP_ROW_1_MASK);
+            cube[5] = updatePos(cube[5], CLEAR_ROW_1_MASK, cube[2], KEEP_ROW_1_MASK);
+            cube[2] = updatePos(cube[2], CLEAR_ROW_1_MASK, cube[4], KEEP_ROW_1_MASK);
+            cube[4] = updatePos(cube[4], CLEAR_ROW_1_MASK, temp, KEEP_ROW_1_MASK);
+        }
     }
 
-    static void U2() {
-        cube[0] = rotate90(cube[0], false, true);
+    static void D(int rotations) {
         int temp = cube[3];
-        cube[3] = updatePos(cube[3], CLEAR_ROW_1_MASK, cube[2], KEEP_ROW_1_MASK);
-        cube[2] = updatePos(cube[2], CLEAR_ROW_1_MASK, temp, KEEP_ROW_1_MASK);
-        temp = cube[4];
-        cube[4] = updatePos(cube[4], CLEAR_ROW_1_MASK, cube[5], KEEP_ROW_1_MASK);
-        cube[5] = updatePos(cube[5], CLEAR_ROW_1_MASK, temp, KEEP_ROW_1_MASK);
+        if (rotations == 1) {
+            cube[1] = rotate90(cube[1], false, false);
+            // Clear the row, then replace with correct row
+            cube[3] = updatePos(cube[3], CLEAR_ROW_3_MASK, cube[5], KEEP_ROW_3_MASK);
+            cube[5] = updatePos(cube[5], CLEAR_ROW_3_MASK, cube[2], KEEP_ROW_3_MASK);
+            cube[2] = updatePos(cube[2], CLEAR_ROW_3_MASK, cube[4], KEEP_ROW_3_MASK);
+            cube[4] = updatePos(cube[4], CLEAR_ROW_3_MASK, temp, KEEP_ROW_3_MASK);
+        } else if (rotations == 2) {
+            cube[1] = rotate90(cube[1], false, true);
+            // Clear the row, then replace with correct row
+            cube[3] = updatePos(cube[3], CLEAR_ROW_3_MASK, cube[2], KEEP_ROW_3_MASK);
+            cube[2] = updatePos(cube[2], CLEAR_ROW_3_MASK, temp, KEEP_ROW_3_MASK);
+            temp = cube[5];
+            cube[5] = updatePos(cube[5], CLEAR_ROW_3_MASK, cube[4], KEEP_ROW_3_MASK);
+            cube[4] = updatePos(cube[4], CLEAR_ROW_3_MASK, temp, KEEP_ROW_3_MASK);
+        } else {
+            cube[1] = rotate90(cube[1], true, false);
+            // Clear the row, then replace with correct row
+            cube[3] = updatePos(cube[3], CLEAR_ROW_3_MASK, cube[4], KEEP_ROW_3_MASK);
+            cube[4] = updatePos(cube[4], CLEAR_ROW_3_MASK, cube[2], KEEP_ROW_3_MASK);
+            cube[2] = updatePos(cube[2], CLEAR_ROW_3_MASK, cube[5], KEEP_ROW_3_MASK);
+            cube[5] = updatePos(cube[5], CLEAR_ROW_3_MASK, temp, KEEP_ROW_3_MASK);
+        }
     }
 
-    static void UI() {
-        cube[0] = rotate90(cube[0], true, false);
-        int temp = cube[3];
-        // Clear the row, then replace with correct row
-        cube[3] = updatePos(cube[3], CLEAR_ROW_1_MASK, cube[5], KEEP_ROW_1_MASK);
-        cube[5] = updatePos(cube[5], CLEAR_ROW_1_MASK, cube[2], KEEP_ROW_1_MASK);
-        cube[2] = updatePos(cube[2], CLEAR_ROW_1_MASK, cube[4], KEEP_ROW_1_MASK);
-        cube[4] = updatePos(cube[4], CLEAR_ROW_1_MASK, temp, KEEP_ROW_1_MASK);
-    }
-
-    static void D() {
-        cube[1] = rotate90(cube[1], false, false);
-        int temp = cube[3];
-        // Clear the row, then replace with correct row
-        cube[3] = updatePos(cube[3], CLEAR_ROW_3_MASK, cube[5], KEEP_ROW_3_MASK);
-        cube[5] = updatePos(cube[5], CLEAR_ROW_3_MASK, cube[2], KEEP_ROW_3_MASK);
-        cube[2] = updatePos(cube[2], CLEAR_ROW_3_MASK, cube[4], KEEP_ROW_3_MASK);
-        cube[4] = updatePos(cube[4], CLEAR_ROW_3_MASK, temp, KEEP_ROW_3_MASK);
-    }
-
-    static void D2() {
-        cube[1] = rotate90(cube[1], false, true);
-        int temp = cube[3];
-        // Clear the row, then replace with correct row
-        cube[3] = updatePos(cube[3], CLEAR_ROW_3_MASK, cube[2], KEEP_ROW_3_MASK);
-        cube[2] = updatePos(cube[2], CLEAR_ROW_3_MASK, temp, KEEP_ROW_3_MASK);
-        temp = cube[5];
-        cube[5] = updatePos(cube[5], CLEAR_ROW_3_MASK, cube[4], KEEP_ROW_3_MASK);
-        cube[4] = updatePos(cube[4], CLEAR_ROW_3_MASK, temp, KEEP_ROW_3_MASK);
-    }
-
-    static void DI() {
-        cube[1] = rotate90(cube[1], true, false);
-        int temp = cube[3] & KEEP_ROW_3_MASK;
-        // Clear the row, then replace with correct row
-        cube[3] = updatePos(cube[3], CLEAR_ROW_3_MASK, cube[4], KEEP_ROW_3_MASK);
-        cube[4] = updatePos(cube[4], CLEAR_ROW_3_MASK, cube[2], KEEP_ROW_3_MASK);
-        cube[2] = updatePos(cube[2], CLEAR_ROW_3_MASK, cube[5], KEEP_ROW_3_MASK);
-        cube[5] = updatePos(cube[5], CLEAR_ROW_3_MASK, temp, KEEP_ROW_3_MASK);
-    }
-
-    static void R() {
-        cube[2] = rotate90(cube[2], false, false);
-        int temp = cube[0] & KEEP_COL_3_MASK;
-        // Clear the row, then replace with correct row
-        cube[0] = updatePos(cube[0], CLEAR_COL_3_MASK, cube[4], KEEP_COL_3_MASK);
-        cube[4] = updatePos(cube[4], CLEAR_COL_3_MASK, cube[1], KEEP_COL_3_MASK);
-        // To match the back face to the rest of the cube
-        cube[1] = updatePos(cube[1], CLEAR_COL_3_MASK, rotate90(cube[5], false, true), KEEP_COL_3_MASK);
-        cube[5] = updatePos(cube[5], CLEAR_COL_1_MASK, rotate90(temp, false, true), KEEP_COL_1_MASK);
-    }
-
-    static void R2() {
-        cube[2] = rotate90(cube[2], false, true);
+    static void R(int rotations) {
         int temp = cube[0];
-        // Clear the row, then replace with correct row
-        cube[0] = updatePos(cube[0], CLEAR_COL_3_MASK, cube[1], KEEP_COL_3_MASK);
-        cube[1] = updatePos(cube[1], CLEAR_COL_3_MASK, temp, KEEP_COL_3_MASK);
-        temp = cube[4];
-        // To match the back face to the rest of the cube
-        cube[4] = updatePos(cube[4], CLEAR_COL_3_MASK, rotate90(cube[5], false, true), KEEP_COL_3_MASK);
-        cube[5] = updatePos(cube[5], CLEAR_COL_1_MASK, rotate90(temp, false, true), KEEP_COL_1_MASK);
+        if (rotations == 1) {
+            cube[2] = rotate90(cube[2], false, false);
+            // Clear the row, then replace with correct row
+            cube[0] = updatePos(cube[0], CLEAR_COL_3_MASK, cube[4], KEEP_COL_3_MASK);
+            cube[4] = updatePos(cube[4], CLEAR_COL_3_MASK, cube[1], KEEP_COL_3_MASK);
+            // To match the back face to the rest of the cube
+            cube[1] = updatePos(cube[1], CLEAR_COL_3_MASK, rotate90(cube[5], false, true), KEEP_COL_3_MASK);
+            cube[5] = updatePos(cube[5], CLEAR_COL_1_MASK, rotate90(temp, false, true), KEEP_COL_1_MASK);
+        } else if (rotations == 2) {
+            cube[2] = rotate90(cube[2], false, true);
+            cube[0] = updatePos(cube[0], CLEAR_COL_3_MASK, cube[1], KEEP_COL_3_MASK);
+            cube[1] = updatePos(cube[1], CLEAR_COL_3_MASK, temp, KEEP_COL_3_MASK);
+            temp = cube[4];
+            cube[4] = updatePos(cube[4], CLEAR_COL_3_MASK, rotate90(cube[5], false, true), KEEP_COL_3_MASK);
+            cube[5] = updatePos(cube[5], CLEAR_COL_1_MASK, rotate90(temp, false, true), KEEP_COL_1_MASK);
+        } else {
+            cube[2] = rotate90(cube[2], true, false);
+            cube[0] = updatePos(cube[0], CLEAR_COL_3_MASK, rotate90(cube[5], false, true), KEEP_COL_3_MASK);
+            cube[5] = updatePos(cube[5], CLEAR_COL_1_MASK, rotate90(cube[1], false, true), KEEP_COL_1_MASK);
+            cube[1] = updatePos(cube[1], CLEAR_COL_3_MASK, cube[4], KEEP_COL_3_MASK);
+            cube[4] = updatePos(cube[4], CLEAR_COL_3_MASK, temp, KEEP_COL_3_MASK);
+        }
     }
 
-    static void RI() {
-        cube[2] = rotate90(cube[2], true, false);
-        int temp = cube[0];
-        // Clear the row, then replace with correct row
-        cube[0] = updatePos(cube[0], CLEAR_COL_3_MASK, rotate90(cube[5], false, true), KEEP_COL_3_MASK);
-        cube[5] = updatePos(cube[5], CLEAR_COL_1_MASK, rotate90(cube[1], false, true), KEEP_COL_1_MASK);
-        cube[1] = updatePos(cube[1], CLEAR_COL_3_MASK, cube[4], KEEP_COL_3_MASK);
-        cube[4] = updatePos(cube[4], CLEAR_COL_3_MASK, temp, KEEP_COL_3_MASK);
-    }
-
-    static void L() {
-        cube[3] = rotate90(cube[3], false, false);
+    static void L(int rotations) {
         int temp = cube[1];
-        // Clear the row, then replace with correct row
-        cube[1] = updatePos(cube[1], CLEAR_COL_1_MASK, cube[4], KEEP_COL_1_MASK);
-        cube[4] = updatePos(cube[4], CLEAR_COL_1_MASK, cube[0], KEEP_COL_1_MASK);
-        // To match the back face to the rest of the cube
-        cube[0] = updatePos(cube[0], CLEAR_COL_1_MASK, rotate90(cube[5], false, true), KEEP_COL_1_MASK);
-        cube[5] = updatePos(cube[5], CLEAR_COL_3_MASK, rotate90(temp, false, true), KEEP_COL_3_MASK);
+        if (rotations == 1) {
+            cube[3] = rotate90(cube[3], false, false);
+            // Clear the row, then replace with correct row
+            cube[1] = updatePos(cube[1], CLEAR_COL_1_MASK, cube[4], KEEP_COL_1_MASK);
+            cube[4] = updatePos(cube[4], CLEAR_COL_1_MASK, cube[0], KEEP_COL_1_MASK);
+            // To match the back face to the rest of the cube
+            cube[0] = updatePos(cube[0], CLEAR_COL_1_MASK, rotate90(cube[5], false, true), KEEP_COL_1_MASK);
+            cube[5] = updatePos(cube[5], CLEAR_COL_3_MASK, rotate90(temp, false, true), KEEP_COL_3_MASK);
+        } else if (rotations == 2) {
+            cube[3] = rotate90(cube[3], false, true);
+            cube[1] = updatePos(cube[1], CLEAR_COL_1_MASK, cube[0], KEEP_COL_1_MASK);
+            cube[0] = updatePos(cube[0], CLEAR_COL_1_MASK, temp, KEEP_COL_1_MASK);
+            temp = cube[4];
+            cube[4] = updatePos(cube[4], CLEAR_COL_1_MASK, rotate90(cube[5], false, true), KEEP_COL_1_MASK);
+            cube[5] = updatePos(cube[5], CLEAR_COL_3_MASK, rotate90(temp, false, true), KEEP_COL_3_MASK);
+        } else {
+            cube[3] = rotate90(cube[3], true, false);
+            cube[1] = updatePos(cube[1], CLEAR_COL_1_MASK, rotate90(cube[5], false, true), KEEP_COL_1_MASK);
+            cube[5] = updatePos(cube[5], CLEAR_COL_3_MASK, rotate90(cube[0], false, true), KEEP_COL_3_MASK);
+            cube[0] = updatePos(cube[0], CLEAR_COL_1_MASK, cube[4], KEEP_COL_1_MASK);
+            cube[4] = updatePos(cube[4], CLEAR_COL_1_MASK, temp, KEEP_COL_1_MASK);
+        }
     }
 
-    static void L2() {
-        cube[3] = rotate90(cube[3], false, true);
-        int temp = cube[1];
-        cube[1] = updatePos(cube[1], CLEAR_COL_1_MASK, cube[0], KEEP_COL_1_MASK);
-        cube[0] = updatePos(cube[0], CLEAR_COL_1_MASK, temp, KEEP_COL_1_MASK);
-        temp = cube[4];
-        cube[4] = updatePos(cube[4], CLEAR_COL_1_MASK, rotate90(cube[5], false, true), KEEP_COL_1_MASK);
-        cube[5] = updatePos(cube[5], CLEAR_COL_3_MASK, rotate90(temp, false, true), KEEP_COL_3_MASK);
-    }
-
-    static void LI() {
-        cube[3] = rotate90(cube[3], true, false);
-        int temp = cube[1];
-        cube[1] = updatePos(cube[1], CLEAR_COL_1_MASK, rotate90(cube[5], false, true), KEEP_COL_1_MASK);
-        cube[5] = updatePos(cube[5], CLEAR_COL_3_MASK, rotate90(cube[0], false, true), KEEP_COL_3_MASK);
-        cube[0] = updatePos(cube[0], CLEAR_COL_1_MASK, cube[4], KEEP_COL_1_MASK);
-        cube[4] = updatePos(cube[4], CLEAR_COL_1_MASK, temp, KEEP_COL_1_MASK);
-    }
-
-    static void F() {
-        cube[4] = rotate90(cube[4], false, false);
+    static void F(int rotations) {
         int temp = cube[0];
-        cube[0] = updatePos(cube[0], CLEAR_ROW_3_MASK, rotate90(cube[3], false, false), KEEP_ROW_3_MASK);
-        cube[3] = updatePos(cube[3], CLEAR_COL_3_MASK, rotate90(cube[1], false, false), KEEP_COL_3_MASK);
-        cube[1] = updatePos(cube[1], CLEAR_ROW_1_MASK, rotate90(cube[2], false, false), KEEP_ROW_1_MASK);
-        cube[2] = updatePos(cube[2], CLEAR_COL_1_MASK, rotate90(temp, false, false), KEEP_COL_1_MASK);
+        if (rotations == 1) {
+            cube[4] = rotate90(cube[4], false, false);
+            cube[0] = updatePos(cube[0], CLEAR_ROW_3_MASK, rotate90(cube[3], false, false), KEEP_ROW_3_MASK);
+            cube[3] = updatePos(cube[3], CLEAR_COL_3_MASK, rotate90(cube[1], false, false), KEEP_COL_3_MASK);
+            cube[1] = updatePos(cube[1], CLEAR_ROW_1_MASK, rotate90(cube[2], false, false), KEEP_ROW_1_MASK);
+            cube[2] = updatePos(cube[2], CLEAR_COL_1_MASK, rotate90(temp, false, false), KEEP_COL_1_MASK);
+        } else if (rotations == 2) {
+            cube[4] = rotate90(cube[4], false, true);
+            cube[0] = updatePos(cube[0], CLEAR_ROW_3_MASK, rotate90(cube[1], false, true), KEEP_ROW_3_MASK);
+            cube[1] = updatePos(cube[1], CLEAR_ROW_1_MASK, rotate90(temp, false, true), KEEP_ROW_1_MASK);
+            temp = cube[3];
+            cube[3] = updatePos(cube[3], CLEAR_COL_3_MASK, rotate90(cube[2], false, true), KEEP_COL_3_MASK);
+            cube[2] = updatePos(cube[2], CLEAR_COL_1_MASK, rotate90(temp, false, true), KEEP_COL_1_MASK);
+        } else {
+            cube[4] = rotate90(cube[4], true, false);
+            cube[0] = updatePos(cube[0], CLEAR_ROW_3_MASK, rotate90(cube[2], true, false), KEEP_ROW_3_MASK);
+            cube[2] = updatePos(cube[2], CLEAR_COL_1_MASK, rotate90(cube[1], true, false), KEEP_COL_1_MASK);
+            cube[1] = updatePos(cube[1], CLEAR_ROW_1_MASK, rotate90(cube[3], true, false), KEEP_ROW_1_MASK);
+            cube[3] = updatePos(cube[3], CLEAR_COL_3_MASK, rotate90(temp, true, false), KEEP_COL_3_MASK);
+        }
     }
 
-    static void F2() {
-        cube[4] = rotate90(cube[4], false, true);
+    static void B(int rotations) {
         int temp = cube[0];
-        cube[0] = updatePos(cube[0], CLEAR_ROW_3_MASK, rotate90(cube[1], false, true), KEEP_ROW_3_MASK);
-        cube[1] = updatePos(cube[1], CLEAR_ROW_1_MASK, rotate90(temp, false, true), KEEP_ROW_1_MASK);
-        temp = cube[3];
-        cube[3] = updatePos(cube[3], CLEAR_COL_3_MASK, rotate90(cube[2], false, true), KEEP_COL_3_MASK);
-        cube[2] = updatePos(cube[2], CLEAR_COL_1_MASK, rotate90(temp, false, true), KEEP_COL_1_MASK);
+        if (rotations == 1) {
+            cube[5] = rotate90(cube[5], false, false);
+            cube[0] = updatePos(cube[0], CLEAR_ROW_1_MASK, rotate90(cube[2], true, false), KEEP_ROW_1_MASK);
+            cube[2] = updatePos(cube[2], CLEAR_COL_3_MASK, rotate90(cube[1], true, false), KEEP_COL_3_MASK);
+            cube[1] = updatePos(cube[1], CLEAR_ROW_3_MASK, rotate90(cube[3], true, false), KEEP_ROW_3_MASK);
+            cube[3] = updatePos(cube[3], CLEAR_COL_1_MASK, rotate90(temp, true, false), KEEP_COL_1_MASK);
+        } else if (rotations == 2) {
+            cube[5] = rotate90(cube[5], false, true);
+            cube[0] = updatePos(cube[0], CLEAR_ROW_1_MASK, rotate90(cube[1], false, true), KEEP_ROW_1_MASK);
+            cube[1] = updatePos(cube[1], CLEAR_ROW_3_MASK, rotate90(temp, false, true), KEEP_ROW_3_MASK);
+            temp = cube[2];
+            cube[2] = updatePos(cube[2], CLEAR_COL_3_MASK, rotate90(cube[3], false, true), KEEP_COL_3_MASK);
+            cube[3] = updatePos(cube[3], CLEAR_COL_1_MASK, rotate90(temp, false, true), KEEP_COL_1_MASK);
+        } else {
+            cube[5] = rotate90(cube[5], true, false);
+            cube[0] = updatePos(cube[0], CLEAR_ROW_1_MASK, rotate90(cube[3], false, false), KEEP_ROW_1_MASK);
+            cube[3] = updatePos(cube[3], CLEAR_COL_1_MASK, rotate90(cube[1], false, false), KEEP_COL_1_MASK);
+            cube[1] = updatePos(cube[1], CLEAR_ROW_3_MASK, rotate90(cube[2], false, false), KEEP_ROW_3_MASK);
+            cube[2] = updatePos(cube[2], CLEAR_COL_3_MASK, rotate90(temp, false, false), KEEP_COL_3_MASK);
+        }
     }
 
-    static void FI() {
-        cube[4] = rotate90(cube[4], true, false);
+    static void x(int rotations) {
         int temp = cube[0];
-        cube[0] = updatePos(cube[0], CLEAR_ROW_3_MASK, rotate90(cube[2], true, false), KEEP_ROW_3_MASK);
-        cube[2] = updatePos(cube[2], CLEAR_COL_1_MASK, rotate90(cube[1], true, false), KEEP_COL_1_MASK);
-        cube[1] = updatePos(cube[1], CLEAR_ROW_1_MASK, rotate90(cube[3], true, false), KEEP_ROW_1_MASK);
-        cube[3] = updatePos(cube[3], CLEAR_COL_3_MASK, rotate90(temp, true, false), KEEP_COL_3_MASK);
+        if (rotations == 1) {
+            // Face orientation (old to new pos) U->B, B->D, D->F, F->U
+            // Rotate left and right face to simulate rotation
+            cube[2] = rotate90(cube[2], false, false);
+            cube[3] = rotate90(cube[3], true, false);
+            cube[0] = cube[4];
+            cube[4] = cube[1];
+            cube[1] = rotate90(cube[5], false, true);
+            cube[5] = rotate90(temp, false, true);
+        } else if (rotations == 2) {
+            cube[2] = rotate90(cube[2], false, true);
+            cube[3] = rotate90(cube[3], false, true);
+            cube[0] = cube[1];
+            cube[1] = temp;
+            temp = cube[4];
+            cube[4] = rotate90(cube[5], false, true);
+            cube[5] = rotate90(temp, false, true);
+        } else {
+            cube[2] = rotate90(cube[2], true, false);
+            cube[3] = rotate90(cube[3], false, false);
+            cube[0] = rotate90(cube[5], false, true);
+            cube[5] = rotate90(cube[1], false, true);
+            cube[1] = cube[4];
+            cube[4] = temp;
+        }
     }
 
-    static void B() {
-        cube[5] = rotate90(cube[5], false, false);
+    static void M(int rotations) {
+        if (rotations == 1) {
+            L(3);
+            R(1);
+            x(3);
+        } else if (rotations == 2) {
+            L(2);
+            R(2);
+            x(2);
+        } else {
+            L(1);
+            R(3);
+            x(1);
+        }
+    }
+
+    static void z(int rotations) {
         int temp = cube[0];
-        cube[0] = updatePos(cube[0], CLEAR_ROW_1_MASK, rotate90(cube[2], true, false), KEEP_ROW_1_MASK);
-        cube[2] = updatePos(cube[2], CLEAR_COL_3_MASK, rotate90(cube[1], true, false), KEEP_COL_3_MASK);
-        cube[1] = updatePos(cube[1], CLEAR_ROW_3_MASK, rotate90(cube[3], true, false), KEEP_ROW_3_MASK);
-        cube[3] = updatePos(cube[3], CLEAR_COL_1_MASK, rotate90(temp, true, false), KEEP_COL_1_MASK);
+        if (rotations == 1) {
+            cube[4] = rotate90(cube[4], false, false);
+            cube[5] = rotate90(cube[5], true, false);
+            cube[0] = rotate90(cube[3], false, false);
+            cube[3] = rotate90(cube[1], false, false);
+            cube[1] = rotate90(cube[2], false, false);
+            cube[2] = rotate90(temp, false, false);
+        } else if (rotations == 2) {
+            cube[4] = rotate90(cube[4], false, true);
+            cube[5] = rotate90(cube[5], false, true);
+            cube[0] = rotate90(cube[1], false, true);
+            cube[1] = rotate90(temp, false, true);
+            temp = cube[2];
+            cube[2] = rotate90(cube[3], false, true);
+            cube[3] = rotate90(temp, false, true);
+        } else {
+            cube[4] = rotate90(cube[4], true, false);
+            cube[5] = rotate90(cube[5], false, false);
+            cube[0] = rotate90(cube[2], true, false);
+            cube[2] = rotate90(cube[1], true, false);
+            cube[1] = rotate90(cube[3], true, false);
+            cube[3] = rotate90(temp, true, false);
+        }
     }
 
-    static void B2() {
-        cube[5] = rotate90(cube[5], false, true);
-        int temp = cube[0];
-        cube[0] = updatePos(cube[0], CLEAR_ROW_1_MASK, rotate90(cube[1], false, true), KEEP_ROW_1_MASK);
-        cube[1] = updatePos(cube[1], CLEAR_ROW_3_MASK, rotate90(temp, false, true), KEEP_ROW_3_MASK);
-        temp = cube[2];
-        cube[2] = updatePos(cube[2], CLEAR_COL_3_MASK, rotate90(cube[3], false, true), KEEP_COL_3_MASK);
-        cube[3] = updatePos(cube[3], CLEAR_COL_1_MASK, rotate90(temp, false, true), KEEP_COL_1_MASK);
+    static void S(int rotations) {
+        if (rotations == 1) {
+            B(1);
+            F(3);
+            z(1);
+        } else if (rotations == 2) {
+            B(2);
+            F(2);
+            z(2);
+        } else {
+            B(3);
+            F(1);
+            z(3);
+        }
     }
 
-    static void BI() {
-        cube[5] = rotate90(cube[5], true, false);
-        int temp = cube[0];
-        cube[0] = updatePos(cube[0], CLEAR_ROW_1_MASK, rotate90(cube[3], false, false), KEEP_ROW_1_MASK);
-        cube[3] = updatePos(cube[3], CLEAR_COL_1_MASK, rotate90(cube[1], false, false), KEEP_COL_1_MASK);
-        cube[1] = updatePos(cube[1], CLEAR_ROW_3_MASK, rotate90(cube[2], false, false), KEEP_ROW_3_MASK);
-        cube[2] = updatePos(cube[2], CLEAR_COL_3_MASK, rotate90(temp, false, false), KEEP_COL_3_MASK);
-    }
-
-    static void x() {
-        // Rotate left and right face to simulate rotation
-        cube[2] = rotate90(cube[2], false, false);
-        cube[3] = rotate90(cube[3], true, false);
-        // Face orientation (old to new pos) U->B, B->D, D->F, F->U
-        int temp = cube[0];
-        cube[0] = cube[4];
-        cube[4] = cube[1];
-        cube[1] = rotate90(cube[5], false, true);
-        cube[5] = rotate90(temp, false, true);
-    }
-
-    static void x2() {
-        // Rotate left and right face to simulate rotation
-        cube[2] = rotate90(cube[2], false, true);
-        cube[3] = rotate90(cube[3], false, true);
-        // Face orientation (old to new pos) U->B, B->D, D->F, F->U
-        int temp = cube[0];
-        cube[0] = cube[1];
-        cube[1] = temp;
-        temp = cube[4];
-        cube[4] = rotate90(cube[5], false, true);
-        cube[5] = rotate90(temp, false, true);
-    }
-
-    static void xI() {
-        // Rotate left and right face to simulate rotation
-        cube[2] = rotate90(cube[2], true, false);
-        cube[3] = rotate90(cube[3], false, false);
-        // Face orientation (old to new pos) U->B, B->D, D->F, F->U
-        int temp = cube[0];
-        cube[0] = rotate90(cube[5], false, true);
-        cube[5] = rotate90(cube[1], false, true);
-        cube[1] = cube[4];
-        cube[4] = temp;
-    }
-
-    static void M() {
-        LI();
-        R();
-        xI();
-    }
-
-    static void M2() {
-        L2();
-        R2();
-        x2();
-    }
-
-    static void MI() {
-        L();
-        RI();
-        x();
-    }
-
-    static void z() {
-        cube[4] = rotate90(cube[4], false, false);
-        cube[5] = rotate90(cube[5], true, false);
-        int temp = cube[0];
-        cube[0] = rotate90(cube[3], false, false);
-        cube[3] = rotate90(cube[1], false, false);
-        cube[1] = rotate90(cube[2], false, false);
-        cube[2] = rotate90(temp, false, false);
-    }
-
-    static void z2() {
-        cube[4] = rotate90(cube[4], false, true);
-        cube[5] = rotate90(cube[5], false, true);
-        int temp = cube[0];
-        cube[0] = rotate90(cube[1], false, true);
-        cube[1] = rotate90(temp, false, true);
-        temp = cube[2];
-        cube[2] = rotate90(cube[3], false, true);
-        cube[3] = rotate90(temp, false, true);
-    }
-
-    static void zI() {
-        cube[4] = rotate90(cube[4], true, false);
-        cube[5] = rotate90(cube[5], false, false);
-        int temp = cube[0];
-        cube[0] = rotate90(cube[2], true, false);
-        cube[2] = rotate90(cube[1], true, false);
-        cube[1] = rotate90(cube[3], true, false);
-        cube[3] = rotate90(temp, true, false);
-    }
-
-    static void S() {
-        B();
-        FI();
-        z();
-    }
-
-    static void S2() {
-        B2();
-        F2();
-        z2();
-    }
-
-    static void SI() {
-        BI();
-        F();
-        zI();
-    }
-
-    static void y() {
-        cube[0] = rotate90(cube[0], false, false);
-        cube[1] = rotate90(cube[1], true, false);
+    static void y(int rotations) {
         int temp = cube[4];
-        cube[4] = cube[2];
-        cube[2] = cube[5];
-        cube[5] = cube[3];
-        cube[3] = temp;
+        if (rotations == 1) {
+            cube[0] = rotate90(cube[0], false, false);
+            cube[1] = rotate90(cube[1], true, false);
+            cube[4] = cube[2];
+            cube[2] = cube[5];
+            cube[5] = cube[3];
+            cube[3] = temp;
+        } else if (rotations == 2) {
+            cube[0] = rotate90(cube[0], false, true);
+            cube[1] = rotate90(cube[1], false, true);
+            cube[4] = cube[5];
+            cube[5] = temp;
+            temp = cube[2];
+            cube[2] = cube[3];
+            cube[3] = temp;
+        } else {
+            cube[0] = rotate90(cube[0], true, false);
+            cube[1] = rotate90(cube[1], false, false);
+            cube[4] = cube[3];
+            cube[3] = cube[5];
+            cube[5] = cube[2];
+            cube[2] = temp;
+        }
     }
 
-    static void y2() {
-        cube[0] = rotate90(cube[0], false, true);
-        cube[1] = rotate90(cube[1], false, true);
-        int temp = cube[4];
-        cube[4] = cube[5];
-        cube[5] = temp;
-        temp = cube[2];
-        cube[2] = cube[3];
-        cube[3] = temp;
+    static void E(int rotations) {
+        if (rotations == 1) {
+            U(1);
+            D(3);
+            y(3);
+        } else if (rotations == 2) {
+            U(2);
+            D(2);
+            y(2);
+        } else {
+            U(3);
+            D(1);
+            y(1);
+        }
     }
 
-    static void yI() {
-        cube[0] = rotate90(cube[0], true, false);
-        cube[1] = rotate90(cube[1], false, false);
-        int temp = cube[4];
-        cube[4] = cube[3];
-        cube[3] = cube[5];
-        cube[5] = cube[2];
-        cube[2] = temp;
+    static void u(int rotations) {
+        if (rotations == 1) {
+            U(1);
+            E(3);
+        } else if (rotations == 2) {
+            U(2);
+            E(2);
+        } else {
+            U(3);
+            E(1);
+        }
     }
 
-    static void E() {
-        U();
-        DI();
-        yI();
+    static void d(int rotations) {
+        if (rotations == 1) {
+            D(1);
+            E(1);
+        } else if (rotations == 2) {
+            D(2);
+            E(2);
+        } else {
+            D(3);
+            E(3);
+        }
     }
 
-    static void E2() {
-        U2();
-        D2();
-        y2();
+    static void r(int rotations) {
+        if (rotations == 1) {
+            R(1);
+            M(3);
+        } else if (rotations == 2) {
+            R(2);
+            M(2);
+        } else {
+            R(3);
+            M(1);
+        }
     }
 
-    static void EI() {
-        UI();
-        D();
-        y();
+    static void l(int rotations) {
+        if (rotations == 1) {
+            L(1);
+            L(1);
+        } else if (rotations == 2) {
+            L(2);
+            M(2);
+        } else {
+            L(3);
+            M(3);
+        }
+    }
+
+    static void f(int rotations) {
+        if (rotations == 1) {
+            F(1);
+            S(1);
+        } else if (rotations == 2) {
+            F(2);
+            S(2);
+        } else {
+            F(3);
+            S(3);
+        }
+    }
+
+    static void b(int rotations) {
+        if (rotations == 1) {
+            B(1);
+            S(3);
+        } else if (rotations == 2) {
+            B(2);
+            S(2);
+        } else {
+            B(3);
+            S(1);
+        }
     }
 
     /*
@@ -666,102 +759,234 @@ public class RubikBitmap {
     static void solveCube() {
         solveBlueCenter();
         solveBlueWhiteEdge();
+        loadBlueRedEdge();
+        solveBlueRedBlock();
     }
 
-    static boolean isColorMatch(int sticker, int stickerMask, int color) {
+    static boolean colorMatch(int sticker, int stickerMask, int color) {
         return ((((sticker & stickerMask) >> (3 * stickerToShifts.get(stickerMask))) & 0b111) == color);
     }
 
+    /**
+     * Checks if an edge matches the search or a pair of sticker matches search
+     * 
+     * @param cubeI              1st face index
+     * @param stickerMaskRow
+     * @param stickerMaskCol     1st stickerMasks[stickerMaskRow][stickerMaskCol]
+     * @param color              1st to match
+     * @param cubeI1             2nd face index
+     * @param stickerMaskRow1
+     * @param stickerMaskCol1    2nd stickerMasks[stickerMaskRow1][stickerMaskCol1]
+     * @param color1             2nd to match
+     * @param checkFlippedColors return true if stickers match when colors are
+     *                           flipped
+     * @return Edge matches criteria
+     */
+    static boolean pairMatch(int cubeI, int stickerMaskRow, int stickerMaskCol, int color, int cubeI1,
+            int stickerMaskRow1, int stickerMaskCol1, int color1, boolean checkFlippedColors) {
+        return !checkFlippedColors ? colorMatch(cube[cubeI], stickerMasks[stickerMaskRow][stickerMaskCol], color)
+                && colorMatch(cube[cubeI1], stickerMasks[stickerMaskRow1][stickerMaskCol1], color1)
+                : (colorMatch(cube[cubeI], stickerMasks[stickerMaskRow][stickerMaskCol], color)
+                        && colorMatch(cube[cubeI1], stickerMasks[stickerMaskRow1][stickerMaskCol1], color1))
+                        || (colorMatch(cube[cubeI], stickerMasks[stickerMaskRow][stickerMaskCol], color1)
+                                && colorMatch(cube[cubeI1], stickerMasks[stickerMaskRow1][stickerMaskCol1], color));
+    }
+
+    // NOTE might be redundant. Checking two sides will determine the 3rd color
+    /**
+     * Checks if a corner or trio of stickers match the colors (similar to
+     * pairMatch)
+     * 
+     * @param cubeI
+     * @param stickerMaskRow
+     * @param stickerMaskCol
+     * @param color
+     * @param cubeI1
+     * @param stickerMaskRow1
+     * @param stickerMaskCol1
+     * @param color1
+     * @param cubeI2
+     * @param stickerMaskRow2
+     * @param stickerMaskCol2
+     * @param color2
+     * @return corner matches criteria
+     */
+    static boolean trioMatch(int cubeI, int stickerMaskRow, int stickerMaskCol, int color, int cubeI1,
+            int stickerMaskRow1, int stickerMaskCol1, int color1, int cubeI2, int stickerMaskRow2, int stickerMaskCol2,
+            int color2) {
+        return pairMatch(cubeI, stickerMaskRow, stickerMaskCol, color, cubeI1, stickerMaskRow1, stickerMaskCol1, color1,
+                false)
+                && colorMatch(cube[cubeI2], stickerMasks[stickerMaskRow2][stickerMaskCol2], color2);
+    }
+
     static void solveBlueCenter() {
-        if (isColorMatch(cube[3], stickerMasks[1][1], BLUE)) { // In position faceL
+        if (colorMatch(cube[3], stickerMasks[1][1], BLUE)) { // In position faceL
             return;
-        } else if (isColorMatch(cube[0], stickerMasks[1][1], BLUE)) { // On faceU
+        } else if (colorMatch(cube[0], stickerMasks[1][1], BLUE)) { // On faceU
             makeMoves("z'");
-        } else if (isColorMatch(cube[1], stickerMasks[1][1], BLUE)) { // On faceD
+        } else if (colorMatch(cube[1], stickerMasks[1][1], BLUE)) { // On faceD
             makeMoves("z");
-        } else if (isColorMatch(cube[2], stickerMasks[1][1], BLUE)) { // On faceR
+        } else if (colorMatch(cube[2], stickerMasks[1][1], BLUE)) { // On faceR
             makeMoves("y2");
-        } else if (isColorMatch(cube[4], stickerMasks[1][1], BLUE)) { // On faceF
+        } else if (colorMatch(cube[4], stickerMasks[1][1], BLUE)) { // On faceF
             makeMoves("y");
-        } else if (isColorMatch(cube[5], stickerMasks[1][1], BLUE)) { // On faceB
+        } else if (colorMatch(cube[5], stickerMasks[1][1], BLUE)) { // On faceB
             makeMoves("y'");
         }
     }
 
-    // TODO Check over again
     static void solveBlueWhiteEdge() {
         // In position
-        if (isColorMatch(cube[3], stickerMasks[2][1], BLUE) && isColorMatch(cube[1], stickerMasks[1][0], WHITE)) {
+        if (pairMatch(3, 2, 1, BLUE, 1, 1, 0, WHITE, false)) {
             return;
-        } else if (isColorMatch(cube[3], stickerMasks[1][2], BLUE)
-                && isColorMatch(cube[4], stickerMasks[1][0], WHITE)) { // Check blue on faceL
+        } // Check blue on faceL
+        else if (pairMatch(3, 1, 2, BLUE, 4, 1, 0, WHITE, false)) {
             makeMoves("L");
-        } else if (isColorMatch(cube[3], stickerMasks[0][1], BLUE)
-                && isColorMatch(cube[0], stickerMasks[1][0], WHITE)) {
+        } else if (colorMatch(cube[3], stickerMasks[0][1], BLUE) && colorMatch(cube[0], stickerMasks[1][0], WHITE)) {
             makeMoves("L2");
-        } else if (isColorMatch(cube[3], stickerMasks[1][0], BLUE)
-                && isColorMatch(cube[5], stickerMasks[1][2], WHITE)) {
+        } else if (colorMatch(cube[3], stickerMasks[1][0], BLUE) && colorMatch(cube[5], stickerMasks[1][2], WHITE)) {
             makeMoves("L'");
-        } else if (isColorMatch(cube[0], stickerMasks[0][1], BLUE)
-                && isColorMatch(cube[5], stickerMasks[0][1], WHITE)) { // Check blue on faceU
+        } // Check blue on faceU
+        else if (colorMatch(cube[0], stickerMasks[0][1], BLUE) && colorMatch(cube[5], stickerMasks[0][1], WHITE)) {
             makeMoves("B L'");
-        } else if (isColorMatch(cube[0], stickerMasks[1][0], BLUE)
-                && isColorMatch(cube[3], stickerMasks[0][1], WHITE)) {
+        } else if (colorMatch(cube[0], stickerMasks[1][0], BLUE) && colorMatch(cube[3], stickerMasks[0][1], WHITE)) {
             makeMoves("U B L'");
-        } else if (isColorMatch(cube[0], stickerMasks[1][2], BLUE)
-                && isColorMatch(cube[2], stickerMasks[0][1], WHITE)) {
+        } else if (colorMatch(cube[0], stickerMasks[1][2], BLUE) && colorMatch(cube[2], stickerMasks[0][1], WHITE)) {
             makeMoves("U' B L'");
-        } else if (isColorMatch(cube[0], stickerMasks[2][1], BLUE)
-                && isColorMatch(cube[4], stickerMasks[0][1], WHITE)) {
+        } else if (colorMatch(cube[0], stickerMasks[2][1], BLUE) && colorMatch(cube[4], stickerMasks[0][1], WHITE)) {
             makeMoves("F' L'");
-        } else if (isColorMatch(cube[4], stickerMasks[0][1], BLUE)
-                && isColorMatch(cube[0], stickerMasks[2][1], WHITE)) { // Check blue on faceF
+        } // Check blue on faceF
+        else if (colorMatch(cube[4], stickerMasks[0][1], BLUE) && colorMatch(cube[0], stickerMasks[2][1], WHITE)) {
             makeMoves("U L2");
-        } else if (isColorMatch(cube[4], stickerMasks[1][0], BLUE)
-                && isColorMatch(cube[3], stickerMasks[1][2], WHITE)) {
+        } else if (colorMatch(cube[4], stickerMasks[1][0], BLUE) && colorMatch(cube[3], stickerMasks[1][2], WHITE)) {
             makeMoves("F' D'");
-        } else if (isColorMatch(cube[4], stickerMasks[1][2], BLUE)
-                && isColorMatch(cube[2], stickerMasks[1][0], WHITE)) {
+        } else if (colorMatch(cube[4], stickerMasks[1][2], BLUE) && colorMatch(cube[2], stickerMasks[1][0], WHITE)) {
             makeMoves("F D'");
-        } else if (isColorMatch(cube[4], stickerMasks[2][1], BLUE)
-                && isColorMatch(cube[1], stickerMasks[0][1], WHITE)) {
+        } else if (colorMatch(cube[4], stickerMasks[2][1], BLUE) && colorMatch(cube[1], stickerMasks[0][1], WHITE)) {
             makeMoves("D'");
-        } else if (isColorMatch(cube[2], stickerMasks[0][1], BLUE)
-                && isColorMatch(cube[0], stickerMasks[1][2], WHITE)) { // Check blue on faceR
+        } // Check blue on faceR
+        else if (colorMatch(cube[2], stickerMasks[0][1], BLUE) && colorMatch(cube[0], stickerMasks[1][2], WHITE)) {
             makeMoves("U2 L2");
-        } else if (isColorMatch(cube[2], stickerMasks[1][0], BLUE)
-                && isColorMatch(cube[4], stickerMasks[1][2], WHITE)) {
+        } else if (colorMatch(cube[2], stickerMasks[1][0], BLUE) && colorMatch(cube[4], stickerMasks[1][2], WHITE)) {
             makeMoves("F2 L");
-        } else if (isColorMatch(cube[2], stickerMasks[1][2], BLUE)
-                && isColorMatch(cube[5], stickerMasks[1][0], WHITE)) {
+        } else if (colorMatch(cube[2], stickerMasks[1][2], BLUE) && colorMatch(cube[5], stickerMasks[1][0], WHITE)) {
             makeMoves("B2 L'");
-        } else if (isColorMatch(cube[2], stickerMasks[2][1], BLUE)
-                && isColorMatch(cube[1], stickerMasks[1][2], WHITE)) {
+        } else if (colorMatch(cube[2], stickerMasks[2][1], BLUE) && colorMatch(cube[1], stickerMasks[1][2], WHITE)) {
             makeMoves("D2");
-        } else if (isColorMatch(cube[1], stickerMasks[0][1], BLUE)
-                && isColorMatch(cube[4], stickerMasks[2][1], WHITE)) { // Check blue on faceD
+        } // Check blue on faceD
+        else if (colorMatch(cube[1], stickerMasks[0][1], BLUE) && colorMatch(cube[4], stickerMasks[2][1], WHITE)) {
             makeMoves("F L");
-        } else if (isColorMatch(cube[1], stickerMasks[1][0], BLUE)
-                && isColorMatch(cube[3], stickerMasks[2][1], WHITE)) {
+        } else if (colorMatch(cube[1], stickerMasks[1][0], BLUE) && colorMatch(cube[3], stickerMasks[2][1], WHITE)) {
             makeMoves("D F L");
-        } else if (isColorMatch(cube[1], stickerMasks[1][2], BLUE)
-                && isColorMatch(cube[2], stickerMasks[2][1], WHITE)) {
+        } else if (colorMatch(cube[1], stickerMasks[1][2], BLUE) && colorMatch(cube[2], stickerMasks[2][1], WHITE)) {
             makeMoves("D' F L");
-        } else if (isColorMatch(cube[1], stickerMasks[2][1], BLUE)
-                && isColorMatch(cube[5], stickerMasks[2][1], WHITE)) {
+        } else if (colorMatch(cube[1], stickerMasks[2][1], BLUE) && colorMatch(cube[5], stickerMasks[2][1], WHITE)) {
             makeMoves("B' L'");
-        } else if (isColorMatch(cube[5], stickerMasks[0][1], BLUE)
-                && isColorMatch(cube[0], stickerMasks[1][2], WHITE)) { // TODO Check blue on faceB
-            makeMoves("");
-        } else if (isColorMatch(cube[5], stickerMasks[1][0], BLUE)
-                && isColorMatch(cube[4], stickerMasks[1][2], WHITE)) {
-            makeMoves("");
-        } else if (isColorMatch(cube[5], stickerMasks[1][2], BLUE)
-                && isColorMatch(cube[5], stickerMasks[1][0], WHITE)) {
-            makeMoves("");
-        } else if (isColorMatch(cube[5], stickerMasks[2][1], BLUE)
-                && isColorMatch(cube[1], stickerMasks[0][1], WHITE)) {
-            makeMoves("");
+        } // Check blue on faceB
+        else if (colorMatch(cube[5], stickerMasks[0][1], BLUE) && colorMatch(cube[0], stickerMasks[0][1], WHITE)) {
+            makeMoves("U' L2");
+        } else if (colorMatch(cube[5], stickerMasks[1][0], BLUE) && colorMatch(cube[2], stickerMasks[1][2], WHITE)) {
+            makeMoves("B' D");
+        } else if (colorMatch(cube[5], stickerMasks[1][2], BLUE) && colorMatch(cube[3], stickerMasks[1][0], WHITE)) {
+            makeMoves("B D");
+        } else if (colorMatch(cube[5], stickerMasks[2][1], BLUE) && colorMatch(cube[1], stickerMasks[2][1], WHITE)) {
+            makeMoves("D");
+        }
+    }
+
+    static void loadBlueRedEdge() {
+        System.out.println("Called");
+        if ((trioMatch(3, 2, 2, BLUE, 4, 2, 0, RED, 1, 0, 0, WHITE) && pairMatch(3, 1, 2, BLUE, 4, 1, 0, RED, false))
+                || pairMatch(4, 2, 1, BLUE, 1, 0, 1, RED, true)) {
+            return;
+        } // FaceU
+        else if (pairMatch(0, 0, 1, BLUE, 5, 0, 1, RED, true)) {
+            makeMoves("M2");
+        } else if (pairMatch(0, 1, 0, BLUE, 3, 0, 1, RED, true)) {
+            makeMoves("U' M");
+        } else if (pairMatch(0, 1, 1, BLUE, 2, 0, 1, RED, true)) {
+            makeMoves("U M");
+        } else if (pairMatch(0, 2, 1, BLUE, 4, 0, 1, RED, true)) {
+            makeMoves("M");
+        } // FaceF
+        else if (pairMatch(4, 1, 0, BLUE, 3, 1, 2, RED, true)) {
+            makeMoves("F'");
+        } else if (pairMatch(4, 1, 2, BLUE, 2, 1, 0, RED, true)) {
+            makeMoves("F");
+        } // FaceR
+        else if (pairMatch(2, 1, 2, BLUE, 5, 1, 0, RED, true)) {
+            makeMoves("R2 F");
+        } else if (pairMatch(2, 2, 1, BLUE, 1, 1, 2, RED, true)) {
+            makeMoves("R F");
+        } // FaceB
+        else if (pairMatch(5, 1, 2, BLUE, 3, 1, 0, RED, true)) {
+            makeMoves("B M'");
+        } else if (pairMatch(5, 2, 1, BLUE, 1, 2, 1, RED, true)) {
+            makeMoves("M'");
+        }
+    }
+
+    static void solveBlueRedBlock() {
+        if ((trioMatch(3, 2, 2, BLUE, 4, 2, 0, RED, 1, 0, 0, WHITE) && pairMatch(3, 1, 2, BLUE, 4, 1, 0, RED, false))) {
+            return;
+        } // faceF is BLUE
+        else if (colorMatch(cube[4], stickerMasks[2][1], BLUE)) {
+            System.out.println("Entered");
+            // faceU BLUE for the corner, WHITE for the other sticker, RED will follow
+            if (pairMatch(0, 0, 0, BLUE, 5, 0, 2, WHITE, false)) {
+                makeMoves("U' M' F'");
+            } else if (pairMatch(0, 0, 2, BLUE, 2, 0, 2, WHITE, false)) {
+                makeMoves("U2 M' F'");
+            } else if (pairMatch(0, 2, 0, BLUE, 3, 0, 2, WHITE, false)) {
+                makeMoves("M' F'");
+            } else if (pairMatch(0, 2, 2, BLUE, 4, 0, 2, WHITE, false)) {
+                makeMoves("U M' F'");
+            } // faceF BLUE...
+            else if (pairMatch(4, 0, 0, BLUE, 0, 2, 0, WHITE, false)) {
+                makeMoves("M F2 r U M' F'");
+            } else if (pairMatch(4, 0, 2, BLUE, 2, 0, 0, WHITE, false)) {
+                makeMoves("U2 M2 U2 r' F");
+            } else if (pairMatch(4, 2, 0, BLUE, 3, 2, 2, WHITE, false)) {
+                makeMoves("F' R U F'");
+            } else if (pairMatch(4, 2, 2, BLUE, 1, 0, 2, WHITE, false)) {
+                makeMoves("R U M' F'");
+            } // faceR BLUE...
+            else if (pairMatch(2, 0, 0, BLUE, 0, 2, 0, WHITE, false)) {
+                makeMoves("M F' M2 F'");
+            } else if (pairMatch(2, 0, 2, BLUE, 5, 0, 0, WHITE, false)) {
+                makeMoves("r' F' M2 F'");
+            } else if (pairMatch(2, 2, 0, BLUE, 4, 2, 2, WHITE, false)) {
+                makeMoves("R M F' M2 F'");
+            } else if (pairMatch(2, 2, 2, BLUE, 1, 2, 2, WHITE, false)) {
+                makeMoves("R2 M F' M2 F'");
+            } // faceB BLUE...
+            else if (pairMatch(5, 0, 0, BLUE, 0, 0, 2, WHITE, false)) {
+                makeMoves("R' U M' F'");
+            } else if (pairMatch(5, 0, 2, BLUE, 3, 0, 0, WHITE, false)) {
+                makeMoves("M2 U2 r' F");
+            } else if (pairMatch(5, 2, 0, BLUE, 2, 2, 2, WHITE, false)) {
+                makeMoves("R' U2 M' F'");
+            } else if (pairMatch(5, 2, 2, BLUE, 1, 2, 0, WHITE, false)) {
+                makeMoves("B2 R' U M' F'");
+            } // faceL BLUE...
+            else if (pairMatch(3, 0, 0, BLUE, 0, 0, 0, WHITE, false)) {
+                makeMoves("B' U2 M' F'");
+            } else if (pairMatch(3, 0, 2, BLUE, 4, 0, 0, WHITE, false)) {
+                makeMoves("U M2 U2 r' F");
+            } else if (pairMatch(3, 2, 0, BLUE, 5, 2, 2, WHITE, false)) {
+                makeMoves("B' U' M' F'");
+            } else if (pairMatch(3, 2, 2, BLUE, 1, 0, 0, WHITE, false)) {
+                makeMoves("M F M2 F'");
+            } // faceD BLUE...
+            else if (pairMatch(1, 0, 0, BLUE, 4, 2, 0, WHITE, false)) {
+                makeMoves("M F2 U M2 F'");
+            } else if (pairMatch(1, 0, 2, BLUE, 2, 2, 0, WHITE, false)) {
+                makeMoves("M F2 M2 F'");
+            } else if (pairMatch(1, 2, 0, BLUE, 3, 2, 0, WHITE, false)) {
+                makeMoves("M B2 U2 F'");
+            } else if (pairMatch(1, 2, 2, BLUE, 5, 2, 0, WHITE, false)) {
+                makeMoves("R2 U M2 F'");
+            }
         }
     }
 }

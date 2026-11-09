@@ -2,17 +2,17 @@ RubikBitmap.java
 
 Colour Map
 
-    0b000 = White
+0b000 = White
 
-    0b001 = Yellow
+0b001 = Yellow
 
-    0b010 = Blue
+0b010 = Blue
 
-    0b011 = Green
+0b011 = Green
 
-    0b100 = Red
-    
-    0b101 = Orange
+0b100 = Red
+
+0b101 = Orange
 
 Cube map:
 
