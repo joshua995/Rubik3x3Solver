@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profiles version="23">
+    <profile kind="CodeFormatterProfile" name="Custom" version="23">
+        <setting id="org.eclipse.jdt.core.formatter.use_on_off_tags" value="true"/>
+        <setting id="org.eclipse.jdt.core.formatter.alignment_for_conditional_expression" value="0"/>
+    </profile>
+</profiles>
