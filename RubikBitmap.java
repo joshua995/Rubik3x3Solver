@@ -25,7 +25,9 @@ Middle slice moves are simulated by rotating the sides and the whole cube to
 
 //TODO Recheck solver
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -89,6 +91,10 @@ public class RubikBitmap {
             "f", "f2", "f'",
             "b", "b2", "b'", };
 
+    static List<String> moveUsed = new ArrayList<>();
+
+    static String movesMade = "";
+
     public static void main(String[] args) {
         initColorMap();
         displayCube();
@@ -96,12 +102,21 @@ public class RubikBitmap {
         // scrambleCube(100000000);
         // long endTime = System.nanoTime();
         // System.out.println((endTime - startTime) / 1000000);
-        // E(1);
+
+        long startTime = System.nanoTime();
         scrambleCube(5);
-        // makeMoves("E' b x2 B B2");
+        // makeMoves("D2 S2 R F U'");
         displayCube();
         solveCube();
         displayCube();
+        for (String s : moveUsed) {
+            movesMade += s + " ";
+            // System.out.print(s + " ");
+        }
+        reduceMovesUsed();
+        System.out.println("\n" + movesMade);
+        long endTime = System.nanoTime();
+        System.out.println((endTime - startTime));
     }
 
     static void initColorMap() {
@@ -170,7 +185,7 @@ public class RubikBitmap {
             // System.out.print(chosenMove + ", ");
             makeMoves(chosenMove);
         }
-        System.out.println();
+        // System.out.println();
     }
 
     /**
@@ -179,7 +194,8 @@ public class RubikBitmap {
      * @param moves separated by a space
      */
     static void makeMoves(String moves) {
-        System.out.print(moves + " ");
+        // System.out.print(moves + " ");
+        moveUsed.add(moves);
         String[] moveList = moves.split(" ");
         for (String move : moveList) {
             switch (move) {
@@ -349,7 +365,7 @@ public class RubikBitmap {
                     break;
             }
 
-            displayCube();
+            // displayCube();
         }
     }
 
@@ -769,10 +785,19 @@ public class RubikBitmap {
         solveGreenWhiteEdge();
         loadGreenRedEdge();
         solveGreenRedBlock();
+        loadGreenOrangeEdge();
+        solveGreenOrangeBlock();
+        // Next 3 order does not matter in terms of solving the cube
+        solveYellowCorners();
+        solveBadEdges();
+        orientColoredCorners();
+        //
+        solveBlueGreenSide();
+        solveRestOfCube();
     }
 
     static void solveBlueCenter() {
-        if (colorMatch(3, 1, 1, BLUE)) { // In position faceL
+        if (colorMatch(3, 1, 1, BLUE) || isCubeSolved()) { // In position faceL
             return;
         } else if (colorMatch(0, 1, 1, BLUE)) { // On faceU
             makeMoves("z'");
@@ -789,7 +814,7 @@ public class RubikBitmap {
 
     static void solveBlueWhiteEdge() {
         // In position
-        if (pairMatch(3, 2, 1, BLUE, 1, 1, 0, WHITE, false)) {
+        if (pairMatch(3, 2, 1, BLUE, 1, 1, 0, WHITE, false) || isCubeSolved()) {
             return;
         }
         // @formatter:off
@@ -823,7 +848,7 @@ public class RubikBitmap {
 
     static void loadBlueRedEdge() {
         if ((trioMatch(3, 2, 2, BLUE, 4, 2, 0, RED, 1, 0, 0, WHITE) && pairMatch(3, 1, 2, BLUE, 4, 1, 0, RED, false))
-                || pairMatch(4, 2, 1, BLUE, 1, 0, 1, RED, true)) {
+                || pairMatch(4, 2, 1, BLUE, 1, 0, 1, RED, true) || isCubeSolved()) {
             return;
         }
         // @formatter:off
@@ -842,7 +867,8 @@ public class RubikBitmap {
     }
 
     static void solveBlueRedBlock() {
-        if ((trioMatch(3, 2, 2, BLUE, 4, 2, 0, RED, 1, 0, 0, WHITE) && pairMatch(3, 1, 2, BLUE, 4, 1, 0, RED, false))) {
+        if ((trioMatch(3, 2, 2, BLUE, 4, 2, 0, RED, 1, 0, 0, WHITE) && pairMatch(3, 1, 2, BLUE, 4, 1, 0, RED, false))
+                || isCubeSolved()) {
             return;
         } // faceF is BLUE
           // faceU BLUE for the corner, WHITE for the other sticker, RED will follow
@@ -898,14 +924,14 @@ public class RubikBitmap {
         } else if (pairMatch(1, 2, 0, BLUE, 3, 2, 0, WHITE, false)) {
             makeMoves(colorMatch(4, 2, 1, BLUE) ? "M B2 U2 F'" : "B2 R2 F");
         } else if (pairMatch(1, 2, 2, BLUE, 5, 2, 0, WHITE, false)) {
-            makeMoves(colorMatch(4, 2, 1, BLUE) ? "R2 U M2 F'" : "R2 U' R2 F");
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "R2 U M' F'" : "R2 U' R2 F");
         }
     }
 
     static void loadBlueOrangeEdge() {
         if ((trioMatch(3, 2, 0, BLUE, 5, 2, 2, ORANGE, 1, 2, 0, WHITE)
                 && pairMatch(3, 1, 0, BLUE, 5, 1, 2, ORANGE, false))
-                || pairMatch(4, 2, 1, BLUE, 1, 0, 1, ORANGE, true)) {
+                || pairMatch(4, 2, 1, BLUE, 1, 0, 1, ORANGE, true) || isCubeSolved()) {
             return;
         }
         // @formatter:off
@@ -923,8 +949,8 @@ public class RubikBitmap {
     }
 
     static void solveBlueOrangeBlock() {
-        if (trioMatch(3, 2, 0, BLUE, 5, 2, 2, ORANGE, 1, 2, 0, WHITE)
-                && pairMatch(3, 1, 0, BLUE, 5, 1, 2, ORANGE, false)) {
+        if ((trioMatch(3, 2, 0, BLUE, 5, 2, 2, ORANGE, 1, 2, 0, WHITE)
+                && pairMatch(3, 1, 0, BLUE, 5, 1, 2, ORANGE, false)) || isCubeSolved()) {
             return;
         } // faceF is BLUE
           // faceU BLUE for the corner, ORANGE for the other sticker, WHITE will follow
@@ -940,11 +966,11 @@ public class RubikBitmap {
         else if (pairMatch(4, 0, 0, BLUE, 0, 2, 0, ORANGE, false)) {
             makeMoves(colorMatch(4, 2, 1, BLUE) ? "U2 R M B'" : "M' U2 r B'");
         } else if (pairMatch(4, 0, 2, BLUE, 2, 0, 0, ORANGE, false)) {
-            makeMoves(colorMatch(4, 2, 1, BLUE) ? "l F l' r B'" : "R U' M2 B");
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "l F l' r' B'" : "R U' M2 B");
         } else if (pairMatch(4, 2, 2, BLUE, 1, 0, 2, ORANGE, false)) {
             makeMoves(colorMatch(4, 2, 1, BLUE) ? "r' B'" : "R U2 M2 B");
         } // faceR BLUE...
-        else if (pairMatch(2, 0, 0, BLUE, 0, 2, 0, ORANGE, false)) {
+        else if (pairMatch(2, 0, 0, BLUE, 0, 2, 2, ORANGE, false)) {
             makeMoves(colorMatch(4, 2, 1, BLUE) ? "U' R M B'" : "U M' U2 r B'");
         } else if (pairMatch(2, 0, 2, BLUE, 5, 0, 0, ORANGE, false)) {
             makeMoves(colorMatch(4, 2, 1, BLUE) ? "R' U' R M B'" : "B M2 B");
@@ -960,7 +986,7 @@ public class RubikBitmap {
         } else if (pairMatch(5, 2, 0, BLUE, 2, 2, 2, ORANGE, false)) {
             makeMoves(colorMatch(4, 2, 1, BLUE) ? "B R M B'" : "R' U' M2 B");
         } else if (pairMatch(5, 2, 2, BLUE, 1, 2, 0, ORANGE, false)) {
-            makeMoves(colorMatch(4, 2, 1, BLUE) ? "B2 R M B'" : "M B R U' B");
+            makeMoves(colorMatch(4, 2, 1, BLUE) ? "B2 R M B'" : "M B R' U' B");
         } // faceL BLUE...
         else if (pairMatch(3, 0, 0, BLUE, 0, 0, 0, ORANGE, false)) {
             makeMoves(colorMatch(4, 2, 1, BLUE) ? "U R M B'" : "U' M' U2 r B'");
@@ -979,7 +1005,7 @@ public class RubikBitmap {
     }
 
     static void solveGreenWhiteEdge() {
-        if (pairMatch(2, 2, 1, GREEN, 1, 1, 2, WHITE, false)) {
+        if (pairMatch(2, 2, 1, GREEN, 1, 1, 2, WHITE, false) || isCubeSolved()) {
             return;
         }
         // @formatter:off
@@ -997,6 +1023,7 @@ public class RubikBitmap {
         : pairMatch(5, 1, 0, GREEN, 2, 1, 2, WHITE, false) ? "R' U' M U' R2" 
         : pairMatch(5, 2, 1, GREEN, 1, 2, 1, WHITE, false) ? "M2 U' R2" 
         : pairMatch(1, 0, 1, GREEN, 4, 2, 1, WHITE, false) ? "M' U' R2" // ... faceD
+        : pairMatch(1, 1, 2, GREEN, 2, 2, 1, WHITE, false) ? "R2 U M' U R2"
         : pairMatch(1, 2, 1, GREEN, 5, 2, 1, WHITE, false) ? "M U R2" 
         : pairMatch(3, 0, 1, GREEN, 0, 1, 0, WHITE, false) ? "U2 R2" //... faceL
         : "");
@@ -1005,7 +1032,7 @@ public class RubikBitmap {
 
     static void loadGreenRedEdge() {
         if ((pairMatch(2, 2, 0, GREEN, 1, 0, 2, WHITE, false) && pairMatch(2, 1, 0, GREEN, 4, 1, 2, RED, false))
-                || pairMatch(4, 2, 1, GREEN, 1, 0, 1, RED, true)) {
+                || pairMatch(4, 2, 1, GREEN, 1, 0, 1, RED, true) || isCubeSolved()) {
             return;
         }
         // @formatter:off
@@ -1021,7 +1048,8 @@ public class RubikBitmap {
     }
 
     static void solveGreenRedBlock() {
-        if (pairMatch(2, 2, 0, GREEN, 1, 0, 2, WHITE, false) && pairMatch(2, 1, 0, GREEN, 4, 1, 2, RED, false)) {
+        if ((pairMatch(2, 2, 0, GREEN, 1, 0, 2, WHITE, false) && pairMatch(2, 1, 0, GREEN, 4, 1, 2, RED, false))
+                || isCubeSolved()) {
             return;
         } // faceF is GREEN
           // faceU GREEN for the corner, RED for the other sticker, WHITE will follow
@@ -1032,7 +1060,7 @@ public class RubikBitmap {
         } else if (pairMatch(0, 2, 0, GREEN, 3, 0, 2, RED, false)) {
             makeMoves(colorMatch(4, 2, 1, GREEN) ? "U' M' r U R'" : "U M2 U2 r U R'");
         } else if (pairMatch(0, 2, 2, GREEN, 4, 0, 2, RED, false)) {
-            makeMoves(colorMatch(4, 2, 1, GREEN) ? " M' r U R'" : "U2 M2 U2 r U R'");
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "M' r U R'" : "U2 M2 U2 r U R'");
         } // faceF GREEN...
         else if (pairMatch(4, 0, 0, GREEN, 0, 2, 0, RED, false)) {
             makeMoves(colorMatch(4, 2, 1, GREEN) ? "U2 M2 U2 R U' R'" : "r U' R'");
@@ -1041,38 +1069,454 @@ public class RubikBitmap {
         } else if (pairMatch(4, 2, 2, GREEN, 1, 0, 2, RED, false)) {
             makeMoves(colorMatch(4, 2, 1, GREEN) ? "r U R' U' r U R'" : "R U2 M2 R' U2 r U R'");
         } // faceR GREEN...
-        else if (pairMatch(2, 0, 0, BLUE, 0, 2, 0, ORANGE, false)) {
-            makeMoves(colorMatch(4, 2, 1, BLUE) ? "" : "");
-        } else if (pairMatch(2, 0, 2, BLUE, 5, 0, 0, ORANGE, false)) {
-            makeMoves(colorMatch(4, 2, 1, BLUE) ? "" : "");
-        } else if (pairMatch(2, 2, 0, BLUE, 4, 2, 2, ORANGE, false)) {
-            makeMoves(colorMatch(4, 2, 1, BLUE) ? "" : "");
-        } else if (pairMatch(2, 2, 2, BLUE, 1, 2, 2, ORANGE, false)) {
-            makeMoves(colorMatch(4, 2, 1, BLUE) ? "" : "");
+        else if (pairMatch(2, 0, 0, GREEN, 0, 2, 2, RED, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "U' M2 U2 R U' R'" : "U r U' R'");
+        } else if (pairMatch(2, 0, 2, GREEN, 5, 0, 0, RED, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "R' U' M2 U2 R2 U' R'" : "R' U r R U' R'");
+        } else if (pairMatch(2, 2, 0, GREEN, 4, 2, 2, RED, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "R U' M2 U R'" : "R U M' U' R'");
+        } else if (pairMatch(2, 2, 2, GREEN, 1, 2, 2, RED, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "R' U R U M' r U R'" : "R' U R U' M2 U2 r U R'");
         } // faceB GREEN...
-        else if (pairMatch(5, 0, 0, BLUE, 0, 0, 2, ORANGE, false)) {
-            makeMoves(colorMatch(4, 2, 1, BLUE) ? "" : "");
-        } else if (pairMatch(5, 0, 2, BLUE, 3, 0, 0, ORANGE, false)) {
-            makeMoves(colorMatch(4, 2, 1, BLUE) ? "" : "");
-        } else if (pairMatch(5, 2, 0, BLUE, 2, 2, 2, ORANGE, false)) {
-            makeMoves(colorMatch(4, 2, 1, BLUE) ? "" : "");
-        } else if (pairMatch(5, 2, 2, BLUE, 1, 2, 0, ORANGE, false)) {
-            makeMoves(colorMatch(4, 2, 1, BLUE) ? "" : "");
+        else if (pairMatch(5, 0, 0, GREEN, 0, 0, 2, RED, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "M2 U2 R U' R'" : "U2 r U' R'");
+        } else if (pairMatch(5, 0, 2, GREEN, 3, 0, 0, RED, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "U R' U' M2 U2 R2 U' R'" : "U R' U r R U' R'");
+        } else if (pairMatch(5, 2, 0, GREEN, 2, 2, 2, RED, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "L' B L M2 U2 R U' R'" : "L' B L U2 r U' R'");
         } // faceL GREEN...
-        else if (pairMatch(3, 0, 0, BLUE, 0, 0, 0, ORANGE, false)) {
-            makeMoves(colorMatch(4, 2, 1, BLUE) ? "" : "");
-        } else if (pairMatch(3, 0, 2, BLUE, 4, 0, 0, ORANGE, false)) {
-            makeMoves(colorMatch(4, 2, 1, BLUE) ? "" : "");
-        } else if (pairMatch(3, 2, 0, BLUE, 5, 2, 2, ORANGE, false)) {
-            makeMoves(colorMatch(4, 2, 1, BLUE) ? "" : "");
+        else if (pairMatch(3, 0, 0, GREEN, 0, 0, 0, RED, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "U M2 U2 R U' R'" : "U' r U' R'");
+        } else if (pairMatch(3, 0, 2, GREEN, 4, 0, 0, RED, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "R' U' R U M' r U R'" : "U2 R' U r R U' R'");
         } // faceD GREEN...
-        else if (pairMatch(1, 0, 2, BLUE, 2, 2, 0, ORANGE, false)) {
-            makeMoves(colorMatch(4, 2, 1, BLUE) ? "" : "");
-        } else if (pairMatch(1, 2, 0, BLUE, 3, 2, 0, ORANGE, false)) {
-            makeMoves(colorMatch(4, 2, 1, BLUE) ? "" : "");
-        } else if (pairMatch(1, 2, 2, BLUE, 5, 2, 0, ORANGE, false)) {
-            makeMoves(colorMatch(4, 2, 1, BLUE) ? "" : "");
+        else if (pairMatch(1, 0, 2, GREEN, 2, 2, 0, RED, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "R U' R' U' M2 U2 R U' R'" : "R U' R' U r U' R'");
+        } else if (pairMatch(1, 2, 2, GREEN, 5, 2, 0, RED, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "R' M2 U2 R2 U' R'" : "R' U2 r R U' R'");
         }
+    }
+
+    static void loadGreenOrangeEdge() {
+        if ((pairMatch(2, 2, 2, GREEN, 1, 2, 2, WHITE, false) && pairMatch(2, 1, 2, GREEN, 5, 1, 0, ORANGE, false))
+                || pairMatch(4, 2, 1, GREEN, 1, 0, 1, ORANGE, true) || isCubeSolved()) {
+            return;
+        }
+        // @formatter:off
+        makeMoves(pairMatch(0, 0, 1, GREEN, 5, 0, 1, ORANGE, true) ? "M2" // FaceU
+        : pairMatch(0, 1, 0, GREEN, 3, 0, 1, ORANGE, true) ? "U' M" 
+        : pairMatch(0, 1, 2, GREEN, 2, 0, 1, ORANGE, true) ? "U M" 
+        : pairMatch(0, 2, 1, GREEN, 4, 0, 1, ORANGE, true) ? "M" 
+        : pairMatch(2, 1, 2, GREEN, 5, 1, 0, ORANGE, true) ? "R' U M R" // FaceR
+        : pairMatch(5, 2, 1, GREEN, 1, 2, 1, ORANGE, true) ? "M'"  // FaceB
+        : "");
+        // @formatter:on
+    }
+
+    static void solveGreenOrangeBlock() {
+        if ((pairMatch(2, 2, 2, GREEN, 1, 2, 2, WHITE, false) && pairMatch(2, 1, 2, GREEN, 5, 1, 0, ORANGE, false))
+                || isCubeSolved()) {
+            return;
+        } // faceF is GREEN
+          // faceU GREEN for the corner, WHITE for the other sticker, ORANGE will follow
+        else if (pairMatch(0, 0, 0, GREEN, 5, 0, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "U' M' U2 r' U' R" : "U R' M' U' R");
+        } else if (pairMatch(0, 0, 2, GREEN, 2, 0, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "U2 M' U2 r' U' R" : "R' M' U' R");
+        } else if (pairMatch(0, 2, 0, GREEN, 3, 0, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "M' U2 r' U' R" : "U2 R' M' U' R");
+        } else if (pairMatch(0, 2, 2, GREEN, 4, 0, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "U M' U2 r' U' R" : "U' R' M' U' R");
+        } // faceF GREEN...
+        else if (pairMatch(4, 0, 0, GREEN, 0, 2, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "R' U' R U' M2 R' U R" : "R' U' R U M' U2 R' U R");
+        } else if (pairMatch(4, 0, 2, GREEN, 2, 0, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "U2 M2 R' U R" : "M' U2 R' U R");
+        } // faceR GREEN...
+        else if (pairMatch(2, 0, 0, GREEN, 0, 2, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "U' R' U r U2 r' U' R" : "U' R' U R U2 M' R' U' R");
+        } else if (pairMatch(2, 0, 2, GREEN, 5, 0, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "U' M2 R' U R" : "U M' U2 R' U R");
+        } else if (pairMatch(2, 2, 2, GREEN, 1, 2, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "R' U' M2 U R" : "R' U M' U' R");
+        } // faceB GREEN...
+        else if (pairMatch(5, 0, 0, GREEN, 0, 0, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "R' U r U2 r' U' R" : "R' U R U2 M' R' U' R");
+        } else if (pairMatch(5, 0, 2, GREEN, 3, 0, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "M2 R' U R" : "U2 M' U2 R' U R");
+        } else if (pairMatch(5, 2, 0, GREEN, 2, 2, 2, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "R' U2 r U2 r' U' R" : "R' M2 U' R U r' U' R");
+        } // faceL GREEN...
+        else if (pairMatch(3, 0, 0, GREEN, 0, 0, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "U R' U r U2 r' U' R" : "U R' U R U2 R' M' U' R");
+        } else if (pairMatch(3, 0, 2, GREEN, 4, 0, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "U M2 R' U R" : "U' M' U2 R' U R");
+        } // faceD GREEN...
+        else if (pairMatch(1, 2, 2, GREEN, 5, 2, 0, WHITE, false)) {
+            makeMoves(colorMatch(4, 2, 1, GREEN) ? "R' U R U' M2 R' U R" : "R' U R U M' U2 R' U R");
+        }
+    }
+
+    static void solveYellowCorners() {
+        if ((pairMatch(0, 0, 0, YELLOW, 0, 0, 2, YELLOW, true) && pairMatch(0, 2, 0, YELLOW, 0, 2, 2, YELLOW, true))
+                || isCubeSolved()) {
+            return;
+        } // H-orientation
+        else if (pairMatch(4, 0, 0, YELLOW, 4, 0, 2, YELLOW, true)
+                && pairMatch(5, 0, 0, YELLOW, 5, 0, 2, YELLOW, true)) {
+            makeMoves("R U2 R' U' R U R' U' R U' R'");
+        } else if (pairMatch(2, 0, 0, YELLOW, 2, 0, 2, YELLOW, true)
+                && pairMatch(3, 0, 0, YELLOW, 3, 0, 2, YELLOW, true)) {
+            makeMoves("U R U2 R' U' R U R' U' R U' R'");
+        } //
+        else if (pairMatch(5, 0, 0, YELLOW, 4, 0, 2, YELLOW, true)
+                && pairMatch(3, 0, 0, YELLOW, 3, 0, 2, YELLOW, true)) {
+            makeMoves("F R U R' U' R U R' U' F'");
+        } else if (pairMatch(2, 0, 0, YELLOW, 3, 0, 2, YELLOW, true)
+                && pairMatch(5, 0, 0, YELLOW, 5, 0, 2, YELLOW, true)) {
+            makeMoves("U' F R U R' U' R U R' U' F'");
+        } else if (pairMatch(3, 0, 0, YELLOW, 2, 0, 2, YELLOW, true)
+                && pairMatch(4, 0, 0, YELLOW, 4, 0, 2, YELLOW, true)) {
+            makeMoves("U F R U R' U' R U R' U' F'");
+        } else if (pairMatch(4, 0, 0, YELLOW, 5, 0, 2, YELLOW, true)
+                && pairMatch(2, 0, 0, YELLOW, 2, 0, 2, YELLOW, true)) {
+            makeMoves("U2 F R U R' U' R U R' U' F'");
+        } //
+        else if (pairMatch(0, 2, 2, YELLOW, 0, 0, 2, YELLOW, true)
+                && pairMatch(3, 0, 0, YELLOW, 3, 0, 2, YELLOW, true)) {
+            makeMoves("F R U R' U' F'");
+        } else if (pairMatch(0, 0, 0, YELLOW, 0, 0, 2, YELLOW, true)
+                && pairMatch(4, 0, 0, YELLOW, 4, 0, 2, YELLOW, true)) {
+            makeMoves("U F R U R' U' F'");
+        } else if (pairMatch(0, 2, 0, YELLOW, 0, 2, 2, YELLOW, true)
+                && pairMatch(5, 0, 0, YELLOW, 5, 0, 2, YELLOW, true)) {
+            makeMoves("U' F R U R' U' F'");
+        } else if (pairMatch(0, 0, 0, YELLOW, 0, 2, 0, YELLOW, true)
+                && pairMatch(2, 0, 0, YELLOW, 2, 0, 2, YELLOW, true)) {
+            makeMoves("U2 F R U R' U' F'");
+        } //
+        else if (pairMatch(0, 0, 2, YELLOW, 0, 2, 2, YELLOW, true)
+                && pairMatch(4, 0, 0, YELLOW, 5, 0, 2, YELLOW, true)) {
+            makeMoves("R U R' U' R' F R F'");
+        } else if (pairMatch(0, 0, 0, YELLOW, 0, 0, 2, YELLOW, true)
+                && pairMatch(2, 0, 0, YELLOW, 3, 0, 2, YELLOW, true)) {
+            makeMoves("U R U R' U' R' F R F'");
+        } else if (pairMatch(0, 2, 0, YELLOW, 0, 2, 2, YELLOW, true)
+                && pairMatch(3, 0, 0, YELLOW, 2, 0, 2, YELLOW, true)) {
+            makeMoves("U' R U R' U' R' F R F'");
+        } else if (pairMatch(0, 0, 0, YELLOW, 0, 2, 0, YELLOW, true)
+                && pairMatch(5, 0, 0, YELLOW, 4, 0, 2, YELLOW, true)) {
+            makeMoves("U2 R U R' U' R' F R F'");
+        } //
+        else if (pairMatch(0, 2, 0, YELLOW, 4, 0, 2, YELLOW, true)
+                && pairMatch(2, 0, 2, YELLOW, 5, 0, 2, YELLOW, true)) {
+            makeMoves("R U R' U R U2 R'");
+        } else if (pairMatch(0, 2, 2, YELLOW, 2, 0, 2, YELLOW, true)
+                && pairMatch(3, 0, 2, YELLOW, 5, 0, 2, YELLOW, true)) {
+            makeMoves("U R U R' U R U2 R'");
+        } else if (pairMatch(0, 0, 0, YELLOW, 2, 0, 2, YELLOW, true)
+                && pairMatch(3, 0, 2, YELLOW, 4, 0, 2, YELLOW, true)) {
+            makeMoves("U' R U R' U R U2 R'");
+        } else if (pairMatch(0, 0, 2, YELLOW, 5, 0, 2, YELLOW, true)
+                && pairMatch(3, 0, 2, YELLOW, 4, 0, 2, YELLOW, true)) {
+            makeMoves("U2 R U R' U R U2 R'");
+        } //
+        else if (pairMatch(0, 0, 0, YELLOW, 5, 0, 0, YELLOW, true)
+                && pairMatch(2, 0, 0, YELLOW, 4, 0, 0, YELLOW, true)) {
+            makeMoves("R' U' R U' R' U2 R");
+        } else if (pairMatch(0, 2, 0, YELLOW, 5, 0, 0, YELLOW, true)
+                && pairMatch(2, 0, 0, YELLOW, 3, 0, 0, YELLOW, true)) {
+            makeMoves("U R' U' R U' R' U2 R");
+        } else if (pairMatch(0, 0, 2, YELLOW, 4, 0, 0, YELLOW, true)
+                && pairMatch(2, 0, 0, YELLOW, 3, 0, 0, YELLOW, true)) {
+            makeMoves("U' R' U' R U' R' U2 R");
+        } else if (pairMatch(0, 2, 2, YELLOW, 4, 0, 0, YELLOW, true)
+                && pairMatch(5, 0, 0, YELLOW, 3, 0, 0, YELLOW, true)) {
+            makeMoves("U2 R' U' R U' R' U2 R");
+        } //
+        else if (pairMatch(0, 0, 0, YELLOW, 0, 2, 2, YELLOW, true)
+                && pairMatch(2, 0, 2, YELLOW, 4, 0, 0, YELLOW, true)) {
+            makeMoves("F R' F' R U R U' R'");
+        } else if (pairMatch(0, 0, 2, YELLOW, 0, 2, 0, YELLOW, true)
+                && pairMatch(5, 0, 2, YELLOW, 2, 0, 0, YELLOW, true)) {
+            makeMoves("U F R' F' R U R U' R'");
+        } else if (pairMatch(0, 0, 2, YELLOW, 0, 2, 0, YELLOW, true)
+                && pairMatch(4, 0, 2, YELLOW, 3, 0, 0, YELLOW, true)) {
+            makeMoves("U' F R' F' R U R U' R'");
+        } else if (pairMatch(0, 0, 0, YELLOW, 0, 2, 2, YELLOW, true)
+                && pairMatch(3, 0, 2, YELLOW, 5, 0, 0, YELLOW, true)) {
+            makeMoves("U2 F R' F' R U R U' R'");
+        }
+    }
+
+    static void solveBadEdges() {
+        if (!pairMatch(0, 1, 1, WHITE, 1, 1, 1, YELLOW, true)) {
+            makeMoves("M");
+        }
+
+        if (isCubeSolved()) {
+            return;
+        }
+
+        // 2 bad edges on bottom
+        else if (!notABadEdge(1, 0, 1) && !notABadEdge(1, 2, 1)
+                && notABadEdge(0, 0, 1) && notABadEdge(0, 1, 0) && notABadEdge(0, 1, 2) && notABadEdge(0, 2, 1)) {
+            makeMoves("M U M U' M' U M");
+        } // 2 bad edges on top across
+        else if (notABadEdge(1, 0, 1) && notABadEdge(1, 2, 1)
+                && !notABadEdge(0, 0, 1) && notABadEdge(0, 1, 0) && notABadEdge(0, 1, 2) && !notABadEdge(0, 2, 1)) {
+            makeMoves("M U M' U' M U M");
+        } else if (notABadEdge(1, 0, 1) && notABadEdge(1, 2, 1)
+                && notABadEdge(0, 0, 1) && !notABadEdge(0, 1, 0) && !notABadEdge(0, 1, 2) && notABadEdge(0, 2, 1)) {
+            makeMoves("U M U M' U' M U M");
+        } // 2 bad edges on top: adjacent
+        else if (notABadEdge(1, 0, 1) && notABadEdge(1, 2, 1)
+                && !notABadEdge(0, 0, 1) && !notABadEdge(0, 1, 0) && notABadEdge(0, 1, 2) && notABadEdge(0, 2, 1)) {
+            makeMoves("M' U M U2 M' U M");
+        } else if (notABadEdge(1, 0, 1) && notABadEdge(1, 2, 1)
+                && !notABadEdge(0, 0, 1) && notABadEdge(0, 1, 0) && !notABadEdge(0, 1, 2) && notABadEdge(0, 2, 1)) {
+            makeMoves("M' U' M U2 M' U M");
+        } else if (notABadEdge(1, 0, 1) && notABadEdge(1, 2, 1)
+                && notABadEdge(0, 0, 1) && !notABadEdge(0, 1, 0) && notABadEdge(0, 1, 2) && !notABadEdge(0, 2, 1)) {
+            makeMoves("M U' M' U2 M U M");
+        } else if (notABadEdge(1, 0, 1) && notABadEdge(1, 2, 1)
+                && notABadEdge(0, 0, 1) && notABadEdge(0, 1, 0) && !notABadEdge(0, 1, 2) && !notABadEdge(0, 2, 1)) {
+            makeMoves("M U M' U2 M U M");
+        } // 2 bad edges: bottom front, top
+        else if (!notABadEdge(1, 0, 1) && notABadEdge(1, 2, 1)
+                && !notABadEdge(0, 0, 1) && notABadEdge(0, 1, 0) && notABadEdge(0, 1, 2) && notABadEdge(0, 2, 1)) {
+            makeMoves("M' U M U M' U M");
+        } else if (!notABadEdge(1, 0, 1) && notABadEdge(1, 2, 1)
+                && notABadEdge(0, 0, 1) && !notABadEdge(0, 1, 0) && notABadEdge(0, 1, 2) && notABadEdge(0, 2, 1)) {
+            makeMoves("M U M U2 M' U M");
+        } else if (!notABadEdge(1, 0, 1) && notABadEdge(1, 2, 1)
+                && notABadEdge(0, 0, 1) && notABadEdge(0, 1, 0) && !notABadEdge(0, 1, 2) && notABadEdge(0, 2, 1)) {
+            makeMoves("M U' M U2 M' U M");
+        } else if (!notABadEdge(1, 0, 1) && notABadEdge(1, 2, 1)
+                && notABadEdge(0, 0, 1) && notABadEdge(0, 1, 0) && notABadEdge(0, 1, 2) && !notABadEdge(0, 2, 1)) {
+            makeMoves("U M U M U2 M' U M");
+        } // 2 bad edges: bottom back, top
+        else if (notABadEdge(1, 0, 1) && !notABadEdge(1, 2, 1)
+                && !notABadEdge(0, 0, 1) && notABadEdge(0, 1, 0) && notABadEdge(0, 1, 2) && notABadEdge(0, 2, 1)) {
+            makeMoves("U M' U M U2 M U M");
+        } else if (notABadEdge(1, 0, 1) && !notABadEdge(1, 2, 1)
+                && notABadEdge(0, 0, 1) && !notABadEdge(0, 1, 0) && notABadEdge(0, 1, 2) && notABadEdge(0, 2, 1)) {
+            makeMoves("M' U' M U2 M U M");
+        } else if (notABadEdge(1, 0, 1) && !notABadEdge(1, 2, 1)
+                && notABadEdge(0, 0, 1) && notABadEdge(0, 1, 0) && !notABadEdge(0, 1, 2) && notABadEdge(0, 2, 1)) {
+            makeMoves("M' U M U2 M U M");
+        } else if (notABadEdge(1, 0, 1) && !notABadEdge(1, 2, 1)
+                && notABadEdge(0, 0, 1) && notABadEdge(0, 1, 0) && notABadEdge(0, 1, 2) && !notABadEdge(0, 2, 1)) {
+            makeMoves("U' M' U M U2 M U M");
+        } // 4 bad edges on top
+        else if (notABadEdge(1, 0, 1) && notABadEdge(1, 2, 1)
+                && !notABadEdge(0, 0, 1) && !notABadEdge(0, 1, 0) && !notABadEdge(0, 1, 2) && !notABadEdge(0, 2, 1)) {
+            makeMoves("M U2 M U2 M U M");
+        } // 4 bad edges 2 on bottom, 2 on top across
+        else if (!notABadEdge(1, 0, 1) && !notABadEdge(1, 2, 1)
+                && !notABadEdge(0, 0, 1) && notABadEdge(0, 1, 0) && notABadEdge(0, 1, 2) && !notABadEdge(0, 2, 1)) {
+            makeMoves("U M U2 M U2 M' U M");
+        } else if (!notABadEdge(1, 0, 1) && !notABadEdge(1, 2, 1)
+                && notABadEdge(0, 0, 1) && !notABadEdge(0, 1, 0) && !notABadEdge(0, 1, 2) && notABadEdge(0, 2, 1)) {
+            makeMoves("M U2 M U2 M' U M");
+        } // 4 bad edges 2 on bottom, 2 on top adjacent
+        else if (!notABadEdge(1, 0, 1) && !notABadEdge(1, 2, 1)
+                && !notABadEdge(0, 0, 1) && !notABadEdge(0, 1, 0) && notABadEdge(0, 1, 2) && notABadEdge(0, 2, 1)) {
+            makeMoves("M2 U' M' U M");
+        } else if (!notABadEdge(1, 0, 1) && !notABadEdge(1, 2, 1)
+                && !notABadEdge(0, 0, 1) && notABadEdge(0, 1, 0) && !notABadEdge(0, 1, 2) && notABadEdge(0, 2, 1)) {
+            makeMoves("M2 U M' U M");
+        } else if (!notABadEdge(1, 0, 1) && !notABadEdge(1, 2, 1)
+                && notABadEdge(0, 0, 1) && notABadEdge(0, 1, 0) && !notABadEdge(0, 1, 2) && !notABadEdge(0, 2, 1)) {
+            makeMoves("M2 U' M U M");
+        } else if (!notABadEdge(1, 0, 1) && !notABadEdge(1, 2, 1)
+                && notABadEdge(0, 0, 1) && !notABadEdge(0, 1, 0) && notABadEdge(0, 1, 2) && !notABadEdge(0, 2, 1)) {
+            makeMoves("M2 U M U M");
+        } // 4 bad edges 1 on bottom front, arrow on top
+        else if (!notABadEdge(1, 0, 1) && notABadEdge(1, 2, 1)
+                && notABadEdge(0, 0, 1) && !notABadEdge(0, 1, 0) && !notABadEdge(0, 1, 2) && !notABadEdge(0, 2, 1)) {
+            makeMoves("M' U M");
+        } else if (!notABadEdge(1, 0, 1) && notABadEdge(1, 2, 1)
+                && !notABadEdge(0, 0, 1) && notABadEdge(0, 1, 0) && !notABadEdge(0, 1, 2) && !notABadEdge(0, 2, 1)) {
+            makeMoves("U M' U M");
+        } else if (!notABadEdge(1, 0, 1) && notABadEdge(1, 2, 1)
+                && !notABadEdge(0, 0, 1) && !notABadEdge(0, 1, 0) && notABadEdge(0, 1, 2) && !notABadEdge(0, 2, 1)) {
+            makeMoves("U' M' U M");
+        } else if (!notABadEdge(1, 0, 1) && notABadEdge(1, 2, 1)
+                && !notABadEdge(0, 0, 1) && !notABadEdge(0, 1, 0) && !notABadEdge(0, 1, 2) && notABadEdge(0, 2, 1)) {
+            makeMoves("U2 M' U M");
+        } // 4 bad edges 1 on bottom back, arrow on top
+        else if (notABadEdge(1, 0, 1) && !notABadEdge(1, 2, 1)
+                && !notABadEdge(0, 0, 1) && !notABadEdge(0, 1, 0) && !notABadEdge(0, 1, 2) && notABadEdge(0, 2, 1)) {
+            makeMoves("M U M");
+        } else if (notABadEdge(1, 0, 1) && !notABadEdge(1, 2, 1)
+                && !notABadEdge(0, 0, 1) && !notABadEdge(0, 1, 0) && notABadEdge(0, 1, 2) && !notABadEdge(0, 2, 1)) {
+            makeMoves("U M U M");
+        } else if (notABadEdge(1, 0, 1) && !notABadEdge(1, 2, 1)
+                && !notABadEdge(0, 0, 1) && notABadEdge(0, 1, 0) && !notABadEdge(0, 1, 2) && !notABadEdge(0, 2, 1)) {
+            makeMoves("U' M U M");
+        } else if (notABadEdge(1, 0, 1) && !notABadEdge(1, 2, 1)
+                && notABadEdge(0, 0, 1) && !notABadEdge(0, 1, 0) && !notABadEdge(0, 1, 2) && !notABadEdge(0, 2, 1)) {
+            makeMoves("U2 M U M");
+        } // 6 bad edges
+        else if (!notABadEdge(1, 0, 1) && !notABadEdge(1, 2, 1)
+                && !notABadEdge(0, 0, 1) && !notABadEdge(0, 1, 0) && !notABadEdge(0, 1, 2) && !notABadEdge(0, 2, 1)) {
+            makeMoves("R U' r' U' M' U r U r'");
+        }
+
+    }
+
+    static void orientColoredCorners() {
+        if ((((((cube[3] & stickerMasks[0][0]) >> (3 * stickerToShifts.get(stickerMasks[0][0])))
+                & 0b111) == (((cube[3] & stickerMasks[0][2]) >> (3 * stickerToShifts.get(stickerMasks[0][2])))
+                        & 0b111))
+                && ((((cube[2] & stickerMasks[0][0]) >> (3 * stickerToShifts.get(stickerMasks[0][0])))
+                        & 0b111) == (((cube[2] & stickerMasks[0][2]) >> (3 * stickerToShifts.get(stickerMasks[0][2])))
+                                & 0b111)))
+                || isCubeSolved()) {
+            return;
+        } else if (((((cube[3] & stickerMasks[0][0]) >> (3 * stickerToShifts.get(stickerMasks[0][0])))
+                & 0b111) == (((cube[3] & stickerMasks[0][2]) >> (3 * stickerToShifts.get(stickerMasks[0][2])))
+                        & 0b111))) {
+            makeMoves("R U R' U' R' F R2 U' R' U' R U R' F'");
+        } else if (((((cube[4] & stickerMasks[0][0]) >> (3 * stickerToShifts.get(stickerMasks[0][0])))
+                & 0b111) == (((cube[4] & stickerMasks[0][2]) >> (3 * stickerToShifts.get(stickerMasks[0][2])))
+                        & 0b111))) {
+            makeMoves("U R U R' U' R' F R2 U' R' U' R U R' F'");
+        } else if (((((cube[5] & stickerMasks[0][0]) >> (3 * stickerToShifts.get(stickerMasks[0][0])))
+                & 0b111) == (((cube[5] & stickerMasks[0][2]) >> (3 * stickerToShifts.get(stickerMasks[0][2])))
+                        & 0b111))) {
+            makeMoves("U' R U R' U' R' F R2 U' R' U' R U R' F'");
+        } else if (((((cube[2] & stickerMasks[0][0]) >> (3 * stickerToShifts.get(stickerMasks[0][0])))
+                & 0b111) == (((cube[2] & stickerMasks[0][2]) >> (3 * stickerToShifts.get(stickerMasks[0][2])))
+                        & 0b111))) {
+            makeMoves("U2 R U R' U' R' F R2 U' R' U' R U R' F'");
+        } else {
+            makeMoves("R U R' U' R' F R2 U' R' U' R U R' F' U2 R U R' U' R' F R2 U' R' U' R U R' F'");
+        }
+    }
+
+    static void solveBlueGreenSide() {
+        if ((pairMatch(3, 0, 0, BLUE, 3, 0, 1, BLUE, false) && pairMatch(2, 0, 0, GREEN, 2, 0, 1, GREEN, false))
+                || isCubeSolved()) {
+            return;
+        }
+        //@formatter:off
+        makeMoves(colorMatch(4, 0, 0, BLUE) ? "U" : colorMatch(5, 0, 0, BLUE) ? "U'" : colorMatch(2, 0, 0, BLUE) ? "U2" : "");
+        
+        makeMoves(pairMatch(3, 0, 1, BLUE, 4, 0, 1, GREEN, false) ? "M2 U' M' U2 M' U'" // Blue edge is solved
+                : pairMatch(3, 0, 1, BLUE, 5, 0, 1, GREEN, false) ? "M2 U M U2 M U"
+                : pairMatch(3, 0, 1, BLUE, 4, 2, 1, GREEN, false) ? "U M U2 M U" 
+                : pairMatch(3, 0, 1, BLUE, 5, 2, 1, GREEN, false) ? "U' M' U2 M' U'" 
+                : pairMatch(2, 0, 1, BLUE, 4, 0, 1, GREEN, false) ? "M2 U M U2 M' U" // Blue on Green side
+                : pairMatch(2, 0, 1, BLUE, 5, 0, 1, GREEN, false) ? "M2 U' M' U2 M U'"
+                : pairMatch(2, 0, 1, BLUE, 3, 0, 1, GREEN, false) ? "U M2 U2 M2 U"
+                : pairMatch(2, 0, 1, BLUE, 4, 2, 1, GREEN, false) ? "U' M' U2 M U'"
+                : pairMatch(2, 0, 1, BLUE, 5, 2, 1, GREEN, false) ? "U M U2 M' U"
+                : pairMatch(5, 0, 1, BLUE, 4, 0, 1, GREEN, false) ? "M2 U M2 U'" // Blue on top back
+                : pairMatch(5, 0, 1, BLUE, 3, 0, 1, GREEN, false) ? "M2 U M' U2 M U" 
+                : pairMatch(5, 0, 1, BLUE, 2, 0, 1, GREEN, false) ? "M2 U' M U2 M U'" 
+                : pairMatch(5, 0, 1, BLUE, 4, 2, 1, GREEN, false) ? "M U2 M' U M2 U" 
+                : pairMatch(5, 0, 1, BLUE, 5, 2, 1, GREEN, false) ? "U2 M' U2 M U M2 U'" 
+                : pairMatch(4, 0, 1, BLUE, 5, 0, 1, GREEN, false) ? "M2 U' M2 U" // Blue on top front
+                : pairMatch(4, 0, 1, BLUE, 3, 0, 1, GREEN, false) ? "M2 U' M U2 M' U'" 
+                : pairMatch(4, 0, 1, BLUE, 2, 0, 1, GREEN, false) ? "M2 U M' U2 M' U" 
+                : pairMatch(4, 0, 1, BLUE, 4, 2, 1, GREEN, false) ? "U2 M' U2 M' U M2 U'" 
+                : pairMatch(4, 0, 1, BLUE, 5, 2, 1, GREEN, false) ? "M' U2 M U' M2 U'" 
+                : pairMatch(4, 2, 1, BLUE, 5, 0, 1, GREEN, false) ? "M U2 M' U' M2 U'" // Blue on bottom front
+                : pairMatch(4, 2, 1, BLUE, 4, 0, 1, GREEN, false) ? "U2 M U2 M' U M2 U'" 
+                : pairMatch(4, 2, 1, BLUE, 2, 0, 1, GREEN, false) ? "U' M U2 M U'" 
+                : pairMatch(4, 2, 1, BLUE, 3, 0, 1, GREEN, false) ? "U M' U2 M U" 
+                : pairMatch(4, 2, 1, BLUE, 5, 2, 1, GREEN, false) ? "U M2 U'" 
+                : pairMatch(5, 2, 1, BLUE, 5, 0, 1, GREEN, false) ? "U2 M' U2 M U' M2 U" // Blue on bottom back
+                : pairMatch(5, 2, 1, BLUE, 4, 0, 1, GREEN, false) ? "M U2 M U' M2 U'" 
+                : pairMatch(5, 2, 1, BLUE, 2, 0, 1, GREEN, false) ? "U M' U2 M' U" 
+                : pairMatch(5, 2, 1, BLUE, 3, 0, 1, GREEN, false) ? "U' M U2 M' U'" 
+                : pairMatch(5, 2, 1, BLUE, 4, 2, 1, GREEN, false) ? "U' M2 U" 
+                : "");
+        //@formatter:on
+    }
+
+    static void solveRestOfCube() {
+        if (isCubeSolved()) {
+            return;
+        }
+        // Dots
+        else if ((matching2Stickers(0, 0, 1, 0, 2, 1) && !matching2Stickers(0, 0, 1, 0, 1, 1))
+                && (matching2Stickers(4, 0, 1, 4, 2, 1) && !matching2Stickers(4, 0, 1, 4, 1, 1))) {
+            makeMoves("E2 M' E2");
+        } // Bar/Column
+        else if ((matching2Stickers(0, 0, 1, 0, 2, 1) && matching2Stickers(0, 0, 1, 0, 1, 1))
+                && (matching2Stickers(4, 0, 1, 4, 2, 1) && !matching2Stickers(4, 0, 1, 4, 1, 1))) {
+            makeMoves("U2 M2 U2");
+        } else if ((matching2Stickers(4, 0, 1, 4, 2, 1) && matching2Stickers(4, 0, 1, 4, 1, 1))
+                && (matching2Stickers(0, 0, 1, 0, 2, 1) && !matching2Stickers(0, 0, 1, 0, 1, 1))) {
+            makeMoves("M U2 M2 U2");
+        } //
+        else if ((matching2Stickers(0, 0, 1, 0, 1, 1) && !matching2Stickers(0, 0, 1, 0, 2, 1))
+                && (matching2Stickers(5, 0, 1, 5, 1, 1) && !matching2Stickers(5, 0, 1, 5, 2, 1))
+                && (matching2Stickers(4, 0, 1, 4, 1, 1) && !matching2Stickers(4, 0, 1, 4, 2, 1))) {
+            makeMoves("M B2 M B2");
+        } else if ((matching2Stickers(0, 2, 1, 0, 1, 1) && !matching2Stickers(0, 0, 1, 0, 2, 1))
+                && (matching2Stickers(4, 0, 1, 4, 1, 1) && !matching2Stickers(4, 0, 1, 5, 2, 1))
+                && (matching2Stickers(1, 0, 1, 1, 1, 1) && !matching2Stickers(1, 0, 1, 1, 2, 1))) {
+            makeMoves("M U2 M U2");
+        } else if ((matching2Stickers(4, 2, 1, 4, 1, 1) && !matching2Stickers(4, 0, 1, 4, 2, 1))
+                && (matching2Stickers(1, 0, 1, 1, 1, 1) && !matching2Stickers(1, 0, 1, 1, 2, 1))
+                && (matching2Stickers(5, 2, 1, 5, 1, 1) && !matching2Stickers(5, 0, 1, 5, 2, 1))) {
+            makeMoves("M F2 M F2");
+        } else if ((matching2Stickers(1, 2, 1, 1, 1, 1) && !matching2Stickers(1, 0, 1, 1, 2, 1))
+                && (matching2Stickers(5, 2, 1, 5, 1, 1) && !matching2Stickers(5, 0, 1, 5, 2, 1))
+                && (matching2Stickers(0, 0, 1, 0, 1, 1) && !matching2Stickers(0, 0, 1, 0, 2, 1))) {
+            makeMoves("M D2 M D2");
+        } //
+        else if ((matching2Stickers(0, 0, 1, 0, 1, 1) && !matching2Stickers(0, 0, 1, 0, 2, 1))
+                && (matching2Stickers(5, 0, 1, 5, 1, 1) && !matching2Stickers(5, 0, 1, 5, 2, 1))
+                && !matching2Stickers(4, 0, 1, 4, 1, 1)) {
+            makeMoves("M' U2 M' U2");
+        } else if ((matching2Stickers(0, 2, 1, 0, 1, 1) && !matching2Stickers(0, 0, 1, 0, 2, 1))
+                && (matching2Stickers(4, 0, 1, 4, 1, 1) && !matching2Stickers(4, 0, 1, 5, 2, 1))
+                && !matching2Stickers(1, 0, 1, 1, 1, 1)) {
+            makeMoves("M' F2 M' F2");
+        } else if ((matching2Stickers(4, 2, 1, 4, 1, 1) && !matching2Stickers(4, 0, 1, 4, 2, 1))
+                && (matching2Stickers(1, 0, 1, 1, 1, 1) && !matching2Stickers(1, 0, 1, 1, 2, 1))
+                && !matching2Stickers(5, 1, 1, 5, 2, 1)) {
+            makeMoves("M' D2 M' D2");
+        } else if ((matching2Stickers(1, 2, 1, 1, 1, 1) && !matching2Stickers(1, 0, 1, 1, 2, 1))
+                && (matching2Stickers(5, 2, 1, 5, 1, 1) && !matching2Stickers(5, 0, 1, 5, 2, 1))
+                && !matching2Stickers(0, 0, 1, 0, 1, 1)) {
+            makeMoves("M' B2 M' B2");
+        }
+        // Middle slice is matching
+        if (trioMatch(0, 0, 1, WHITE, 0, 1, 1, WHITE, 0, 2, 1, WHITE)
+                && trioMatch(4, 0, 1, ORANGE, 4, 1, 1, ORANGE, 4, 2, 1, ORANGE)) {
+            makeMoves("M2");
+        } else if (trioMatch(4, 0, 1, WHITE, 4, 1, 1, WHITE, 4, 2, 1, WHITE)
+                && trioMatch(1, 0, 1, ORANGE, 1, 1, 1, ORANGE, 1, 2, 1, ORANGE)) {
+            makeMoves("M");
+        } else if (trioMatch(5, 0, 1, WHITE, 5, 1, 1, WHITE, 5, 2, 1, WHITE)
+                && trioMatch(0, 0, 1, ORANGE, 0, 1, 1, ORANGE, 0, 2, 1, ORANGE)) {
+            makeMoves("M'");
+        }
+    }
+
+    static boolean isCubeSolved() {
+        return (cube[0] ^ faceU) == 0 && (cube[1] ^ faceD) == 0 && (cube[2] ^ faceR) == 0
+                && (cube[3] ^ faceL) == 0 && (cube[4] ^ faceF) == 0 && (cube[5] ^ faceB) == 0;
+    }
+
+    static boolean notABadEdge(int cubeI, int stickerMaskRow, int stickerMaskCol) {
+        return (colorMatch(cubeI, stickerMaskRow, stickerMaskCol, WHITE)
+                || colorMatch(cubeI, stickerMaskRow, stickerMaskCol, YELLOW));
+
+    }
+
+    static boolean matching2Stickers(int cubeI, int stickerMaskRow, int stickerMaskCol, int cubeI1,
+            int stickerMaskRow1, int stickerMaskCol1) {
+        return ((((cube[cubeI] & stickerMasks[stickerMaskRow][stickerMaskCol]) >> (3
+                * stickerToShifts.get(stickerMasks[stickerMaskRow][stickerMaskCol])))
+                & 0b111) == (((cube[cubeI1] & stickerMasks[stickerMaskRow1][stickerMaskCol1]) >> (3
+                        * stickerToShifts.get(stickerMasks[stickerMaskRow1][stickerMaskCol1]))) & 0b111));
     }
 
     static boolean colorMatch(int cubeI, int stickerMaskRow, int stickerMaskCol, int color) {
@@ -1131,4 +1575,57 @@ public class RubikBitmap {
                 false)
                 && colorMatch(cubeI2, stickerMaskRow2, stickerMaskCol2, color2);
     }
+
+    public static void reduceMovesUsed() {
+        for (int i = 0; i < 5; i++) {
+            // Cancellations
+            movesMade = movesMade.replace("R2 R2", "");
+            movesMade = movesMade.replace("L2 L2", "");
+            movesMade = movesMade.replace("U2 U2", "");
+            movesMade = movesMade.replace("D2 D2", "");
+            movesMade = movesMade.replace("F2 F2", "");
+            movesMade = movesMade.replace("B2 B2", "");
+            movesMade = movesMade.replace("E2 E2", "");
+            movesMade = movesMade.replace("M2 M2", "");
+            movesMade = movesMade.replace("S2 S2", "");
+            movesMade = movesMade.replace("R R'", "");
+            movesMade = movesMade.replace("R' R ", " ");
+            movesMade = movesMade.replace("L L'", "");
+            movesMade = movesMade.replace("L' L ", " ");
+            movesMade = movesMade.replace("U U'", "");
+            movesMade = movesMade.replace("U' U ", " ");
+            movesMade = movesMade.replace("D D'", "");
+            movesMade = movesMade.replace("D' D ", " ");
+            movesMade = movesMade.replace("F F'", "");
+            movesMade = movesMade.replace("F' F ", " ");
+            movesMade = movesMade.replace("B B'", "");
+            movesMade = movesMade.replace("B' B ", " ");
+            movesMade = movesMade.replace("E E'", "");
+            movesMade = movesMade.replace("E' E ", " ");
+            movesMade = movesMade.replace("M M'", "");
+            movesMade = movesMade.replace("M' M ", " ");
+            movesMade = movesMade.replace("S S'", "");
+            movesMade = movesMade.replace("S' S ", " ");
+            // Merges
+            movesMade = movesMade.replace("R R ", "R2 ");
+            movesMade = movesMade.replace("R' R'", "R2");
+            movesMade = movesMade.replace("L L ", "L2 ");
+            movesMade = movesMade.replace("L' L'", "L2");
+            movesMade = movesMade.replace("U U ", "U2 ");
+            movesMade = movesMade.replace("U' U'", "U2");
+            movesMade = movesMade.replace("D D ", "D2 ");
+            movesMade = movesMade.replace("D' D'", "D2");
+            movesMade = movesMade.replace("F F ", "F2 ");
+            movesMade = movesMade.replace("F' F'", "F2");
+            movesMade = movesMade.replace("B B ", "B2 ");
+            movesMade = movesMade.replace("B' B'", "B2");
+            movesMade = movesMade.replace("E E ", "E2 ");
+            movesMade = movesMade.replace("E' E'", "E2");
+            movesMade = movesMade.replace("M M ", "M2 ");
+            movesMade = movesMade.replace("M' M'", "M2");
+            movesMade = movesMade.replace("S S ", "S2 ");
+            movesMade = movesMade.replace("S' S'", "S2");
+        }
+    }
+
 }
