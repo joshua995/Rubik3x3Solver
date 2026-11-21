@@ -88,9 +88,19 @@ public class Rubik2x2 {
                 // System.out.println((endTime - startTime) / 1000000);
                 FileWriter myWriter;
                 try {
+<<<<<<< Updated upstream
                         myWriter = new FileWriter("rubik2x2lookup.txt", true);
                         writeToFile(turnStateToString(), "", myWriter);
                         generateLookupTable(turnStateToString(), "", myWriter);
+=======
+                        long startTime = System.nanoTime();
+                        myWriter = new FileWriter("rubik2x2lookup.txt", false);
+                        writeToFile(turnStateToString(), "", myWriter);
+                        generateLookupTable(turnStateToString(), "", myWriter);
+                        myWriter.close();
+                        long endTime = System.nanoTime();
+                        System.out.println((endTime - startTime) / 1000000000);
+>>>>>>> Stashed changes
                 } catch (IOException e) {
                         e.printStackTrace();
                 }
@@ -112,11 +122,22 @@ public class Rubik2x2 {
          * @param level
          */
         static void generateLookupTable(String state, String parentMoves, FileWriter writer) {
+<<<<<<< Updated upstream
                 states.add(state);
                 cubeNodes.add(new Cube(faceU, faceD, faceR, faceL, faceF, faceB, ""));
                 while (!cubeNodes.isEmpty()) {
                         Cube currentCube = cubeNodes.poll();
                         if (currentCube.parentMoves.split(" ").length >= 11) {
+=======
+                canonStates.add(state);
+                cubeStates.add(new String[] { state, parentMoves, "" + 0 }); // String state, moves
+                while (!cubeStates.isEmpty()) {
+                        // Breadth first search method
+                        String[] currentCube = cubeStates.poll();
+                        int depth = Integer.parseInt(currentCube[2]);
+                        // System.out.println(depth + " " + storedStates + " " + canonStates.size());
+                        if (depth >= 11) {
+>>>>>>> Stashed changes
                                 continue;
                         }
                         setCubeState(currentCube);
