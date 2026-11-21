@@ -55,6 +55,8 @@ public class Rubik2x2 {
         static HashSet<String> canonStates = new HashSet<>();
         static Queue<String[]> cubeStates = new ArrayDeque<>();
 
+        static int storedStates = 0;
+
         public static void main(String[] args) {
                 initColorMap();
                 // long alltime = 0l;
@@ -72,6 +74,7 @@ public class Rubik2x2 {
                         myWriter = new FileWriter("rubik2x2lookup.txt", false);
                         writeToFile(turnStateToString(), "", myWriter);
                         generateLookupTable(turnStateToString(), "", myWriter);
+                        myWriter.close();
                 } catch (IOException e) {
                         e.printStackTrace();
                 }
@@ -91,7 +94,7 @@ public class Rubik2x2 {
                         // Breadth first search method
                         String[] currentCube = cubeStates.poll();
                         int depth = Integer.parseInt(currentCube[2]);
-                        System.out.println(depth);
+                        System.out.println(depth + " " + storedStates + " " + canonStates.size());
                         if (depth >= 11) {
                                 continue;
                         }
@@ -429,6 +432,7 @@ public class Rubik2x2 {
         static void writeToFile(String state, String moves, FileWriter writer) {
                 try {
                         writer.write(state + " " + moves + "\n");
+                        storedStates++;
                 } catch (IOException e) {
                         e.printStackTrace();
                 }
