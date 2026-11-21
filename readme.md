@@ -29,4 +29,10 @@ faceB = 0b101_101_101_101;
 **Rubik2x2Solver.java**<br/>
 Uses the lookup file to solve a 2x2 rubik's with the least amount of moves possible
 
-
+**Input format<br/>Faces in the order of U, L, F, R, B, D <br/>Colors using W, Y, B, G, R, O**
+    1  2
+    3  4
+5 6 9  10 13 14 17 18
+7 8 11 12 15 16 19 20
+    21 22
+    23 24

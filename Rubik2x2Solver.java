@@ -29,12 +29,16 @@ public class Rubik2x2Solver {
 
     static HashMap<String, String> reverseOfMoves = new HashMap<>();
     static HashMap<Integer, String> bitsToColorMap = new HashMap<>();
+    static HashMap<Character, String> charToColorMap = new HashMap<>();
+    static HashMap<Character, Integer> charColorToBits = new HashMap<>();
+
+    static char[] userInputCube = new char[24];
+    static int currentInputIndex = 0;
 
     public static void main(String[] args) {
-
+        System.out.println("Loading Solver File...");
         File myObj = new File("rubik2x2lookup.txt");
 
-        // try-with-resources: Scanner will be closed automatically
         try (Scanner myReader = new Scanner(myObj)) {
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
@@ -47,11 +51,246 @@ public class Rubik2x2Solver {
 
         initMoveReverseMap();
         initColorMap();
+
+        getUserInput();
+        convertUserInputToFaces();
+
         displayCube();
         System.out.println(setCananicalStateInput());
         displayCube();
         int index = getIndexOfState();
         System.out.println(index + " " + reverseMovesToSolveAlg(movesSolvedToScrambled.get(index)));
+    }
+
+    static void getUserInput() {
+        Scanner scanner = new Scanner(System.in);
+        while (currentInputIndex < 24) {
+            displayInputCube();
+            System.out.println("Enter a color for the current position:");
+            String input = scanner.nextLine();
+            if (input.toUpperCase().charAt(0) != 'W' && input.toUpperCase().charAt(0) != 'Y'
+                    && input.toUpperCase().charAt(0) != 'B' && input.toUpperCase().charAt(0) != 'G'
+                    && input.toUpperCase().charAt(0) != 'R' && input.toUpperCase().charAt(0) != 'O') {
+                continue;
+            }
+            userInputCube[currentInputIndex++] = input.toUpperCase().charAt(0);
+        }
+        scanner.close();
+    }
+
+    static void convertUserInputToFaces() {
+        faceU = (charColorToBits.get(userInputCube[0]) << 9) | (charColorToBits.get(userInputCube[1]) << 6)
+                | (charColorToBits.get(userInputCube[2]) << 3) | charColorToBits.get(userInputCube[3]);
+        faceL = (charColorToBits.get(userInputCube[4]) << 9) | (charColorToBits.get(userInputCube[5]) << 6)
+                | (charColorToBits.get(userInputCube[6]) << 3) | charColorToBits.get(userInputCube[7]);
+        faceF = (charColorToBits.get(userInputCube[8]) << 9) | (charColorToBits.get(userInputCube[9]) << 6)
+                | (charColorToBits.get(userInputCube[10]) << 3) | charColorToBits.get(userInputCube[11]);
+        faceR = (charColorToBits.get(userInputCube[12]) << 9) | (charColorToBits.get(userInputCube[13]) << 6)
+                | (charColorToBits.get(userInputCube[14]) << 3) | charColorToBits.get(userInputCube[15]);
+        faceB = (charColorToBits.get(userInputCube[16]) << 9) | (charColorToBits.get(userInputCube[17]) << 6)
+                | (charColorToBits.get(userInputCube[18]) << 3) | charColorToBits.get(userInputCube[19]);
+        faceD = (charColorToBits.get(userInputCube[20]) << 9) | (charColorToBits.get(userInputCube[21]) << 6)
+                | (charColorToBits.get(userInputCube[22]) << 3) | charColorToBits.get(userInputCube[23]);
+    }
+
+    static void displayInputCube() {
+        if (currentInputIndex <= 0) {
+            System.out.println("  _");
+        } else if (currentInputIndex <= 1) {
+            System.out.println("  " + getColor(userInputCube[0]) + "_");
+        } else if (currentInputIndex <= 2) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  _");
+        } else if (currentInputIndex <= 3) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + "_");
+        } else if (currentInputIndex <= 4) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println("_");
+        } else if (currentInputIndex <= 5) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(getColor(userInputCube[4]) + "_");
+        } else if (currentInputIndex <= 6) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(getColor(userInputCube[4]) + getColor(userInputCube[5]));
+            System.out.println("_");
+        } else if (currentInputIndex <= 7) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(getColor(userInputCube[4]) + getColor(userInputCube[5]));
+            System.out.println(getColor(userInputCube[6]) + "_");
+        } else if (currentInputIndex <= 8) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(getColor(userInputCube[4]) + getColor(userInputCube[5]) + "_");
+            System.out.println(getColor(userInputCube[6]) + getColor(userInputCube[7]));
+        } else if (currentInputIndex <= 9) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(
+                    getColor(userInputCube[4]) + getColor(userInputCube[5]) + getColor(userInputCube[8]) + "_");
+            System.out.println(getColor(userInputCube[6]) + getColor(userInputCube[7]));
+        } else if (currentInputIndex <= 10) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(
+                    getColor(userInputCube[4]) + getColor(userInputCube[5]) + getColor(userInputCube[8])
+                            + getColor(userInputCube[9]));
+            System.out.println(getColor(userInputCube[6]) + getColor(userInputCube[7]) + "_");
+        } else if (currentInputIndex <= 11) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(
+                    getColor(userInputCube[4]) + getColor(userInputCube[5]) + getColor(userInputCube[8])
+                            + getColor(userInputCube[9]));
+            System.out.println(
+                    getColor(userInputCube[6]) + getColor(userInputCube[7]) + getColor(userInputCube[10]) + "_");
+        } else if (currentInputIndex <= 12) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(
+                    getColor(userInputCube[4]) + getColor(userInputCube[5]) + getColor(userInputCube[8])
+                            + getColor(userInputCube[9]) + "_");
+            System.out.println(
+                    getColor(userInputCube[6]) + getColor(userInputCube[7]) + getColor(userInputCube[10])
+                            + getColor(userInputCube[11]));
+        } else if (currentInputIndex <= 13) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(
+                    getColor(userInputCube[4]) + getColor(userInputCube[5]) + getColor(userInputCube[8])
+                            + getColor(userInputCube[9]) + getColor(userInputCube[12]) + "_");
+            System.out.println(
+                    getColor(userInputCube[6]) + getColor(userInputCube[7]) + getColor(userInputCube[10])
+                            + getColor(userInputCube[11]));
+        } else if (currentInputIndex <= 14) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(
+                    getColor(userInputCube[4]) + getColor(userInputCube[5]) + getColor(userInputCube[8])
+                            + getColor(userInputCube[9]) + getColor(userInputCube[12]) + getColor(userInputCube[13]));
+            System.out.println(
+                    getColor(userInputCube[6]) + getColor(userInputCube[7]) + getColor(userInputCube[10])
+                            + getColor(userInputCube[11]) + "_");
+        } else if (currentInputIndex <= 15) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(
+                    getColor(userInputCube[4]) + getColor(userInputCube[5]) + getColor(userInputCube[8])
+                            + getColor(userInputCube[9]) + getColor(userInputCube[12]) + getColor(userInputCube[13]));
+            System.out.println(
+                    getColor(userInputCube[6]) + getColor(userInputCube[7]) + getColor(userInputCube[10])
+                            + getColor(userInputCube[11]) + getColor(userInputCube[14]) + "_");
+        } else if (currentInputIndex <= 16) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(
+                    getColor(userInputCube[4]) + getColor(userInputCube[5]) + getColor(userInputCube[8])
+                            + getColor(userInputCube[9]) + getColor(userInputCube[12]) + getColor(userInputCube[13])
+                            + "_");
+            System.out.println(
+                    getColor(userInputCube[6]) + getColor(userInputCube[7]) + getColor(userInputCube[10])
+                            + getColor(userInputCube[11]) + getColor(userInputCube[14]) + getColor(userInputCube[15]));
+        } else if (currentInputIndex <= 17) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(
+                    getColor(userInputCube[4]) + getColor(userInputCube[5]) + getColor(userInputCube[8])
+                            + getColor(userInputCube[9]) + getColor(userInputCube[12]) + getColor(userInputCube[13])
+                            + getColor(userInputCube[16]) + "_");
+            System.out.println(
+                    getColor(userInputCube[6]) + getColor(userInputCube[7]) + getColor(userInputCube[10])
+                            + getColor(userInputCube[11]) + getColor(userInputCube[14]) + getColor(userInputCube[15]));
+        } else if (currentInputIndex <= 18) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(
+                    getColor(userInputCube[4]) + getColor(userInputCube[5]) + getColor(userInputCube[8])
+                            + getColor(userInputCube[9]) + getColor(userInputCube[12]) + getColor(userInputCube[13])
+                            + getColor(userInputCube[16]) + getColor(userInputCube[17]));
+            System.out.println(
+                    getColor(userInputCube[6]) + getColor(userInputCube[7]) + getColor(userInputCube[10])
+                            + getColor(userInputCube[11]) + getColor(userInputCube[14]) + getColor(userInputCube[15])
+                            + "_");
+        } else if (currentInputIndex <= 19) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(
+                    getColor(userInputCube[4]) + getColor(userInputCube[5]) + getColor(userInputCube[8])
+                            + getColor(userInputCube[9]) + getColor(userInputCube[12]) + getColor(userInputCube[13])
+                            + getColor(userInputCube[16]) + getColor(userInputCube[17]));
+            System.out.println(
+                    getColor(userInputCube[6]) + getColor(userInputCube[7]) + getColor(userInputCube[10])
+                            + getColor(userInputCube[11]) + getColor(userInputCube[14]) + getColor(userInputCube[15])
+                            + getColor(userInputCube[18]) + "_");
+        } else if (currentInputIndex <= 20) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(
+                    getColor(userInputCube[4]) + getColor(userInputCube[5]) + getColor(userInputCube[8])
+                            + getColor(userInputCube[9]) + getColor(userInputCube[12]) + getColor(userInputCube[13])
+                            + getColor(userInputCube[16]) + getColor(userInputCube[17]));
+            System.out.println(
+                    getColor(userInputCube[6]) + getColor(userInputCube[7]) + getColor(userInputCube[10])
+                            + getColor(userInputCube[11]) + getColor(userInputCube[14]) + getColor(userInputCube[15])
+                            + getColor(userInputCube[18]) + getColor(userInputCube[19]));
+            System.out.println("  _");
+        } else if (currentInputIndex <= 21) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(
+                    getColor(userInputCube[4]) + getColor(userInputCube[5]) + getColor(userInputCube[8])
+                            + getColor(userInputCube[9]) + getColor(userInputCube[12]) + getColor(userInputCube[13])
+                            + getColor(userInputCube[16]) + getColor(userInputCube[17]));
+            System.out.println(
+                    getColor(userInputCube[6]) + getColor(userInputCube[7]) + getColor(userInputCube[10])
+                            + getColor(userInputCube[11]) + getColor(userInputCube[14]) + getColor(userInputCube[15])
+                            + getColor(userInputCube[18]) + getColor(userInputCube[19]));
+            System.out.println("  " + getColor(userInputCube[20]) + "_");
+        } else if (currentInputIndex <= 22) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(
+                    getColor(userInputCube[4]) + getColor(userInputCube[5]) + getColor(userInputCube[8])
+                            + getColor(userInputCube[9]) + getColor(userInputCube[12]) + getColor(userInputCube[13])
+                            + getColor(userInputCube[16]) + getColor(userInputCube[17]));
+            System.out.println(
+                    getColor(userInputCube[6]) + getColor(userInputCube[7]) + getColor(userInputCube[10])
+                            + getColor(userInputCube[11]) + getColor(userInputCube[14]) + getColor(userInputCube[15])
+                            + getColor(userInputCube[18]) + getColor(userInputCube[19]));
+            System.out.println("  " + getColor(userInputCube[20]) + getColor(userInputCube[21]));
+            System.out.println("  _");
+        } else if (currentInputIndex <= 23) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(
+                    getColor(userInputCube[4]) + getColor(userInputCube[5]) + getColor(userInputCube[8])
+                            + getColor(userInputCube[9]) + getColor(userInputCube[12]) + getColor(userInputCube[13])
+                            + getColor(userInputCube[16]) + getColor(userInputCube[17]));
+            System.out.println(
+                    getColor(userInputCube[6]) + getColor(userInputCube[7]) + getColor(userInputCube[10])
+                            + getColor(userInputCube[11]) + getColor(userInputCube[14]) + getColor(userInputCube[15])
+                            + getColor(userInputCube[18]) + getColor(userInputCube[19]));
+            System.out.println("  " + getColor(userInputCube[20]) + getColor(userInputCube[21]));
+            System.out.println("  " + getColor(userInputCube[22]) + "_");
+        } else if (currentInputIndex <= 24) {
+            System.out.println("  " + getColor(userInputCube[0]) + getColor(userInputCube[1]));
+            System.out.println("  " + getColor(userInputCube[2]) + getColor(userInputCube[3]));
+            System.out.println(
+                    getColor(userInputCube[4]) + getColor(userInputCube[5]) + getColor(userInputCube[8])
+                            + getColor(userInputCube[9]) + getColor(userInputCube[12]) + getColor(userInputCube[13])
+                            + getColor(userInputCube[16]) + getColor(userInputCube[17]));
+            System.out.println(
+                    getColor(userInputCube[6]) + getColor(userInputCube[7]) + getColor(userInputCube[10])
+                            + getColor(userInputCube[11]) + getColor(userInputCube[14]) + getColor(userInputCube[15])
+                            + getColor(userInputCube[18]) + getColor(userInputCube[19]));
+            System.out.println("  " + getColor(userInputCube[20]) + getColor(userInputCube[21]));
+            System.out.println("  " + getColor(userInputCube[22]) + getColor(userInputCube[23]));
+        }
+        System.out.println(getColor('W'));
     }
 
     static void initMoveReverseMap() {
@@ -93,6 +332,20 @@ public class Rubik2x2Solver {
         bitsToColorMap.put(GREEN, "\u001B[32mG");
         bitsToColorMap.put(RED, "\u001B[31mR");
         bitsToColorMap.put(ORANGE, "\033[38;2;255;125;0mO");
+
+        charToColorMap.put('W', "\u001B[37mW");
+        charToColorMap.put('Y', "\u001B[33mY");
+        charToColorMap.put('B', "\u001B[34mB");
+        charToColorMap.put('G', "\u001B[32mG");
+        charToColorMap.put('R', "\u001B[31mR");
+        charToColorMap.put('O', "\033[38;2;255;125;0mO");
+
+        charColorToBits.put('W', WHITE);
+        charColorToBits.put('Y', YELLOW);
+        charColorToBits.put('B', BLUE);
+        charColorToBits.put('G', GREEN);
+        charColorToBits.put('R', RED);
+        charColorToBits.put('O', ORANGE);
     }
 
     static void displayCube() {
@@ -139,6 +392,10 @@ public class Rubik2x2Solver {
         return bitsToColorMap.get((face >> (3 * shiftAmount)) & 0b111);
     }
 
+    static String getColor(char color) {
+        return charToColorMap.get(color);
+    }
+
     /**
      * Creates the faces of the cubes
      * Get the array of moves
@@ -148,9 +405,6 @@ public class Rubik2x2Solver {
     static void parseFileInputState(String line) {
         String[] splitLine = line.split(" ");
         // First 6 elements are cube faces in order U,D,R,L,F,B
-        // for (String s : splitLine) {
-        // System.out.println(s);
-        // }
         faceStates.add(new int[] { Integer.parseInt(splitLine[0]), Integer.parseInt(splitLine[1]),
                 Integer.parseInt(splitLine[2]), Integer.parseInt(splitLine[3]), Integer.parseInt(splitLine[4]),
                 Integer.parseInt(splitLine[5]) });
@@ -164,7 +418,7 @@ public class Rubik2x2Solver {
     }
 
     /**
-     * Uses the input faces
+     *
      */
     static int getIndexOfState() {
         int length = faceStates.size();

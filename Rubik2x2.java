@@ -1,3 +1,7 @@
+/*
+Programmed with runtime optimization in mind
+ */
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
