@@ -115,8 +115,8 @@ public class RubikBitmap {
         }
         reduceMovesUsed();
         System.out.println("\n" + movesMade);
-        long endTime = System.nanoTime();
-        System.out.println((endTime - startTime));
+        // long endTime = System.nanoTime();
+        // System.out.println((endTime - startTime));
     }
 
     static void initColorMap() {
@@ -1625,6 +1625,7 @@ public class RubikBitmap {
             movesMade = movesMade.replace("M' M'", "M2");
             movesMade = movesMade.replace("S S ", "S2 ");
             movesMade = movesMade.replace("S' S'", "S2");
+            movesMade = movesMade.replace("  ", " ");
         }
     }
 
