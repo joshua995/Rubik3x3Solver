@@ -56,7 +56,8 @@ public class Rubik2x2Solver {
         convertUserInputToFaces();
 
         displayCube();
-        System.out.println(setCananicalStateInput());
+        System.out.println("\u001B[37m" +
+                setCananicalStateInput() + ", to set the Yellow-Blue-Red corner on the U-L-F face respectively");
         displayCube();
         int index = getIndexOfState();
         System.out.println(index + " " + reverseMovesToSolveAlg(movesSolvedToScrambled.get(index)));
@@ -66,8 +67,12 @@ public class Rubik2x2Solver {
         Scanner scanner = new Scanner(System.in);
         while (currentInputIndex < 24) {
             displayInputCube();
-            System.out.println("Enter a color for the current position:");
+            System.out.println("Enter a color for the current position ('u' to undo):");
             String input = scanner.nextLine();
+            if (input.toUpperCase().charAt(0) == 'U') {
+                currentInputIndex--;
+                continue;
+            }
             if (input.toUpperCase().charAt(0) != 'W' && input.toUpperCase().charAt(0) != 'Y'
                     && input.toUpperCase().charAt(0) != 'B' && input.toUpperCase().charAt(0) != 'G'
                     && input.toUpperCase().charAt(0) != 'R' && input.toUpperCase().charAt(0) != 'O') {
@@ -290,7 +295,7 @@ public class Rubik2x2Solver {
             System.out.println("  " + getColor(userInputCube[20]) + getColor(userInputCube[21]));
             System.out.println("  " + getColor(userInputCube[22]) + getColor(userInputCube[23]));
         }
-        System.out.println(getColor('W'));
+        System.out.println("\u001B[37m");
     }
 
     static void initMoveReverseMap() {
