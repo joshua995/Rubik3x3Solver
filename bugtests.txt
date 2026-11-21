@@ -1,35 +1,3 @@
-B'
-f'
-R2
-r2
-d2
-b2
-F'
-b2
-b'
-u'
-
-
-   WYW
-   WWW
-   WWW
-ORRBBGROOGGB
-ROOBGGORRGBB
-BBGROOGGBORR
-   YYY
-   YYW
-   YYY
-y'
-U2 L2
-B M'
-
-
-   BOO
-   YOY
-   YBW
-WROBYOGGYGWO
-WBGRYOBGWGWR
-YBBRBGROWRGB
-   WRY
-   WRY
-   ROG
+version https://git-lfs.github.com/spec/v1
+oid sha256:b1173d7b1e2c517e8be7c3ee78527fe76fcb93c2b22824203c3ab5e4e99570f7
+size 209

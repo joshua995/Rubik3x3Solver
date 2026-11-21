@@ -22,11 +22,6 @@ public class Rubik2x2 {
         static final int CLEAR_COL_1_MASK = 0b000_111_000_111;
         static final int KEEP_COL_2_MASK = 0b000_111_000_111;
         static final int CLEAR_COL_2_MASK = 0b111_000_111_000;
-        static final int[][] stickerMasks = {
-                        { 0b111_000_000_000, 0b000_111_000_000 },
-                        { 0b000_000_111_000, 0b000_000_000_111 }, };
-        static final Map<Integer, Integer> stickerToShifts = Map.of(stickerMasks[0][0], 3, stickerMasks[0][1], 2,
-                        stickerMasks[1][0], 1, stickerMasks[1][1], 0);
 
         static int faceU = 0b001_001_001_001;// 0
         static int faceD = 0b000_000_000_000;// 1
@@ -37,44 +32,22 @@ public class Rubik2x2 {
 
         static int[] cube = { faceU, faceD, faceR, faceL, faceF, faceB }; // Shallow references throughout the code
 
-        static HashMap<Integer, String> bitsToColorMap = new HashMap<>();
-
-        static String[] allMovesList = {
-                        "U", "U2", "U'",
-                        "D", "D2", "D'",
-                        "R", "R2", "R'",
-                        "L", "L2", "L'",
-                        "F", "F2", "F'",
-                        "B", "B2", "B'",
-                        // "x", "x2", "x'",
-                        // "z", "z2", "z'",
-                        // "y", "y2", "y'",
-        };
-
         static String parentMoves = "";
         static HashSet<String> canonStates = new HashSet<>();
         static Queue<String[]> cubeStates = new ArrayDeque<>();
 
-        static int storedStates = 0;
-
         public static void main(String[] args) {
-                initColorMap();
-                // long alltime = 0l;
-                // long startTime = System.nanoTime();
-                // for (long i = 0; i < 1000000000l; i++) { // Original 1000000000l, 4136, 4116,
-                // 4168, 4156 millis,
-                // // Optimized: 3357
-                // U();
-                // }
-                // long endTime = System.nanoTime();
-                // System.out.println((endTime - startTime) / 1000000);
-
                 FileWriter myWriter;
                 try {
+                        long startT = System.nanoTime();
+
                         myWriter = new FileWriter("rubik2x2lookup.txt", false);
                         writeToFile(turnStateToString(), "", myWriter);
                         generateLookupTable(turnStateToString(), "", myWriter);
                         myWriter.close();
+
+                        long endT = System.nanoTime();
+                        System.out.println("Seconds " + ((endT - startT) / 1_000_000_000));
                 } catch (IOException e) {
                         e.printStackTrace();
                 }
@@ -94,7 +67,6 @@ public class Rubik2x2 {
                         // Breadth first search method
                         String[] currentCube = cubeStates.poll();
                         int depth = Integer.parseInt(currentCube[2]);
-                        System.out.println(depth + " " + storedStates + " " + canonStates.size());
                         if (depth >= 11) {
                                 continue;
                         }
@@ -432,63 +404,9 @@ public class Rubik2x2 {
         static void writeToFile(String state, String moves, FileWriter writer) {
                 try {
                         writer.write(state + " " + moves + "\n");
-                        storedStates++;
                 } catch (IOException e) {
                         e.printStackTrace();
                 }
-        }
-
-        static void initColorMap() {
-                bitsToColorMap.put(WHITE, "\u001B[37mW");
-                bitsToColorMap.put(YELLOW, "\u001B[33mY");
-                bitsToColorMap.put(BLUE, "\u001B[34mB");
-                bitsToColorMap.put(GREEN, "\u001B[32mG");
-                bitsToColorMap.put(RED, "\u001B[31mR");
-                bitsToColorMap.put(ORANGE, "\033[38;2;255;125;0mO");
-        }
-
-        static void displayCube() {
-                int counter = 0;
-
-                // Display U Face
-                System.out.print("\n\n  ");
-                for (int i = 3; i >= 0; i--) {
-                        if (counter % 2 == 0 && counter > 0) {
-                                System.out.print("\n  ");
-                        }
-                        System.out.print(getColor(faceU, i));
-                        counter++;
-                }
-
-                // Display LFRB Face
-                counter = 3;// Row 1
-                System.out.print("\n" +
-                                getColor(faceL, counter) + getColor(faceL, counter - 1)
-                                + getColor(faceF, counter) + getColor(faceF, counter - 1)
-                                + getColor(faceR, counter) + getColor(faceR, counter - 1)
-                                + getColor(faceB, counter) + getColor(faceB, counter - 1));
-                counter = 1; // Row 3
-                System.out.print("\n" +
-                                getColor(faceL, counter) + getColor(faceL, counter - 1)
-                                + getColor(faceF, counter) + getColor(faceF, counter - 1)
-                                + getColor(faceR, counter) + getColor(faceR, counter - 1)
-                                + getColor(faceB, counter) + getColor(faceB, counter - 1));
-
-                // Display D Face
-                counter = 0;
-                System.out.print("\n  ");
-                for (int i = 3; i >= 0; i--) {
-                        if (counter % 2 == 0 && counter > 0) {
-                                System.out.print("\n  ");
-                        }
-                        System.out.print(getColor(faceD, i));
-                        counter++;
-                }
-                System.out.println();
-        }
-
-        static String getColor(int face, int shiftAmount) {
-                return bitsToColorMap.get((face >> (3 * shiftAmount)) & 0b111);
         }
 
         /*

@@ -26,3 +26,7 @@ faceL = 0b010_010_010_010;
 faceF = 0b100_100_100_100;
 faceB = 0b101_101_101_101;
 
+**Rubik2x2Solver.java**<br/>
+Uses the lookup file to solve a 2x2 rubik's with the least amount of moves possible
+
+
