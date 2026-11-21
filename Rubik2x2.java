@@ -6,26 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
-class Cube {
-        int faceU = 0;
-        int faceD = 0;
-        int faceR = 0;
-        int faceL = 0;
-        int faceF = 0;
-        int faceB = 0;
-        String parentMoves = "";
-
-        public Cube(int faceU, int faceD, int faceR, int faceL, int faceF, int faceB, String parentMoves) {
-                this.faceU = faceU;
-                this.faceD = faceD;
-                this.faceR = faceR;
-                this.faceL = faceL;
-                this.faceF = faceF;
-                this.faceB = faceB;
-                this.parentMoves = parentMoves;
-        }
-}
-
 public class Rubik2x2 {
         static final int WHITE = 0b000;
         static final int YELLOW = 0b001;
@@ -72,8 +52,10 @@ public class Rubik2x2 {
         };
 
         static String parentMoves = "";
-        static HashSet<String> states = new HashSet<>();
-        static Queue<Cube> cubeNodes = new ArrayDeque<>();
+        static HashSet<String> canonStates = new HashSet<>();
+        static Queue<String[]> cubeStates = new ArrayDeque<>();
+
+        static int storedStates = 0;
 
         public static void main(String[] args) {
                 initColorMap();
@@ -86,298 +68,355 @@ public class Rubik2x2 {
                 // }
                 // long endTime = System.nanoTime();
                 // System.out.println((endTime - startTime) / 1000000);
+
                 FileWriter myWriter;
                 try {
-<<<<<<< Updated upstream
-                        myWriter = new FileWriter("rubik2x2lookup.txt", true);
-                        writeToFile(turnStateToString(), "", myWriter);
-                        generateLookupTable(turnStateToString(), "", myWriter);
-=======
-                        long startTime = System.nanoTime();
                         myWriter = new FileWriter("rubik2x2lookup.txt", false);
                         writeToFile(turnStateToString(), "", myWriter);
                         generateLookupTable(turnStateToString(), "", myWriter);
                         myWriter.close();
-                        long endTime = System.nanoTime();
-                        System.out.println((endTime - startTime) / 1000000000);
->>>>>>> Stashed changes
                 } catch (IOException e) {
                         e.printStackTrace();
                 }
         }
 
-        static void setCubeState(Cube cube) {
-                faceU = cube.faceU;
-                faceD = cube.faceD;
-                faceL = cube.faceL;
-                faceR = cube.faceR;
-                faceF = cube.faceF;
-                faceB = cube.faceB;
-        }
-
         /**
-         * BUG: Out of memory error
+         * BUG: Missing 2-3 states
+         * 
          * @param state
          * @param parentMoves
          * @param level
          */
         static void generateLookupTable(String state, String parentMoves, FileWriter writer) {
-<<<<<<< Updated upstream
-                states.add(state);
-                cubeNodes.add(new Cube(faceU, faceD, faceR, faceL, faceF, faceB, ""));
-                while (!cubeNodes.isEmpty()) {
-                        Cube currentCube = cubeNodes.poll();
-                        if (currentCube.parentMoves.split(" ").length >= 11) {
-=======
                 canonStates.add(state);
                 cubeStates.add(new String[] { state, parentMoves, "" + 0 }); // String state, moves
                 while (!cubeStates.isEmpty()) {
                         // Breadth first search method
                         String[] currentCube = cubeStates.poll();
                         int depth = Integer.parseInt(currentCube[2]);
-                        // System.out.println(depth + " " + storedStates + " " + canonStates.size());
+                        System.out.println(depth + " " + storedStates + " " + canonStates.size());
                         if (depth >= 11) {
->>>>>>> Stashed changes
                                 continue;
                         }
-                        setCubeState(currentCube);
+
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         U();
                         String currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " U";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceU, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        String canonMoves = setCananicalState();
+                        String currCanonState = turnStateToString();
+                        String currentMoves = currentCube[1] + " U";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
-                        setCubeState(currentCube);
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         Ui();
                         currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " U'";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceU, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        canonMoves = setCananicalState();
+                        currCanonState = turnStateToString();
+                        currentMoves = currentCube[1] + " U'";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
-                        setCubeState(currentCube);
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         U2();
                         currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " U2";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceU, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        canonMoves = setCananicalState();
+                        currCanonState = turnStateToString();
+                        currentMoves = currentCube[1] + " U2";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
-                        setCubeState(currentCube);
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         D();
                         currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " D";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceD, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        canonMoves = setCananicalState();
+                        currCanonState = turnStateToString();
+                        currentMoves = currentCube[1] + " D";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
-                        setCubeState(currentCube);
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         Di();
                         currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " D'";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceD, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        canonMoves = setCananicalState();
+                        currCanonState = turnStateToString();
+                        currentMoves = currentCube[1] + " D'";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
-                        setCubeState(currentCube);
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         D2();
                         currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " D2";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceD, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        canonMoves = setCananicalState();
+                        currCanonState = turnStateToString();
+                        currentMoves = currentCube[1] + " D2";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         R();
                         currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " R";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceR, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        canonMoves = setCananicalState();
+                        currCanonState = turnStateToString();
+                        currentMoves = currentCube[1] + " R";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
-                        setCubeState(currentCube);
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         Ri();
                         currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " R'";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceR, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        canonMoves = setCananicalState();
+                        currCanonState = turnStateToString();
+                        currentMoves = currentCube[1] + " R'";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
-                        setCubeState(currentCube);
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         R2();
                         currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " R2";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceR, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        canonMoves = setCananicalState();
+                        currCanonState = turnStateToString();
+                        currentMoves = currentCube[1] + " R2";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         L();
                         currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " L";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceL, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        canonMoves = setCananicalState();
+                        currCanonState = turnStateToString();
+                        currentMoves = currentCube[1] + " L";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
-                        setCubeState(currentCube);
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         Li();
                         currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " L'";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceL, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        canonMoves = setCananicalState();
+                        currCanonState = turnStateToString();
+                        currentMoves = currentCube[1] + " L'";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
-                        setCubeState(currentCube);
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         L2();
                         currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " L2";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceL, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        canonMoves = setCananicalState();
+                        currCanonState = turnStateToString();
+                        currentMoves = currentCube[1] + " L2";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         F();
                         currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " F";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceF, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        canonMoves = setCananicalState();
+                        currCanonState = turnStateToString();
+                        currentMoves = currentCube[1] + " F";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
-                        setCubeState(currentCube);
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         Fi();
                         currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " F'";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceF, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        canonMoves = setCananicalState();
+                        currCanonState = turnStateToString();
+                        currentMoves = currentCube[1] + " F'";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
-                        setCubeState(currentCube);
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         F2();
                         currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " F2";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceF, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        canonMoves = setCananicalState();
+                        currCanonState = turnStateToString();
+                        currentMoves = currentCube[1] + " F2";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         B();
                         currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " B";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceB, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        canonMoves = setCananicalState();
+                        currCanonState = turnStateToString();
+                        currentMoves = currentCube[1] + " B";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
-                        setCubeState(currentCube);
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         Bi();
                         currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " B'";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceB, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        canonMoves = setCananicalState();
+                        currCanonState = turnStateToString();
+                        currentMoves = currentCube[1] + " B'";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
-                        setCubeState(currentCube);
+                        turnStringToState(currentCube[0]); // Reset to parent state
                         B2();
                         currState = turnStateToString();
-
-                        // Only process previously unseen states
-                        if (states.add(currState)) {
-                                String currentMoves = currentCube.parentMoves + " B2";
-                                // Save the state and its shortest move sequence
-                                writeToFile(currState, currentMoves, writer);
-
-                                // Add the new state to the queue
-                                cubeNodes.add(new Cube(faceB, faceD, faceR, faceL, faceF, faceB, currentMoves));
+                        canonMoves = setCananicalState();
+                        currCanonState = turnStateToString();
+                        currentMoves = currentCube[1] + " B2";
+                        if (canonStates.add(currCanonState)) {
+                                writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
+                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
                         }
                 }
         }
 
+        /**
+         * Allow the lookup table to store only 1 of 24 possible same cube states
+         * 
+         * Setting the Yellow-Blue-Red Corner in U-L-F Corner
+         */
+        static String setCananicalState() {
+                if (((faceU >> 3) & 0b111) == YELLOW && ((faceL >> 6) & 0b111) == BLUE
+                                && ((faceF >> 9) & 0b111) == RED) {
+                        return "";
+                }
+                // Yellow on faceU
+                else if (((faceU >> 9) & 0b111) == YELLOW && ((faceB >> 6) & 0b111) == BLUE
+                                && ((faceL >> 9) & 0b111) == RED) {
+                        yi();
+                        return "y'";
+                } else if (((faceU >> 6) & 0b111) == YELLOW && ((faceR >> 6) & 0b111) == BLUE
+                                && ((faceB >> 9) & 0b111) == RED) {
+                        y2();
+                        return "y2";
+                } else if ((faceU & 0b111) == YELLOW && ((faceF >> 6) & 0b111) == BLUE
+                                && ((faceR >> 9) & 0b111) == RED) {
+                        y();
+                        return "y";
+                }
+                // Yellow on faceL
+                else if (((faceL >> 9) & 0b111) == YELLOW && ((faceU >> 9) & 0b111) == BLUE
+                                && ((faceB >> 6) & 0b111) == RED) {
+                        z();
+                        y2();
+                        return "z y2";
+                } else if (((faceL >> 6) & 0b111) == YELLOW && ((faceF >> 9) & 0b111) == BLUE
+                                && ((faceU >> 3) & 0b111) == RED) {
+                        z();
+                        y();
+                        return "z y";
+                } else if (((faceL >> 3) & 0b111) == YELLOW && (faceB & 0b111) == BLUE
+                                && ((faceD >> 3) & 0b111) == RED) {
+                        z();
+                        yi();
+                        return "z y'";
+                } else if ((faceL & 0b111) == YELLOW && ((faceD >> 9) & 0b111) == BLUE
+                                && ((faceF >> 3) & 0b111) == RED) {
+                        z();
+                        return "z";
+                }
+                // Yellow on faceF
+                else if (((faceF >> 9) & 0b111) == YELLOW && ((faceU >> 3) & 0b111) == BLUE
+                                && ((faceL >> 6) & 0b111) == RED) {
+                        x();
+                        yi();
+                        return "x y'";
+                } else if (((faceF >> 6) & 0b111) == YELLOW && ((faceR >> 9) & 0b111) == BLUE
+                                && (faceU & 0b111) == RED) {
+                        x();
+                        y2();
+                        return "x y2";
+                } else if (((faceF >> 3) & 0b111) == YELLOW && (faceL & 0b111) == BLUE
+                                && ((faceD >> 9) & 0b111) == RED) {
+                        x();
+                        return "x";
+                } else if ((faceF & 0b111) == YELLOW && ((faceD >> 6) & 0b111) == BLUE
+                                && ((faceR >> 3) & 0b111) == RED) {
+                        x();
+                        y();
+                        return "x y";
+                }
+                // Yellow on faceR
+                else if (((faceR >> 9) & 0b111) == YELLOW && (faceU & 0b111) == BLUE
+                                && ((faceF >> 6) & 0b111) == RED) {
+                        zi();
+                        return "z'";
+                } else if (((faceR >> 6) & 0b111) == YELLOW && ((faceB >> 9) & 0b111) == BLUE
+                                && ((faceU >> 6) & 0b111) == RED) {
+                        zi();
+                        yi();
+                        return "z' y'";
+                } else if (((faceR >> 3) & 0b111) == YELLOW && (faceF & 0b111) == BLUE
+                                && ((faceD >> 6) & 0b111) == RED) {
+                        zi();
+                        y();
+                        return "z' y";
+                } else if ((faceR & 0b111) == YELLOW && (faceD & 0b111) == BLUE
+                                && ((faceB >> 3) & 0b111) == RED) {
+                        zi();
+                        y2();
+                        return "z' y2";
+                }
+                // Yellow on faceB
+                else if (((faceB >> 9) & 0b111) == YELLOW && ((faceU >> 6) & 0b111) == BLUE
+                                && ((faceR >> 6) & 0b111) == RED) {
+                        xi();
+                        y();
+                        return "x' y";
+                } else if (((faceB >> 6) & 0b111) == YELLOW && ((faceL >> 9) & 0b111) == BLUE
+                                && ((faceU >> 9) & 0b111) == RED) {
+                        xi();
+                        return "x'";
+                } else if (((faceB >> 3) & 0b111) == YELLOW && (faceR & 0b111) == BLUE
+                                && (faceD & 0b111) == RED) {
+                        xi();
+                        y2();
+                        return "x' y2";
+                } else if ((faceB & 0b111) == YELLOW && ((faceD >> 3) & 0b111) == BLUE
+                                && ((faceL >> 3) & 0b111) == RED) {
+                        xi();
+                        yi();
+                        return "x' y'";
+                }
+                // Yellow on faceD
+                else if (((faceD >> 9) & 0b111) == YELLOW && ((faceF >> 3) & 0b111) == BLUE
+                                && (faceL & 0b111) == RED) {
+                        z2();
+                        y();
+                        return "z2 y";
+                } else if (((faceD >> 6) & 0b111) == YELLOW && ((faceR >> 3) & 0b111) == BLUE
+                                && (faceF & 0b111) == RED) {
+                        z2();
+                        return "z2";
+                } else if (((faceD >> 3) & 0b111) == YELLOW && ((faceL >> 3) & 0b111) == BLUE
+                                && (faceB & 0b111) == RED) {
+                        z2();
+                        y2();
+                        return "z2 y2";
+                } else if ((faceD & 0b111) == YELLOW && ((faceB >> 3) & 0b111) == BLUE
+                                && (faceR & 0b111) == RED) {
+                        z2();
+                        yi();
+                        return "z2 y'";
+                }
+                return "";
+        }
+
         static String turnStateToString() {
                 // U, D, R, L, F, B
-                return Integer.toBinaryString(faceU) + " " + Integer.toBinaryString(faceD) + " " +
-                                Integer.toBinaryString(faceR) + " " + Integer.toBinaryString(faceL) + " " +
-                                Integer.toBinaryString(faceF) + " " + Integer.toBinaryString(faceB);
+                return faceU + " " + faceD + " " + faceR + " " + faceL + " " + faceF + " " + faceB;
         }
 
         static void turnStringToState(String state) {
@@ -393,6 +432,7 @@ public class Rubik2x2 {
         static void writeToFile(String state, String moves, FileWriter writer) {
                 try {
                         writer.write(state + " " + moves + "\n");
+                        storedStates++;
                 } catch (IOException e) {
                         e.printStackTrace();
                 }
@@ -748,86 +788,132 @@ public class Rubik2x2 {
                                                 & KEEP_COL_1_MASK);
         }
 
-        // static void x(int rotations) {
-        // int temp = cube[0];
-        // if (rotations == 1) {
-        // // Face orientation (old to new pos) U->B, B->D, D->F, F->U
-        // // Rotate left and right face to simulate rotation
-        // cube[2] = rotate90(cube[2], false, false);
-        // cube[3] = rotate90(cube[3], true, false);
-        // cube[0] = cube[4];
-        // cube[4] = cube[1];
-        // cube[1] = rotate90(cube[5], false, true);
-        // cube[5] = rotate90(temp, false, true);
-        // } else if (rotations == 2) {
-        // cube[2] = rotate90(cube[2], false, true);
-        // cube[3] = rotate90(cube[3], false, true);
-        // cube[0] = cube[1];
-        // cube[1] = temp;
-        // temp = cube[4];
-        // cube[4] = rotate90(cube[5], false, true);
-        // cube[5] = rotate90(temp, false, true);
-        // } else {
-        // cube[2] = rotate90(cube[2], true, false);
-        // cube[3] = rotate90(cube[3], false, false);
-        // cube[0] = rotate90(cube[5], false, true);
-        // cube[5] = rotate90(cube[1], false, true);
-        // cube[1] = cube[4];
-        // cube[4] = temp;
-        // }
-        // }
+        static void x() {
+                int temp = faceU;
+                faceR = ((faceR >> 3) & 0b000_111_000_000) | ((faceR >> 6) & 0b000_000_000_111)
+                                | ((faceR << 3) & 0b000_000_111_000) | ((faceR << 6) & 0b111_000_000_000);
+                faceL = ((faceL >> 6) & 0b000_000_111_000) | ((faceL << 3) & 0b111_000_000_000)
+                                | ((faceL << 6) & 0b000_111_000_000) | ((faceL >> 3) & 0b000_000_000_111);
+                faceU = faceF;
+                faceF = faceD;
+                faceD = ((faceB >> 9) & 0b000_000_000_111) | ((faceB >> 3) & 0b000_000_111_000)
+                                | ((faceB << 9) & 0b111_000_000_000) | ((faceB << 3) & 0b000_111_000_000);
+                faceB = ((temp >> 9) & 0b000_000_000_111) | ((temp >> 3) & 0b000_000_111_000)
+                                | ((temp << 9) & 0b111_000_000_000) | ((temp << 3) & 0b000_111_000_000);
+        }
 
-        // static void z(int rotations) {
-        // int temp = cube[0];
-        // if (rotations == 1) {
-        // cube[4] = rotate90(cube[4], false, false);
-        // cube[5] = rotate90(cube[5], true, false);
-        // cube[0] = rotate90(cube[3], false, false);
-        // cube[3] = rotate90(cube[1], false, false);
-        // cube[1] = rotate90(cube[2], false, false);
-        // cube[2] = rotate90(temp, false, false);
-        // } else if (rotations == 2) {
-        // cube[4] = rotate90(cube[4], false, true);
-        // cube[5] = rotate90(cube[5], false, true);
-        // cube[0] = rotate90(cube[1], false, true);
-        // cube[1] = rotate90(temp, false, true);
-        // temp = cube[2];
-        // cube[2] = rotate90(cube[3], false, true);
-        // cube[3] = rotate90(temp, false, true);
-        // } else {
-        // cube[4] = rotate90(cube[4], true, false);
-        // cube[5] = rotate90(cube[5], false, false);
-        // cube[0] = rotate90(cube[2], true, false);
-        // cube[2] = rotate90(cube[1], true, false);
-        // cube[1] = rotate90(cube[3], true, false);
-        // cube[3] = rotate90(temp, true, false);
-        // }
-        // }
+        static void xi() {
+                int temp = faceU;
+                faceR = ((faceR >> 6) & 0b000_000_111_000) | ((faceR << 3) & 0b111_000_000_000)
+                                | ((faceR << 6) & 0b000_111_000_000) | ((faceR >> 3) & 0b000_000_000_111);
+                faceL = ((faceL >> 3) & 0b000_111_000_000) | ((faceL >> 6) & 0b000_000_000_111)
+                                | ((faceL << 3) & 0b000_000_111_000) | ((faceL << 6) & 0b111_000_000_000);
+                faceU = ((faceB >> 9) & 0b000_000_000_111) | ((faceB >> 3) & 0b000_000_111_000)
+                                | ((faceB << 9) & 0b111_000_000_000) | ((faceB << 3) & 0b000_111_000_000);
+                faceB = ((faceD >> 9) & 0b000_000_000_111) | ((faceD >> 3) & 0b000_000_111_000)
+                                | ((faceD << 9) & 0b111_000_000_000) | ((faceD << 3) & 0b000_111_000_000);
+                faceD = faceF;
+                faceF = temp;
+        }
 
-        // static void y(int rotations) {
-        // int temp = cube[4];
-        // if (rotations == 1) {
-        // cube[0] = rotate90(cube[0], false, false);
-        // cube[1] = rotate90(cube[1], true, false);
-        // cube[4] = cube[2];
-        // cube[2] = cube[5];
-        // cube[5] = cube[3];
-        // cube[3] = temp;
-        // } else if (rotations == 2) {
-        // cube[0] = rotate90(cube[0], false, true);
-        // cube[1] = rotate90(cube[1], false, true);
-        // cube[4] = cube[5];
-        // cube[5] = temp;
-        // temp = cube[2];
-        // cube[2] = cube[3];
-        // cube[3] = temp;
-        // } else {
-        // cube[0] = rotate90(cube[0], true, false);
-        // cube[1] = rotate90(cube[1], false, false);
-        // cube[4] = cube[3];
-        // cube[3] = cube[5];
-        // cube[5] = cube[2];
-        // cube[2] = temp;
-        // }
-        // }
+        static void x2() {
+                int temp = faceU;
+                faceR = ((faceR >> 9) & 0b000_000_000_111) | ((faceR >> 3) & 0b000_000_111_000)
+                                | ((faceR << 9) & 0b111_000_000_000) | ((faceR << 3) & 0b000_111_000_000);
+                faceL = ((faceL >> 9) & 0b000_000_000_111) | ((faceL >> 3) & 0b000_000_111_000)
+                                | ((faceL << 9) & 0b111_000_000_000) | ((faceL << 3) & 0b000_111_000_000);
+                faceU = faceD;
+                faceD = temp;
+                temp = faceF;
+                faceF = ((faceB >> 9) & 0b000_000_000_111) | ((faceB >> 3) & 0b000_000_111_000)
+                                | ((faceB << 9) & 0b111_000_000_000) | ((faceB << 3) & 0b000_111_000_000);
+                faceB = ((temp >> 9) & 0b000_000_000_111) | ((temp >> 3) & 0b000_000_111_000)
+                                | ((temp << 9) & 0b111_000_000_000) | ((temp << 3) & 0b000_111_000_000);
+        }
+
+        static void z() {
+                int temp = faceU;
+                faceF = ((faceF >> 3) & 0b000_111_000_000) | ((faceF >> 6) & 0b000_000_000_111)
+                                | ((faceF << 3) & 0b000_000_111_000) | ((faceF << 6) & 0b111_000_000_000);
+                faceB = ((faceB >> 6) & 0b000_000_111_000) | ((faceB << 3) & 0b111_000_000_000)
+                                | ((faceB << 6) & 0b000_111_000_000) | ((faceB >> 3) & 0b000_000_000_111);
+                faceU = ((faceL >> 3) & 0b000_111_000_000) | ((faceL >> 6) & 0b000_000_000_111)
+                                | ((faceL << 3) & 0b000_000_111_000) | ((faceL << 6) & 0b111_000_000_000);
+                faceL = ((faceD >> 3) & 0b000_111_000_000) | ((faceD >> 6) & 0b000_000_000_111)
+                                | ((faceD << 3) & 0b000_000_111_000) | ((faceD << 6) & 0b111_000_000_000);
+                faceD = ((faceR >> 3) & 0b000_111_000_000) | ((faceR >> 6) & 0b000_000_000_111)
+                                | ((faceR << 3) & 0b000_000_111_000) | ((faceR << 6) & 0b111_000_000_000);
+                faceR = ((temp >> 3) & 0b000_111_000_000) | ((temp >> 6) & 0b000_000_000_111)
+                                | ((temp << 3) & 0b000_000_111_000) | ((temp << 6) & 0b111_000_000_000);
+        }
+
+        static void zi() {
+                int temp = faceU;
+                faceF = ((faceF >> 6) & 0b000_000_111_000) | ((faceF << 3) & 0b111_000_000_000)
+                                | ((faceF << 6) & 0b000_111_000_000) | ((faceF >> 3) & 0b000_000_000_111);
+                faceB = ((faceB >> 3) & 0b000_111_000_000) | ((faceB >> 6) & 0b000_000_000_111)
+                                | ((faceB << 3) & 0b000_000_111_000) | ((faceB << 6) & 0b111_000_000_000);
+                faceU = ((faceR >> 6) & 0b000_000_111_000) | ((faceR << 3) & 0b111_000_000_000)
+                                | ((faceR << 6) & 0b000_111_000_000) | ((faceR >> 3) & 0b000_000_000_111);
+                faceR = ((faceD >> 6) & 0b000_000_111_000) | ((faceD << 3) & 0b111_000_000_000)
+                                | ((faceD << 6) & 0b000_111_000_000) | ((faceD >> 3) & 0b000_000_000_111);
+                faceD = ((faceL >> 6) & 0b000_000_111_000) | ((faceL << 3) & 0b111_000_000_000)
+                                | ((faceL << 6) & 0b000_111_000_000) | ((faceL >> 3) & 0b000_000_000_111);
+                faceL = ((temp >> 6) & 0b000_000_111_000) | ((temp << 3) & 0b111_000_000_000)
+                                | ((temp << 6) & 0b000_111_000_000) | ((temp >> 3) & 0b000_000_000_111);
+        }
+
+        static void z2() {
+                int temp = faceU;
+                faceF = ((faceF >> 9) & 0b000_000_000_111) | ((faceF >> 3) & 0b000_000_111_000)
+                                | ((faceF << 9) & 0b111_000_000_000) | ((faceF << 3) & 0b000_111_000_000);
+                faceB = ((faceB >> 9) & 0b000_000_000_111) | ((faceB >> 3) & 0b000_000_111_000)
+                                | ((faceB << 9) & 0b111_000_000_000) | ((faceB << 3) & 0b000_111_000_000);
+                faceU = ((faceD >> 9) & 0b000_000_000_111) | ((faceD >> 3) & 0b000_000_111_000)
+                                | ((faceD << 9) & 0b111_000_000_000) | ((faceD << 3) & 0b000_111_000_000);
+                faceD = ((temp >> 9) & 0b000_000_000_111) | ((temp >> 3) & 0b000_000_111_000)
+                                | ((temp << 9) & 0b111_000_000_000) | ((temp << 3) & 0b000_111_000_000);
+                temp = faceR;
+                faceR = ((faceL >> 9) & 0b000_000_000_111) | ((faceL >> 3) & 0b000_000_111_000)
+                                | ((faceL << 9) & 0b111_000_000_000) | ((faceL << 3) & 0b000_111_000_000);
+                faceL = ((temp >> 9) & 0b000_000_000_111) | ((temp >> 3) & 0b000_000_111_000)
+                                | ((temp << 9) & 0b111_000_000_000) | ((temp << 3) & 0b000_111_000_000);
+        }
+
+        static void y() {
+                int temp = faceF;
+                faceU = ((faceU >> 3) & 0b000_111_000_000) | ((faceU >> 6) & 0b000_000_000_111)
+                                | ((faceU << 3) & 0b000_000_111_000) | ((faceU << 6) & 0b111_000_000_000);
+                faceD = ((faceD >> 6) & 0b000_000_111_000) | ((faceD << 3) & 0b111_000_000_000)
+                                | ((faceD << 6) & 0b000_111_000_000) | ((faceD >> 3) & 0b000_000_000_111);
+                faceF = faceR;
+                faceR = faceB;
+                faceB = faceL;
+                faceL = temp;
+        }
+
+        static void yi() {
+                int temp = faceF;
+                faceU = ((faceU >> 6) & 0b000_000_111_000) | ((faceU << 3) & 0b111_000_000_000)
+                                | ((faceU << 6) & 0b000_111_000_000) | ((faceU >> 3) & 0b000_000_000_111);
+                faceD = ((faceD >> 3) & 0b000_111_000_000) | ((faceD >> 6) & 0b000_000_000_111)
+                                | ((faceD << 3) & 0b000_000_111_000) | ((faceD << 6) & 0b111_000_000_000);
+                faceF = faceL;
+                faceL = faceB;
+                faceB = faceR;
+                faceR = temp;
+        }
+
+        static void y2() {
+                int temp = faceF;
+                faceU = ((faceU >> 9) & 0b000_000_000_111) | ((faceU >> 3) & 0b000_000_111_000)
+                                | ((faceU << 9) & 0b111_000_000_000) | ((faceU << 3) & 0b000_111_000_000);
+                faceD = ((faceD >> 9) & 0b000_000_000_111) | ((faceD >> 3) & 0b000_000_111_000)
+                                | ((faceD << 9) & 0b111_000_000_000) | ((faceD << 3) & 0b000_111_000_000);
+                faceF = faceB;
+                faceB = temp;
+                temp = faceR;
+                faceR = faceL;
+                faceL = temp;
+        }
 }

@@ -34,6 +34,7 @@ public class Rubik2x2Solver {
 
         File myObj = new File("rubik2x2lookup.txt");
 
+        // try-with-resources: Scanner will be closed automatically
         try (Scanner myReader = new Scanner(myObj)) {
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
