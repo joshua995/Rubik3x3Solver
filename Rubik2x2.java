@@ -69,7 +69,7 @@ public class Rubik2x2 {
 
                 FileWriter myWriter;
                 try {
-                        myWriter = new FileWriter("rubik2x2lookup.txt", true);
+                        myWriter = new FileWriter("rubik2x2lookup.txt", false);
                         writeToFile(turnStateToString(), "", myWriter);
                         generateLookupTable(turnStateToString(), "", myWriter);
                 } catch (IOException e) {
@@ -78,9 +78,7 @@ public class Rubik2x2 {
         }
 
         /**
-         * BUG: Out of memory error
-         * TODO turn to canonical state: storing only 1 cube state of many orientations
-         * by keeping a corner in place
+         * BUG: Missing 2-3 states
          * 
          * @param state
          * @param parentMoves
@@ -94,7 +92,7 @@ public class Rubik2x2 {
                         String[] currentCube = cubeStates.poll();
                         int depth = Integer.parseInt(currentCube[2]);
                         System.out.println(depth);
-                        if (depth >= 12) {
+                        if (depth >= 11) {
                                 continue;
                         }
 
