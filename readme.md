@@ -1,4 +1,4 @@
-**RubikBitmap.java**
+**--RubikBitmap.java--**
 
 **Colour Map**<br />
 0b000 = White<br />
@@ -16,8 +16,8 @@
 0b100_100_100_100_100_100_100_100_100 faceF<br />
 0b101_101_101_101_101_101_101_101_101 faceB<br />
 
-**Rubik2x2.java**
-
+**--Rubik2x2.java--**<br/>
+Generates a 2x2 Rubik's cube's lookup file used in **Rubik2x2Solver.java**<br/>
 **Cube map**<br />
 faceU = 0b001_001_001_001;
 faceD = 0b000_000_000_000;
