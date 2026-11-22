@@ -6,7 +6,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.ArrayDeque;
 
 class State {
         int faceU;
@@ -55,7 +54,7 @@ public class Rubik2x2 {
         static int faceF = 0b100_100_100_100;// 4
         static int faceB = 0b101_101_101_101;// 5
 
-        static HashSet<String> canonStates = new HashSet<>();
+        static HashSet<String> canonStates = new HashSet<>(4900000, 0.5f);
 
         static State[] stateQueue = new State[3_674_160];
         static int stateQueueHead = 0;
@@ -64,15 +63,6 @@ public class Rubik2x2 {
         // Enqueue stateQueue[stateQueueTail++]=State;
 
         // Dequeue State currentState = stateQueue[stateQueueHead++];
-
-        static String[] MOVES = {
-                        "U", "U2", "U'",
-                        "D", "D2", "D'",
-                        "R", "R2", "R'",
-                        "L", "L2", "L'",
-                        "F", "F2", "F'",
-                        "B", "B2", "B'",
-        };
 
         public static void main(String[] args) {
                 BufferedWriter myWriter;
