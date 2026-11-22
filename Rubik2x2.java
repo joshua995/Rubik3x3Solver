@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.ArrayDeque;
-import java.util.Queue;
 
 class State {
         int faceU;
@@ -57,7 +56,14 @@ public class Rubik2x2 {
         static int faceB = 0b101_101_101_101;// 5
 
         static HashSet<String> canonStates = new HashSet<>();
-        static Queue<State> cubeStates = new ArrayDeque<>();
+
+        static State[] stateQueue = new State[3_674_160];
+        static int stateQueueHead = 0;
+        static int stateQueueTail = 0;
+
+        // Enqueue stateQueue[stateQueueTail++]=State;
+
+        // Dequeue State currentState = stateQueue[stateQueueHead++];
 
         static String[] MOVES = {
                         "U", "U2", "U'",
@@ -93,10 +99,10 @@ public class Rubik2x2 {
                         BufferedWriter writer) {
                 canonStates.add(turnStateToString());
                 // state, moves
-                cubeStates.add(new State(ifaceU, ifaceD, ifaceR, ifaceL, ifaceF, ifaceB, "", (byte) 0));
-                while (!cubeStates.isEmpty()) {
+                stateQueue[stateQueueTail++] = new State(ifaceU, ifaceD, ifaceR, ifaceL, ifaceF, ifaceB, "", (byte) 0);
+                while (stateQueueHead < 3674160) {
                         // Breadth first search method
-                        State currentCube = cubeStates.poll();
+                        State currentCube = stateQueue[stateQueueHead++];
                         if (currentCube.depth >= 11) {
                                 continue;
                         }
@@ -210,8 +216,8 @@ public class Rubik2x2 {
                 if (canonStates.add(currCanonState)) {
                         String currentMoves = currentCube.moves + nextMove;
                         writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                        cubeStates.add(new State(tempFaceU, tempFaceD, tempFaceR, tempFaceL, tempFaceF,
-                                        tempFaceB, currentMoves, (byte) (currentCube.depth + 1)));
+                        stateQueue[stateQueueTail++] = new State(tempFaceU, tempFaceD, tempFaceR, tempFaceL, tempFaceF,
+                                        tempFaceB, currentMoves, (byte) (currentCube.depth + 1));
                 }
         }
 
