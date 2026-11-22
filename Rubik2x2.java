@@ -100,8 +100,8 @@ public class Rubik2x2 {
                         String currState = turnStateToString();
                         String canonMoves = setCanonicalState();
                         String currCanonState = turnStateToString();
-                        String currentMoves = currentCube.moves + " U";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " U";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -116,8 +116,8 @@ public class Rubik2x2 {
                         currState = turnStateToString();
                         canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube.moves + " U'";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " U'";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -132,8 +132,8 @@ public class Rubik2x2 {
                         currState = turnStateToString();
                         canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube.moves + " U2";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " U2";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -148,8 +148,8 @@ public class Rubik2x2 {
                         currState = turnStateToString();
                         canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube.moves + " D";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " D";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -164,8 +164,8 @@ public class Rubik2x2 {
                         currState = turnStateToString();
                         canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube.moves + " D'";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " D'";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -180,8 +180,8 @@ public class Rubik2x2 {
                         currState = turnStateToString();
                         canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube.moves + " D2";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " D2";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -196,8 +196,8 @@ public class Rubik2x2 {
                         currState = turnStateToString();
                         canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube.moves + " R";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " R";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -212,8 +212,8 @@ public class Rubik2x2 {
                         currState = turnStateToString();
                         canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube.moves + " R'";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " R'";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -228,8 +228,8 @@ public class Rubik2x2 {
                         currState = turnStateToString();
                         canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube.moves + " R2";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " R2";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -244,8 +244,8 @@ public class Rubik2x2 {
                         currState = turnStateToString();
                         canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube.moves + " L";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " L";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -260,8 +260,8 @@ public class Rubik2x2 {
                         currState = turnStateToString();
                         canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube.moves + " L'";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " L'";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -276,8 +276,8 @@ public class Rubik2x2 {
                         currState = turnStateToString();
                         canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube.moves + " L2";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " L2";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -292,8 +292,8 @@ public class Rubik2x2 {
                         currState = turnStateToString();
                         canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube.moves + " F";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " F";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -308,8 +308,8 @@ public class Rubik2x2 {
                         currState = turnStateToString();
                         canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube.moves + " F'";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " F'";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -324,8 +324,8 @@ public class Rubik2x2 {
                         currState = turnStateToString();
                         canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube.moves + " F2";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " F2";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -340,8 +340,8 @@ public class Rubik2x2 {
                         currState = turnStateToString();
                         canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube.moves + " B";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " B";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -356,8 +356,8 @@ public class Rubik2x2 {
                         currState = turnStateToString();
                         canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube.moves + " B'";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " B'";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -372,8 +372,8 @@ public class Rubik2x2 {
                         currState = turnStateToString();
                         canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube.moves + " B2";
                         if (canonStates.add(currCanonState)) {
+                                String currentMoves = currentCube.moves + " B2";
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
                                 cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
@@ -510,22 +510,6 @@ public class Rubik2x2 {
                         return "z2 y'";
                 }
                 return "";
-        }
-
-        static String decodeMoves(long moves, int depth) {
-                StringBuilder result = new StringBuilder(depth * 3);
-
-                for (int i = depth - 1; i >= 0; i--) {
-                        int move = (int) ((moves >>> (i * 5)) & 31);
-
-                        if (result.length() != 0) {
-                                result.append(' ');
-                        }
-
-                        result.append(MOVES[move]);
-                }
-
-                return result.toString();
         }
 
         static String turnStateToString() {
