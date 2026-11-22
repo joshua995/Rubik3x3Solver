@@ -7,29 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
 
-class State {
-        int faceU;
-        int faceD;
-        int faceR;
-        int faceL;
-        int faceF;
-        int faceB;
-        String moves;
-        byte depth;
-
-        public State(int faceU, int faceD, int faceR, int faceL, int faceF, int faceB, String moves,
-                        byte depth) {
-                this.faceU = faceU;
-                this.faceD = faceD;
-                this.faceR = faceR;
-                this.faceL = faceL;
-                this.faceF = faceF;
-                this.faceB = faceB;
-                this.moves = moves;
-                this.depth = depth;
-        }
-}
-
 public class Rubik2x2 {
         static final int WHITE = 0b000;
         static final int YELLOW = 0b001;
@@ -47,6 +24,36 @@ public class Rubik2x2 {
         static final int KEEP_COL_2_MASK = 0b000_111_000_111;
         static final int CLEAR_COL_2_MASK = 0b111_000_111_000;
 
+        static final int U_MOVE = 0;
+        static final int Ui_MOVE = 1;
+        static final int U2_MOVE = 2;
+        static final int D_MOVE = 3;
+        static final int Di_MOVE = 4;
+        static final int D2_MOVE = 5;
+        static final int R_MOVE = 6;
+        static final int Ri_MOVE = 7;
+        static final int R2_MOVE = 8;
+        static final int L_MOVE = 9;
+        static final int Li_MOVE = 10;
+        static final int L2_MOVE = 11;
+        static final int F_MOVE = 12;
+        static final int Fi_MOVE = 13;
+        static final int F2_MOVE = 14;
+        static final int B_MOVE = 15;
+        static final int Bi_MOVE = 16;
+        static final int B2_MOVE = 17;
+        static final int X_MOVE = 18;
+        static final int Xi_MOVE = 19;
+        static final int X2_MOVE = 20;
+        static final int Z_MOVE = 21;
+        static final int Zi_MOVE = 22;
+        static final int Z2_MOVE = 23;
+        static final int Y_MOVE = 24;
+        static final int Yi_MOVE = 25;
+        static final int Y2_MOVE = 26;
+
+        static final int MAX_SIZE = 3674160;
+
         static int faceU = 0b001_001_001_001;// 0
         static int faceD = 0b000_000_000_000;// 1
         static int faceR = 0b011_011_011_011;// 2
@@ -56,28 +63,50 @@ public class Rubik2x2 {
 
         static HashSet<String> canonStates = new HashSet<>(4900000, 0.5f);
 
-        static State[] stateQueue = new State[3_674_160];
+        // State stored in primitive arrays
+        static int[] faceUQueue = new int[MAX_SIZE];
+        static int[] faceDQueue = new int[MAX_SIZE];
+        static int[] faceRQueue = new int[MAX_SIZE];
+        static int[] faceLQueue = new int[MAX_SIZE];
+        static int[] faceFQueue = new int[MAX_SIZE];
+        static int[] faceBQueue = new int[MAX_SIZE];
+        static long[] movesQueue = new long[MAX_SIZE];
+        static byte[] depthQueue = new byte[MAX_SIZE];
+
         static int stateQueueHead = 0;
         static int stateQueueTail = 0;
-
-        // Enqueue stateQueue[stateQueueTail++]=State;
-
-        // Dequeue State currentState = stateQueue[stateQueueHead++];
 
         public static void main(String[] args) {
                 BufferedWriter myWriter;
                 try {
                         long startT = System.nanoTime();
                         myWriter = new BufferedWriter(new FileWriter("rubik2x2lookup.txt", false), 1 << 20);
-                        writeToFile(turnStateToString(), "", myWriter);
+                        writeToFile(turnStateToString(), "0 0", myWriter);
                         generateLookupTable(faceU, faceD, faceR, faceL, faceF, faceB, myWriter);
                         myWriter.close();
 
                         long endT = System.nanoTime();
-                        System.out.println("Seconds " + ((endT - startT) / 1_000_000_000));
+                        System.out.println("MilliSeconds " + ((endT - startT) / 1_000_000));
                 } catch (IOException e) {
                         e.printStackTrace();
                 }
+        }
+
+        static void enqueueState(int faceU, int faceD, int faceR, int faceL, int faceF, int faceB, long moves,
+                        byte depth) {
+                faceUQueue[stateQueueTail] = faceU;
+                faceDQueue[stateQueueTail] = faceD;
+                faceRQueue[stateQueueTail] = faceR;
+                faceLQueue[stateQueueTail] = faceL;
+                faceFQueue[stateQueueTail] = faceF;
+                faceBQueue[stateQueueTail] = faceB;
+                movesQueue[stateQueueTail] = moves;
+                depthQueue[stateQueueTail] = depth;
+                stateQueueTail++;
+        }
+
+        static void dequeueState() {
+
         }
 
         /**
@@ -89,20 +118,22 @@ public class Rubik2x2 {
                         BufferedWriter writer) {
                 canonStates.add(turnStateToString());
                 // state, moves
-                stateQueue[stateQueueTail++] = new State(ifaceU, ifaceD, ifaceR, ifaceL, ifaceF, ifaceB, "", (byte) 0);
-                while (stateQueueHead < 3674160) {
+                enqueueState(ifaceU, ifaceD, ifaceR, ifaceL, ifaceF, ifaceB, 0l, (byte) 0);
+                while (stateQueueHead < MAX_SIZE) {
                         // Breadth first search method
-                        State currentCube = stateQueue[stateQueueHead++];
-                        if (currentCube.depth >= 11) {
+                        long currentMoves = movesQueue[stateQueueHead];
+                        byte currentDepth = depthQueue[stateQueueHead];
+                        if (currentDepth >= 11) {
+                                stateQueueHead++;
                                 continue;
                         }
 
-                        faceU = currentCube.faceU;
-                        faceD = currentCube.faceD;
-                        faceR = currentCube.faceR;
-                        faceL = currentCube.faceL;
-                        faceF = currentCube.faceF;
-                        faceB = currentCube.faceB;
+                        faceU = faceUQueue[stateQueueHead];
+                        faceD = faceDQueue[stateQueueHead];
+                        faceR = faceRQueue[stateQueueHead];
+                        faceL = faceLQueue[stateQueueHead];
+                        faceF = faceFQueue[stateQueueHead];
+                        faceB = faceBQueue[stateQueueHead];
                         int currFaceU = faceU;
                         int currFaceD = faceD;
                         int currFaceR = faceR;
@@ -111,75 +142,76 @@ public class Rubik2x2 {
                         int currFaceB = faceB;
 
                         U();
-                        updateNewState(currentCube, " U", writer);
+                        updateNewState(currentMoves, currentDepth, U_MOVE, writer);
 
                         resetToParentState(currFaceU, currFaceD, currFaceR, currFaceL, currFaceF, currFaceB);
                         Ui();
-                        updateNewState(currentCube, " U'", writer);
+                        updateNewState(currentMoves, currentDepth, Ui_MOVE, writer);
 
                         resetToParentState(currFaceU, currFaceD, currFaceR, currFaceL, currFaceF, currFaceB);
                         U2();
-                        updateNewState(currentCube, " U2", writer);
+                        updateNewState(currentMoves, currentDepth, U2_MOVE, writer);
 
                         resetToParentState(currFaceU, currFaceD, currFaceR, currFaceL, currFaceF, currFaceB);
                         D();
-                        updateNewState(currentCube, " D", writer);
+                        updateNewState(currentMoves, currentDepth, D_MOVE, writer);
 
                         resetToParentState(currFaceU, currFaceD, currFaceR, currFaceL, currFaceF, currFaceB);
                         Di();
-                        updateNewState(currentCube, " D'", writer);
+                        updateNewState(currentMoves, currentDepth, Di_MOVE, writer);
 
                         resetToParentState(currFaceU, currFaceD, currFaceR, currFaceL, currFaceF, currFaceB);
                         D2();
-                        updateNewState(currentCube, " D2", writer);
+                        updateNewState(currentMoves, currentDepth, D2_MOVE, writer);
 
                         resetToParentState(currFaceU, currFaceD, currFaceR, currFaceL, currFaceF, currFaceB);
                         R();
-                        updateNewState(currentCube, " R", writer);
+                        updateNewState(currentMoves, currentDepth, R_MOVE, writer);
 
                         resetToParentState(currFaceU, currFaceD, currFaceR, currFaceL, currFaceF, currFaceB);
                         Ri();
-                        updateNewState(currentCube, " R'", writer);
+                        updateNewState(currentMoves, currentDepth, Ri_MOVE, writer);
 
                         resetToParentState(currFaceU, currFaceD, currFaceR, currFaceL, currFaceF, currFaceB);
                         R2();
-                        updateNewState(currentCube, " R2", writer);
+                        updateNewState(currentMoves, currentDepth, R2_MOVE, writer);
 
                         resetToParentState(currFaceU, currFaceD, currFaceR, currFaceL, currFaceF, currFaceB);
                         L();
-                        updateNewState(currentCube, " L", writer);
+                        updateNewState(currentMoves, currentDepth, L_MOVE, writer);
 
                         resetToParentState(currFaceU, currFaceD, currFaceR, currFaceL, currFaceF, currFaceB);
                         Li();
-                        updateNewState(currentCube, " L'", writer);
+                        updateNewState(currentMoves, currentDepth, Li_MOVE, writer);
 
                         resetToParentState(currFaceU, currFaceD, currFaceR, currFaceL, currFaceF, currFaceB);
                         L2();
-                        updateNewState(currentCube, " L2", writer);
+                        updateNewState(currentMoves, currentDepth, L2_MOVE, writer);
 
                         resetToParentState(currFaceU, currFaceD, currFaceR, currFaceL, currFaceF, currFaceB);
                         F();
-                        updateNewState(currentCube, " F", writer);
+                        updateNewState(currentMoves, currentDepth, F_MOVE, writer);
 
                         resetToParentState(currFaceU, currFaceD, currFaceR, currFaceL, currFaceF, currFaceB);
                         Fi();
-                        updateNewState(currentCube, " F'", writer);
+                        updateNewState(currentMoves, currentDepth, Fi_MOVE, writer);
 
                         resetToParentState(currFaceU, currFaceD, currFaceR, currFaceL, currFaceF, currFaceB);
                         F2();
-                        updateNewState(currentCube, " F2", writer);
+                        updateNewState(currentMoves, currentDepth, F2_MOVE, writer);
 
                         resetToParentState(currFaceU, currFaceD, currFaceR, currFaceL, currFaceF, currFaceB);
                         B();
-                        updateNewState(currentCube, " B", writer);
+                        updateNewState(currentMoves, currentDepth, B_MOVE, writer);
 
                         resetToParentState(currFaceU, currFaceD, currFaceR, currFaceL, currFaceF, currFaceB);
                         Bi();
-                        updateNewState(currentCube, " B'", writer);
+                        updateNewState(currentMoves, currentDepth, Bi_MOVE, writer);
 
                         resetToParentState(currFaceU, currFaceD, currFaceR, currFaceL, currFaceF, currFaceB);
                         B2();
-                        updateNewState(currentCube, " B2", writer);
+                        updateNewState(currentMoves, currentDepth, B2_MOVE, writer);
+                        stateQueueHead++;
                 }
         }
 
@@ -193,7 +225,7 @@ public class Rubik2x2 {
                 faceB = currFaceB;
         }
 
-        static void updateNewState(State currentCube, String nextMove, BufferedWriter writer) {
+        static void updateNewState(long currentStateMoves, byte currentDepth, int nextMove, BufferedWriter writer) {
                 // Store current state before canonicalization
                 int tempFaceU = faceU;
                 int tempFaceD = faceD;
@@ -201,13 +233,16 @@ public class Rubik2x2 {
                 int tempFaceL = faceL;
                 int tempFaceF = faceF;
                 int tempFaceB = faceB;
-                String canonMoves = setCanonicalState();
+                int canonMoves = setCanonicalState();
                 String currCanonState = turnStateToString();
                 if (canonStates.add(currCanonState)) {
-                        String currentMoves = currentCube.moves + nextMove;
-                        writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                        stateQueue[stateQueueTail++] = new State(tempFaceU, tempFaceD, tempFaceR, tempFaceL, tempFaceF,
-                                        tempFaceB, currentMoves, (byte) (currentCube.depth + 1));
+                        long currentMoves = (currentStateMoves << 5) | nextMove;
+                        writeToFile(currCanonState,
+                                        Long.toString((currentMoves << 5) | (currentDepth + 1))
+                                                        + " " + Integer.toString(canonMoves),
+                                        writer);
+                        enqueueState(tempFaceU, tempFaceD, tempFaceR, tempFaceL, tempFaceF,
+                                        tempFaceB, currentMoves, (byte) (currentDepth + 1));
                 }
         }
 
@@ -216,131 +251,131 @@ public class Rubik2x2 {
          * 
          * Setting the Yellow-Blue-Red Corner in U-L-F Corner
          */
-        static String setCanonicalState() {
+        static int setCanonicalState() {
                 if (((faceU >> 3) & 0b111) == YELLOW && ((faceL >> 6) & 0b111) == BLUE
                                 && ((faceF >> 9) & 0b111) == RED) {
-                        return "";
+                        return 0;
                 }
                 // Yellow on faceU
                 else if (((faceU >> 9) & 0b111) == YELLOW && ((faceB >> 6) & 0b111) == BLUE
                                 && ((faceL >> 9) & 0b111) == RED) {
                         yi();
-                        return "y'";
+                        return Yi_MOVE;
                 } else if (((faceU >> 6) & 0b111) == YELLOW && ((faceR >> 6) & 0b111) == BLUE
                                 && ((faceB >> 9) & 0b111) == RED) {
                         y2();
-                        return "y2";
+                        return Y2_MOVE;
                 } else if ((faceU & 0b111) == YELLOW && ((faceF >> 6) & 0b111) == BLUE
                                 && ((faceR >> 9) & 0b111) == RED) {
                         y();
-                        return "y";
+                        return Y_MOVE;
                 }
                 // Yellow on faceL
                 else if (((faceL >> 9) & 0b111) == YELLOW && ((faceU >> 9) & 0b111) == BLUE
                                 && ((faceB >> 6) & 0b111) == RED) {
                         z();
                         y2();
-                        return "z y2";
+                        return (Z_MOVE << 5) | Y2_MOVE;
                 } else if (((faceL >> 6) & 0b111) == YELLOW && ((faceF >> 9) & 0b111) == BLUE
                                 && ((faceU >> 3) & 0b111) == RED) {
                         z();
                         y();
-                        return "z y";
+                        return (Z_MOVE << 5) | Y_MOVE;
                 } else if (((faceL >> 3) & 0b111) == YELLOW && (faceB & 0b111) == BLUE
                                 && ((faceD >> 3) & 0b111) == RED) {
                         z();
                         yi();
-                        return "z y'";
+                        return (Z_MOVE << 5) | Yi_MOVE;
                 } else if ((faceL & 0b111) == YELLOW && ((faceD >> 9) & 0b111) == BLUE
                                 && ((faceF >> 3) & 0b111) == RED) {
                         z();
-                        return "z";
+                        return Z_MOVE;
                 }
                 // Yellow on faceF
                 else if (((faceF >> 9) & 0b111) == YELLOW && ((faceU >> 3) & 0b111) == BLUE
                                 && ((faceL >> 6) & 0b111) == RED) {
                         x();
                         yi();
-                        return "x y'";
+                        return (X_MOVE << 5) | Yi_MOVE;
                 } else if (((faceF >> 6) & 0b111) == YELLOW && ((faceR >> 9) & 0b111) == BLUE
                                 && (faceU & 0b111) == RED) {
                         x();
                         y2();
-                        return "x y2";
+                        return (X_MOVE << 5) | Y2_MOVE;
                 } else if (((faceF >> 3) & 0b111) == YELLOW && (faceL & 0b111) == BLUE
                                 && ((faceD >> 9) & 0b111) == RED) {
                         x();
-                        return "x";
+                        return X_MOVE;
                 } else if ((faceF & 0b111) == YELLOW && ((faceD >> 6) & 0b111) == BLUE
                                 && ((faceR >> 3) & 0b111) == RED) {
                         x();
                         y();
-                        return "x y";
+                        return (X_MOVE << 5) | Y_MOVE;
                 }
                 // Yellow on faceR
                 else if (((faceR >> 9) & 0b111) == YELLOW && (faceU & 0b111) == BLUE
                                 && ((faceF >> 6) & 0b111) == RED) {
                         zi();
-                        return "z'";
+                        return Zi_MOVE;
                 } else if (((faceR >> 6) & 0b111) == YELLOW && ((faceB >> 9) & 0b111) == BLUE
                                 && ((faceU >> 6) & 0b111) == RED) {
                         zi();
                         yi();
-                        return "z' y'";
+                        return (Zi_MOVE << 5) | Yi_MOVE;
                 } else if (((faceR >> 3) & 0b111) == YELLOW && (faceF & 0b111) == BLUE
                                 && ((faceD >> 6) & 0b111) == RED) {
                         zi();
                         y();
-                        return "z' y";
+                        return (Zi_MOVE << 5) | Y_MOVE;
                 } else if ((faceR & 0b111) == YELLOW && (faceD & 0b111) == BLUE
                                 && ((faceB >> 3) & 0b111) == RED) {
                         zi();
                         y2();
-                        return "z' y2";
+                        return (Zi_MOVE << 5) | Y2_MOVE;
                 }
                 // Yellow on faceB
                 else if (((faceB >> 9) & 0b111) == YELLOW && ((faceU >> 6) & 0b111) == BLUE
                                 && ((faceR >> 6) & 0b111) == RED) {
                         xi();
                         y();
-                        return "x' y";
+                        return (Xi_MOVE << 5) | Y_MOVE;
                 } else if (((faceB >> 6) & 0b111) == YELLOW && ((faceL >> 9) & 0b111) == BLUE
                                 && ((faceU >> 9) & 0b111) == RED) {
                         xi();
-                        return "x'";
+                        return Xi_MOVE;
                 } else if (((faceB >> 3) & 0b111) == YELLOW && (faceR & 0b111) == BLUE
                                 && (faceD & 0b111) == RED) {
                         xi();
                         y2();
-                        return "x' y2";
+                        return (Xi_MOVE << 5) | Y2_MOVE;
                 } else if ((faceB & 0b111) == YELLOW && ((faceD >> 3) & 0b111) == BLUE
                                 && ((faceL >> 3) & 0b111) == RED) {
                         xi();
                         yi();
-                        return "x' y'";
+                        return (Xi_MOVE << 5) | Yi_MOVE;
                 }
                 // Yellow on faceD
                 else if (((faceD >> 9) & 0b111) == YELLOW && ((faceF >> 3) & 0b111) == BLUE
                                 && (faceL & 0b111) == RED) {
                         z2();
                         y();
-                        return "z2 y";
+                        return (Z2_MOVE << 5) | Y_MOVE;
                 } else if (((faceD >> 6) & 0b111) == YELLOW && ((faceR >> 3) & 0b111) == BLUE
                                 && (faceF & 0b111) == RED) {
                         z2();
-                        return "z2";
+                        return Z2_MOVE;
                 } else if (((faceD >> 3) & 0b111) == YELLOW && ((faceL >> 3) & 0b111) == BLUE
                                 && (faceB & 0b111) == RED) {
                         z2();
                         y2();
-                        return "z2 y2";
+                        return (Z2_MOVE << 5) | Y2_MOVE;
                 } else if ((faceD & 0b111) == YELLOW && ((faceB >> 3) & 0b111) == BLUE
                                 && (faceR & 0b111) == RED) {
                         z2();
                         yi();
-                        return "z2 y'";
+                        return (Z2_MOVE << 5) | Yi_MOVE;
                 }
-                return "";
+                return 0;
         }
 
         static String turnStateToString() {
