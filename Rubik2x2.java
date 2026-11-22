@@ -2,13 +2,24 @@
 Programmed with runtime optimization in mind
  */
 
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Queue;
+
+class State {
+        String state;
+        String moves;
+        byte depth;
+
+        public State(String state, String moves, byte depth) {
+                this.state = state;
+                this.moves = moves;
+                this.depth = depth;
+        }
+}
 
 public class Rubik2x2 {
         static final int WHITE = 0b000;
@@ -34,20 +45,25 @@ public class Rubik2x2 {
         static int faceF = 0b100_100_100_100;// 4
         static int faceB = 0b101_101_101_101;// 5
 
-        static int[] cube = { faceU, faceD, faceR, faceL, faceF, faceB }; // Shallow references throughout the code
-
-        static String parentMoves = "";
         static HashSet<String> canonStates = new HashSet<>();
-        static Queue<String[]> cubeStates = new ArrayDeque<>();
+        static Queue<State> cubeStates = new ArrayDeque<>();
+
+        static String[] MOVES = {
+                        "U", "U2", "U'",
+                        "D", "D2", "D'",
+                        "R", "R2", "R'",
+                        "L", "L2", "L'",
+                        "F", "F2", "F'",
+                        "B", "B2", "B'",
+        };
 
         public static void main(String[] args) {
-                FileWriter myWriter;
+                BufferedWriter myWriter;
                 try {
                         long startT = System.nanoTime();
-
-                        myWriter = new FileWriter("rubik2x2lookup.txt", false);
+                        myWriter = new BufferedWriter(new FileWriter("rubik2x2lookup.txt", false), 1 << 20);
                         writeToFile(turnStateToString(), "", myWriter);
-                        generateLookupTable(turnStateToString(), "", myWriter);
+                        generateLookupTable(turnStateToString(), myWriter);
                         myWriter.close();
 
                         long endT = System.nanoTime();
@@ -58,202 +74,308 @@ public class Rubik2x2 {
         }
 
         /**
-         * BUG: Missing 2-3 states
          * 
          * @param state
-         * @param parentMoves
          * @param level
          */
-        static void generateLookupTable(String state, String parentMoves, FileWriter writer) {
+        static void generateLookupTable(String state, BufferedWriter writer) {
                 canonStates.add(state);
-                cubeStates.add(new String[] { state, parentMoves, "" + 0 }); // String state, moves
+                cubeStates.add(new State(state, "", (byte) 0)); // String state, moves
                 while (!cubeStates.isEmpty()) {
                         // Breadth first search method
-                        String[] currentCube = cubeStates.poll();
-                        int depth = Integer.parseInt(currentCube[2]);
-                        if (depth >= 11) {
+                        State currentCube = cubeStates.poll();
+                        if (currentCube.depth >= 11) {
                                 continue;
                         }
+                        // Reset to parent state
+                        turnStringToState(currentCube.state);
+                        int currentFaceU = faceU;
+                        int currentFaceD = faceD;
+                        int currentFaceR = faceR;
+                        int currentFaceL = faceL;
+                        int currentFaceF = faceF;
+                        int currentFaceB = faceB;
 
-                        turnStringToState(currentCube[0]); // Reset to parent state
                         U();
                         String currState = turnStateToString();
-                        String canonMoves = setCananicalState();
+                        String canonMoves = setCanonicalState();
                         String currCanonState = turnStateToString();
-                        String currentMoves = currentCube[1] + " U";
+                        String currentMoves = currentCube.moves + " U";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
-                        turnStringToState(currentCube[0]); // Reset to parent state
+                        // Reset to parent state
+                        faceU = currentFaceU;
+                        faceD = currentFaceD;
+                        faceR = currentFaceR;
+                        faceL = currentFaceL;
+                        faceF = currentFaceF;
+                        faceB = currentFaceB;
                         Ui();
                         currState = turnStateToString();
-                        canonMoves = setCananicalState();
+                        canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube[1] + " U'";
+                        currentMoves = currentCube.moves + " U'";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
-                        turnStringToState(currentCube[0]); // Reset to parent state
+                        // Reset to parent state
+                        faceU = currentFaceU;
+                        faceD = currentFaceD;
+                        faceR = currentFaceR;
+                        faceL = currentFaceL;
+                        faceF = currentFaceF;
+                        faceB = currentFaceB;
                         U2();
                         currState = turnStateToString();
-                        canonMoves = setCananicalState();
+                        canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube[1] + " U2";
+                        currentMoves = currentCube.moves + " U2";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
-                        turnStringToState(currentCube[0]); // Reset to parent state
+                        // Reset to parent state
+                        faceU = currentFaceU;
+                        faceD = currentFaceD;
+                        faceR = currentFaceR;
+                        faceL = currentFaceL;
+                        faceF = currentFaceF;
+                        faceB = currentFaceB;
                         D();
                         currState = turnStateToString();
-                        canonMoves = setCananicalState();
+                        canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube[1] + " D";
+                        currentMoves = currentCube.moves + " D";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
-                        turnStringToState(currentCube[0]); // Reset to parent state
+                        // Reset to parent state
+                        faceU = currentFaceU;
+                        faceD = currentFaceD;
+                        faceR = currentFaceR;
+                        faceL = currentFaceL;
+                        faceF = currentFaceF;
+                        faceB = currentFaceB;
                         Di();
                         currState = turnStateToString();
-                        canonMoves = setCananicalState();
+                        canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube[1] + " D'";
+                        currentMoves = currentCube.moves + " D'";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
-                        turnStringToState(currentCube[0]); // Reset to parent state
+                        // Reset to parent state
+                        faceU = currentFaceU;
+                        faceD = currentFaceD;
+                        faceR = currentFaceR;
+                        faceL = currentFaceL;
+                        faceF = currentFaceF;
+                        faceB = currentFaceB;
                         D2();
                         currState = turnStateToString();
-                        canonMoves = setCananicalState();
+                        canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube[1] + " D2";
+                        currentMoves = currentCube.moves + " D2";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
-                        turnStringToState(currentCube[0]); // Reset to parent state
+                        // Reset to parent state
+                        faceU = currentFaceU;
+                        faceD = currentFaceD;
+                        faceR = currentFaceR;
+                        faceL = currentFaceL;
+                        faceF = currentFaceF;
+                        faceB = currentFaceB;
                         R();
                         currState = turnStateToString();
-                        canonMoves = setCananicalState();
+                        canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube[1] + " R";
+                        currentMoves = currentCube.moves + " R";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
-                        turnStringToState(currentCube[0]); // Reset to parent state
+                        // Reset to parent state
+                        faceU = currentFaceU;
+                        faceD = currentFaceD;
+                        faceR = currentFaceR;
+                        faceL = currentFaceL;
+                        faceF = currentFaceF;
+                        faceB = currentFaceB;
                         Ri();
                         currState = turnStateToString();
-                        canonMoves = setCananicalState();
+                        canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube[1] + " R'";
+                        currentMoves = currentCube.moves + " R'";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
-                        turnStringToState(currentCube[0]); // Reset to parent state
+                        // Reset to parent state
+                        faceU = currentFaceU;
+                        faceD = currentFaceD;
+                        faceR = currentFaceR;
+                        faceL = currentFaceL;
+                        faceF = currentFaceF;
+                        faceB = currentFaceB;
                         R2();
                         currState = turnStateToString();
-                        canonMoves = setCananicalState();
+                        canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube[1] + " R2";
+                        currentMoves = currentCube.moves + " R2";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
-                        turnStringToState(currentCube[0]); // Reset to parent state
+                        // Reset to parent state
+                        faceU = currentFaceU;
+                        faceD = currentFaceD;
+                        faceR = currentFaceR;
+                        faceL = currentFaceL;
+                        faceF = currentFaceF;
+                        faceB = currentFaceB;
                         L();
                         currState = turnStateToString();
-                        canonMoves = setCananicalState();
+                        canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube[1] + " L";
+                        currentMoves = currentCube.moves + " L";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
-                        turnStringToState(currentCube[0]); // Reset to parent state
+                        // Reset to parent state
+                        faceU = currentFaceU;
+                        faceD = currentFaceD;
+                        faceR = currentFaceR;
+                        faceL = currentFaceL;
+                        faceF = currentFaceF;
+                        faceB = currentFaceB;
                         Li();
                         currState = turnStateToString();
-                        canonMoves = setCananicalState();
+                        canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube[1] + " L'";
+                        currentMoves = currentCube.moves + " L'";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
-                        turnStringToState(currentCube[0]); // Reset to parent state
+                        // Reset to parent state
+                        faceU = currentFaceU;
+                        faceD = currentFaceD;
+                        faceR = currentFaceR;
+                        faceL = currentFaceL;
+                        faceF = currentFaceF;
+                        faceB = currentFaceB;
                         L2();
                         currState = turnStateToString();
-                        canonMoves = setCananicalState();
+                        canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube[1] + " L2";
+                        currentMoves = currentCube.moves + " L2";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
-                        turnStringToState(currentCube[0]); // Reset to parent state
+                        // Reset to parent state
+                        faceU = currentFaceU;
+                        faceD = currentFaceD;
+                        faceR = currentFaceR;
+                        faceL = currentFaceL;
+                        faceF = currentFaceF;
+                        faceB = currentFaceB;
                         F();
                         currState = turnStateToString();
-                        canonMoves = setCananicalState();
+                        canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube[1] + " F";
+                        currentMoves = currentCube.moves + " F";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
-                        turnStringToState(currentCube[0]); // Reset to parent state
+                        // Reset to parent state
+                        faceU = currentFaceU;
+                        faceD = currentFaceD;
+                        faceR = currentFaceR;
+                        faceL = currentFaceL;
+                        faceF = currentFaceF;
+                        faceB = currentFaceB;
                         Fi();
                         currState = turnStateToString();
-                        canonMoves = setCananicalState();
+                        canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube[1] + " F'";
+                        currentMoves = currentCube.moves + " F'";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
-                        turnStringToState(currentCube[0]); // Reset to parent state
+                        // Reset to parent state
+                        faceU = currentFaceU;
+                        faceD = currentFaceD;
+                        faceR = currentFaceR;
+                        faceL = currentFaceL;
+                        faceF = currentFaceF;
+                        faceB = currentFaceB;
                         F2();
                         currState = turnStateToString();
-                        canonMoves = setCananicalState();
+                        canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube[1] + " F2";
+                        currentMoves = currentCube.moves + " F2";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
-                        turnStringToState(currentCube[0]); // Reset to parent state
+                        // Reset to parent state
+                        faceU = currentFaceU;
+                        faceD = currentFaceD;
+                        faceR = currentFaceR;
+                        faceL = currentFaceL;
+                        faceF = currentFaceF;
+                        faceB = currentFaceB;
                         B();
                         currState = turnStateToString();
-                        canonMoves = setCananicalState();
+                        canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube[1] + " B";
+                        currentMoves = currentCube.moves + " B";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
-                        turnStringToState(currentCube[0]); // Reset to parent state
+                        // Reset to parent state
+                        faceU = currentFaceU;
+                        faceD = currentFaceD;
+                        faceR = currentFaceR;
+                        faceL = currentFaceL;
+                        faceF = currentFaceF;
+                        faceB = currentFaceB;
                         Bi();
                         currState = turnStateToString();
-                        canonMoves = setCananicalState();
+                        canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube[1] + " B'";
+                        currentMoves = currentCube.moves + " B'";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
-                        turnStringToState(currentCube[0]); // Reset to parent state
+                        // Reset to parent state
+                        faceU = currentFaceU;
+                        faceD = currentFaceD;
+                        faceR = currentFaceR;
+                        faceL = currentFaceL;
+                        faceF = currentFaceF;
+                        faceB = currentFaceB;
                         B2();
                         currState = turnStateToString();
-                        canonMoves = setCananicalState();
+                        canonMoves = setCanonicalState();
                         currCanonState = turnStateToString();
-                        currentMoves = currentCube[1] + " B2";
+                        currentMoves = currentCube.moves + " B2";
                         if (canonStates.add(currCanonState)) {
                                 writeToFile(currCanonState, currentMoves + " " + canonMoves, writer);
-                                cubeStates.add(new String[] { currState, currentMoves, "" + (depth + 1) });
+                                cubeStates.add(new State(currState, currentMoves, (byte) (currentCube.depth + 1)));
                         }
                 }
         }
@@ -263,7 +385,7 @@ public class Rubik2x2 {
          * 
          * Setting the Yellow-Blue-Red Corner in U-L-F Corner
          */
-        static String setCananicalState() {
+        static String setCanonicalState() {
                 if (((faceU >> 3) & 0b111) == YELLOW && ((faceL >> 6) & 0b111) == BLUE
                                 && ((faceF >> 9) & 0b111) == RED) {
                         return "";
@@ -390,24 +512,53 @@ public class Rubik2x2 {
                 return "";
         }
 
+        static String decodeMoves(long moves, int depth) {
+                StringBuilder result = new StringBuilder(depth * 3);
+
+                for (int i = depth - 1; i >= 0; i--) {
+                        int move = (int) ((moves >>> (i * 5)) & 31);
+
+                        if (result.length() != 0) {
+                                result.append(' ');
+                        }
+
+                        result.append(MOVES[move]);
+                }
+
+                return result.toString();
+        }
+
         static String turnStateToString() {
                 // U, D, R, L, F, B
                 return faceU + " " + faceD + " " + faceR + " " + faceL + " " + faceF + " " + faceB;
         }
 
         static void turnStringToState(String state) {
-                String[] faceStates = state.split(" ");
-                faceU = Integer.parseInt(faceStates[0]);
-                faceD = Integer.parseInt(faceStates[1]);
-                faceR = Integer.parseInt(faceStates[2]);
-                faceL = Integer.parseInt(faceStates[3]);
-                faceF = Integer.parseInt(faceStates[4]);
-                faceB = Integer.parseInt(faceStates[5]);
+                int startOfSearch = 0;
+                int endOfSearch = state.indexOf(" ", startOfSearch);
+                faceU = Integer.parseInt(state.substring(startOfSearch, endOfSearch));
+                startOfSearch = endOfSearch + 1;
+                endOfSearch = state.indexOf(" ", startOfSearch);
+                faceD = Integer.parseInt(state.substring(startOfSearch, endOfSearch));
+                startOfSearch = endOfSearch + 1;
+                endOfSearch = state.indexOf(" ", startOfSearch);
+                faceR = Integer.parseInt(state.substring(startOfSearch, endOfSearch));
+                startOfSearch = endOfSearch + 1;
+                endOfSearch = state.indexOf(" ", startOfSearch);
+                faceL = Integer.parseInt(state.substring(startOfSearch, endOfSearch));
+                startOfSearch = endOfSearch + 1;
+                endOfSearch = state.indexOf(" ", startOfSearch);
+                faceF = Integer.parseInt(state.substring(startOfSearch, endOfSearch));
+                startOfSearch = endOfSearch + 1;
+                faceB = Integer.parseInt(state.substring(startOfSearch));
         }
 
-        static void writeToFile(String state, String moves, FileWriter writer) {
+        static void writeToFile(String state, String moves, BufferedWriter writer) {
                 try {
-                        writer.write(state + " " + moves + "\n");
+                        writer.write(state);
+                        writer.write(' ');
+                        writer.write(moves);
+                        writer.newLine();
                 } catch (IOException e) {
                         e.printStackTrace();
                 }
