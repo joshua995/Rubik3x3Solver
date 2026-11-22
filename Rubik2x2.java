@@ -1,5 +1,9 @@
 /*
+Joshua
+2026
 Programmed with runtime optimization in mind
+Generates a txt file with the following format
+        faceU faceD faceR faceL faceF faceB long-moves-depth long-canon-moves
  */
 
 import java.io.BufferedWriter;
@@ -236,6 +240,7 @@ public class Rubik2x2 {
                 int canonMoves = setCanonicalState();
                 String currCanonState = turnStateToString();
                 if (canonStates.add(currCanonState)) {
+                        // Also encode the depth for decoding later
                         long currentMoves = (((currentStateMoves << 5) | nextMove) << 5) | (currentDepth + 1);
                         writeToFile(currCanonState, Long.toString(currentMoves) + " " + Integer.toString(canonMoves),
                                         writer);

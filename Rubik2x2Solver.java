@@ -1,4 +1,6 @@
 /*
+Joshua
+2026
 Solver using the lookup file
  */
 
@@ -491,6 +493,13 @@ public class Rubik2x2Solver {
                 movesSolvedToScrambled.add(solverCanonMoves + " " + solverMoves);
         }
 
+        /**
+         * 
+         * @param moves
+         * @param isCanon
+         * @return moves in reverse order to allow user to solve the cube following
+         *         steps
+         */
         static String decodeMoves(long moves, boolean isCanon) {
                 String solverMoves = "";
                 if (!isCanon) {
@@ -502,6 +511,7 @@ public class Rubik2x2Solver {
                         }
                 } else {
                         for (int i = 0; i < 2; i++) {
+                                // Quits when 0 (U) is detected -> U is not a part of a canon move...
                                 if ((moves & 0b11111) == 0) {
                                         return solverMoves;
                                 }
