@@ -31,12 +31,12 @@ public class Rubik2x2Solver {
                         "y", "y'", "y2",
         };
 
-        static int faceU = 0b001_011_100_000;
-        static int faceD = 0b010_000_101_001;
-        static int faceR = 0b010_000_011_011;
-        static int faceL = 0b101_001_010_000;
-        static int faceF = 0b010_100_101_100;
-        static int faceB = 0b101_011_100_001;
+        static int faceU = 0b011_101_000_100;
+        static int faceD = 0b010_010_011_011;
+        static int faceR = 0b010_001_101_000;
+        static int faceL = 0b101_100_001_101;
+        static int faceF = 0b010_001_001_000;
+        static int faceB = 0b011_000_100_100;
 
         static List<int[]> faceStates = new ArrayList<>();
         static List<String> movesSolvedToScrambled = new ArrayList<>();
@@ -71,7 +71,7 @@ public class Rubik2x2Solver {
 
                 displayCube();
                 System.out.println("\u001B[37m" +
-                                setCananicalStateInput()
+                                setCanonicalStateInput()
                                 + ", to set the Yellow-Blue-Red corner on the U-L-F face respectively");
                 displayCube();
                 int index = getIndexOfState();
@@ -551,7 +551,7 @@ public class Rubik2x2Solver {
          * 
          * Setting the Yellow-Blue-Red Corner in U-L-F Corner
          */
-        static String setCananicalStateInput() {
+        static String setCanonicalStateInput() {
                 if (((faceU >> 3) & 0b111) == YELLOW && ((faceL >> 6) & 0b111) == BLUE
                                 && ((faceF >> 9) & 0b111) == RED) {
                         return "";

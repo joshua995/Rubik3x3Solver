@@ -241,8 +241,10 @@ public class Rubik2x2 {
                 String currCanonState = turnStateToString();
                 if (canonStates.add(currCanonState)) {
                         // Also encode the depth for decoding later
-                        long currentMoves = (((currentStateMoves << 5) | nextMove) << 5) | (currentDepth + 1);
-                        writeToFile(currCanonState, Long.toString(currentMoves) + " " + Integer.toString(canonMoves),
+                        long currentMoves = ((currentStateMoves << 5) | nextMove);
+                        writeToFile(currCanonState,
+                                        Long.toString((currentMoves << 5) | (currentDepth + 1)) + " "
+                                                        + Integer.toString(canonMoves),
                                         writer);
                         enqueueState(tempFaceU, tempFaceD, tempFaceR, tempFaceL, tempFaceF,
                                         tempFaceB, currentMoves, (byte) (currentDepth + 1));
