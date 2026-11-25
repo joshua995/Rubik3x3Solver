@@ -81,19 +81,27 @@ public class Rubik2x2 {
         static int stateQueueTail = 0;
 
         public static void main(String[] args) {
-                BufferedWriter myWriter;
-                try {
-                        long startT = System.nanoTime();
-                        myWriter = new BufferedWriter(new FileWriter("rubik2x2lookup.txt", false), 1 << 20);
-                        writeToFile(turnStateToString(), "0 0", myWriter);
-                        generateLookupTable(faceU, faceD, faceR, faceL, faceF, faceB, myWriter);
-                        myWriter.close();
 
-                        long endT = System.nanoTime();
-                        System.out.println("MilliSeconds " + ((endT - startT) / 1_000_000));
-                } catch (IOException e) {
-                        e.printStackTrace();
+                long startT = System.nanoTime();
+                for (int i = 0; i < 1_000_000_000; i++) {
+                        R2();
                 }
+                long endT = System.nanoTime();
+                System.out.println("MilliSeconds " + ((endT - startT) / 1_000_000));
+                // BufferedWriter myWriter;
+                // try {
+                // long startT = System.nanoTime();
+                // myWriter = new BufferedWriter(new FileWriter("rubik2x2lookup.txt", false), 1
+                // << 20);
+                // writeToFile(turnStateToString(), "0 0", myWriter);
+                // generateLookupTable(faceU, faceD, faceR, faceL, faceF, faceB, myWriter);
+                // myWriter.close();
+
+                // long endT = System.nanoTime();
+                // System.out.println("MilliSeconds " + ((endT - startT) / 1_000_000));
+                // } catch (IOException e) {
+                // e.printStackTrace();
+                // }
         }
 
         static void enqueueState(int faceU, int faceD, int faceR, int faceL, int faceF, int faceB, long moves,
