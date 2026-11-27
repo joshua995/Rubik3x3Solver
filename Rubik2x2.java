@@ -84,24 +84,15 @@ public class Rubik2x2 {
 
                 long startT = System.nanoTime();
                 for (int i = 0; i < 33_000_000; i++) {
-                        U();
-                        Ui();
-                        U2();
-                        D();
-                        Di();
-                        D2();
-                        R();
-                        Ri();
-                        R2();
-                        L();
-                        Li();
-                        L2();
-                        F();
-                        Fi();
-                        F2();
-                        B();
-                        Bi();
-                        B2();
+                        z();
+                        zi();
+                        z2();
+                        x();
+                        xi();
+                        x2();
+                        y();
+                        yi();
+                        y2();
                 }
                 long endT = System.nanoTime();
                 System.out.println("MilliSeconds " + ((endT - startT) / 1_000_000));
